@@ -17,8 +17,8 @@ const overrides = {
   },
   direction: "rtl",
   fonts: {
-    // body: "Tajawal",
-    // heading: "Tajawal",
+    heading: `"Changa", sans-serif`,
+    body: `"Changa", sans-serif`,
   },
   colors: {
     //
