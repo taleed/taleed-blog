@@ -9,7 +9,7 @@ const overrides = {
       //   overflowX: "hidden",
       // },
       body: {
-        color: props.colorMode === "dark" ? "grey.300" : "grey.900",
+        color: props.colorMode === "dark" ? "white" : "brand.black",
         bg: props.colorMode === "dark" ? "brand.black" : "white",
         overflowX: "hidden",
       },

@@ -22,6 +22,9 @@
       "@/utils/*": [
         "utils/*"
       ],
+      "@/context/*": [
+        "context/*"
+      ],
       "@/types/*": [
         "types/*"
       ],
