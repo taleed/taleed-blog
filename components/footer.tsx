@@ -104,7 +104,7 @@ const Footer = () => {
                             عن تليــد
                             </Text>
                             <Stack spacing="3" shouldWrapChildren>
-                                <NextLink href={"/"} passHref>
+                                <NextLink href={"/about"} passHref>
                                     <Button
                                         as="a"
                                         bgColor="transparent"

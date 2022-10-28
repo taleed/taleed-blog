@@ -14,10 +14,13 @@ specifiers:
   eslint: 8.25.0
   eslint-config-next: 12.3.1
   framer-motion: ^6
+  jquery: ^3.6.1
   next: 12.3.1
   react: 18.2.0
   react-dom: 18.2.0
+  react-hook-form: ^7.38.0
   react-icons: ^4.6.0
+  react-owl-carousel: ^2.3.3
   typescript: 4.8.4
 
 dependencies:
@@ -29,10 +32,13 @@ dependencies:
   '@supabase/auth-helpers-react': 0.3.0
   '@supabase/supabase-js': 2.0.0
   framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
+  jquery: 3.6.1
   next: 12.3.1_6tziyx3dehkoeijunclpkpolha
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  react-hook-form: 7.38.0_react@18.2.0
   react-icons: 4.6.0_react@18.2.0
+  react-owl-carousel: 2.3.3_jquery@3.6.1+react@18.2.0
 
 devDependencies:
   '@types/node': 18.11.0
@@ -3051,6 +3057,10 @@ packages:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
 
+  /jquery/3.6.1:
+    resolution: {integrity: sha512-opJeO4nCucVnsjiXOE+/PcCgYw9Gwpvs/a6B1LL/lQhwWwpbVEVYDZ1FokFr8PRc7ghYlrFPuyHuiiDNTQxmcw==}
+    dev: false
+
   /js-sdsl/4.1.5:
     resolution: {integrity: sha512-08bOAKweV2NUC1wqTtf3qZlnpOX/R2DU9ikpjOHs0H+ibQv3zpncVQg6um4uYtRtrwIX8M4Nh3ytK4HGlYAq7Q==}
     dev: true
@@ -3342,6 +3352,12 @@ packages:
       word-wrap: 1.2.3
     dev: true
 
+  /owl.carousel/2.3.4:
+    resolution: {integrity: sha512-JaDss9+feAvEW8KZppPSpllfposEzQiW+Ytt/Xm5t/3CTJ7YVmkh6RkWixoA2yXk2boIwedYxOvrrppIGzru9A==}
+    dependencies:
+      jquery: 3.6.1
+    dev: false
+
   /p-limit/3.1.0:
     resolution: {integrity: sha512-TYOanM3wGwNGsZN2cVTYPArw454xnXj5qmWF1bEoAc4+cU/ol7GVh7odevjp1FNHduHc3KZMcFduxU5Xc6uJRQ==}
     engines: {node: '>=10'}
@@ -3451,6 +3467,18 @@ packages:
       react: 18.2.0
     dev: false
 
+  /react-dom/16.14.0_react@18.2.0:
+    resolution: {integrity: sha512-1gCeQXDLoIqMgqD3IO2Ah9bnf0w9kzhwN5q4FGnHZ67hBm9yePzB5JJAIQCc8x3pFnNlwFq4RidZggNAAkzWWw==}
+    peerDependencies:
+      react: ^16.14.0
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+      prop-types: 15.8.1
+      react: 18.2.0
+      scheduler: 0.19.1
+    dev: false
+
   /react-dom/18.2.0_react@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -3484,6 +3512,15 @@ packages:
       use-sidecar: 1.1.2_iapumuv4e6jcjznwuxpf4tt22e
     dev: false
 
+  /react-hook-form/7.38.0_react@18.2.0:
+    resolution: {integrity: sha512-gxWW1kMeru9xR1GoR+Iw4hA+JBOM3SHfr4DWCUKY0xc7Vv1MLsF109oHtBeWl9shcyPFx67KHru44DheN0XY5A==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /react-icons/4.6.0_react@18.2.0:
     resolution: {integrity: sha512-rR/L9m9340yO8yv1QT1QurxWQvWpbNHqVX0fzMln2HEb9TEIrQRGsqiNFQfiv9/JEUbyHmHPlNTB2LWm2Ttz0g==}
     peerDependencies:
@@ -3494,6 +3531,18 @@ packages:
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+
+  /react-owl-carousel/2.3.3_jquery@3.6.1+react@18.2.0:
+    resolution: {integrity: sha512-B4TI2EDDtp7IDM8CWzl5Rh/17p1NfMW/QBIbkC18CkiMGCbO9ztY+vAPTN60tp+63V9v/oLqArLjkiQtDGqj/A==}
+    peerDependencies:
+      jquery: '>=1.8.3'
+      react: '>=15'
+    dependencies:
+      jquery: 3.6.1
+      owl.carousel: 2.3.4
+      react: 18.2.0
+      react-dom: 16.14.0_react@18.2.0
+    dev: false
 
   /react-remove-scroll-bar/2.3.4_iapumuv4e6jcjznwuxpf4tt22e:
     resolution: {integrity: sha512-63C4YQBUt0m6ALadE9XV56hV8BgJWDmmTPY758iIJjfQKt2nYwoUrPk0LXRXcB/yIj82T1/Ixfdpdk68LwIB0A==}
@@ -3617,6 +3666,13 @@ packages:
       get-intrinsic: 1.1.3
       is-regex: 1.1.4
     dev: true
+
+  /scheduler/0.19.1:
+    resolution: {integrity: sha512-n/zwRWRYSUj0/3g/otKDRPMh6qv2SYMWNq85IEa8iZyAv8od9zDYpGSnpBEjNgcMNq6Scbu5KfIPxNF72R/2EA==}
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+    dev: false
 
   /scheduler/0.23.0:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}

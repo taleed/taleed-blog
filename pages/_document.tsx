@@ -18,7 +18,9 @@ class MyDocument extends Document {
   render() {
     return (
       <Html dir={theme.direction} lang="ar">
-        <Head />
+        <Head>
+          
+        </Head>
         <body>
           <ColorModeScript initialColorMode={theme.config.initialColorMode} />
           <Main />

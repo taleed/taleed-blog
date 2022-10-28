@@ -24,7 +24,7 @@ import { useContext, useState } from 'react'
 
 import { AiOutlineClose } from "react-icons/ai";
 import { BiSearch } from "react-icons/bi";
-import { ColorModeContext } from '../context/colormode.tsx'
+import { ColorModeContext } from '@/context/colormode'
 import { FaEdit } from "react-icons/fa";
 import { FiSun } from "react-icons/fi";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -44,7 +44,7 @@ const NAV_ITEMS = [
 ]
 const NAV_ITEMS_SEC = [
     {href: "/", name: 'تغطيات متنوعة'},
-    {href: "/", name: 'مدونات'},
+    {href: "/blogs", name: 'مدونات'},
     {href: "/", name: 'فلسفة علوم'},
     {href: "/", name: 'بحث علمي'},
 ]
@@ -69,7 +69,7 @@ const NavbarDesktopLinks = ({colorMode}) => {
                     </Button>
                 </NextLink>
             )).slice(0, 7)}
-            {<Menu>
+            <Menu>
                     <MenuButton as={Button} 
                         bg="transparent" 
                         rounded="0px"
@@ -101,7 +101,7 @@ const NavbarDesktopLinks = ({colorMode}) => {
                             )).slice(7) 
                         }
                     </MenuList>
-            </Menu>}
+            </Menu>
         </>
     )
 }
@@ -200,7 +200,7 @@ const Navbar = () => {
                             justify="space-between"
                             >
                             <Flex align="center">
-                                <NextLink href="/" passHref>
+                                <NextLink href="/login" passHref>
                                     <Button
                                         as="a"
                                         aria-label="كن محررا"
