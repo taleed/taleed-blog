@@ -14,23 +14,23 @@ const PrivacyPolicy = () => {
       <Box my={12}>
         <Heading
           color={colorMode === "dark" ? "brand.secondary" : "brand.primary"}
-          fontSize="24px"
+          fontSize="3xl"
         >
           سياسة الخصوصية
         </Heading>
         <Text
           color={colorMode === "dark" ? "grey.100" : "grey.900"}
           my="30px"
-          fontSize="18px"
+          fontSize="xl"
         >
           هذا الموقع تملكه وتديره مبادرة تليد الثقافية ، يرجى الإطلاع بشكل دقيق
           على الأحكام والشروط أدناه .
         </Text>
-        <Heading fontSize="20px">1. المستخدم</Heading>
+        <Heading fontSize="2xl">1. المستخدم</Heading>
         <Text
           color={colorMode === "dark" ? "grey.100" : "grey.900"}
           my="20px"
-          fontSize="18px"
+          fontSize="xl"
           lineHeight={1.8}
         >
           باستخدامك أو زيارتك لهذا الموقع فإنك تقر وتوافق على هذه الشروط التي
@@ -38,11 +38,11 @@ const PrivacyPolicy = () => {
           الموقع يشير إلى موافقتك على الالتزام بتلك الشروط وإذا لم توافق على أي
           من هذه الشروط فيرجى التوقف عن استخدام الموقع فورا
         </Text>
-        <Heading fontSize="20px">2. شروط الاستخدام</Heading>
+        <Heading fontSize="2xl">2. شروط الاستخدام</Heading>
         <Text
           color={colorMode === "dark" ? "grey.100" : "grey.900"}
           my="20px"
-          fontSize="18px"
+          fontSize="xl"
           lineHeight={1.8}
         >
           يسمح باستخدام هذا الموقع لأغراض مشروعة وبطريقة لا تنتهك القانون أو أي
@@ -53,11 +53,11 @@ const PrivacyPolicy = () => {
           القانونية لاستخدام هذا الموقع، وتتعهد بأن تلتزم بكافة الشروط ، كما
           تتعهد بأنك قادر على الاطلاع على تلك الشروط والأحكام والالتزام بها.
         </Text>
-        <Heading fontSize="20px">3. مواقع وروابط الطرف الثالث</Heading>
+        <Heading fontSize="2xl">3. مواقع وروابط الطرف الثالث</Heading>
         <Text
           color={colorMode === "dark" ? "grey.100" : "grey.900"}
           my="20px"
-          fontSize="18px"
+          fontSize="xl"
           lineHeight={1.8}
         >
           موقع تليد ليس مسؤول عن وجود أو محتوى مواد منشورة في مواقع الطرف الثالث
