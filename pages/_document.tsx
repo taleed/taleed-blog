@@ -22,7 +22,7 @@ class MyDocument extends Document {
           
         </Head>
         <body>
-          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+          <ColorModeScript initialColorMode={theme.config.initialColorMode} storageKey="talleed-theme-mode" />
           <Main />
           <NextScript />
         </body>

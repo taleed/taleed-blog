@@ -22,8 +22,8 @@
       "@/utils/*": [
         "utils/*"
       ],
-      "@/context/*": [
-        "context/*"
+      "@/layouts/*": [
+        "layouts/*"
       ],
       "@/carousel/*": [
         "owlcarousel/*"

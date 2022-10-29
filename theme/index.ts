@@ -5,9 +5,6 @@ const overrides = {
   config: { initialColorMode: "light", useSystemColorMode: false },
   styles: {
     global: (props: StyleFunctionProps) => ({
-      // html: {
-      //   overflowX: "hidden",
-      // },
       body: {
         color: props.colorMode === "dark" ? "white" : "brand.black",
         bg: props.colorMode === "dark" ? "brand.black" : "white",

@@ -1,50 +1,67 @@
 import {
-    Box,
-    Button,
-    Flex,
-    Grid,
-    GridItem,
-    Heading,
-    Image,
-    Text,
-} from '@chakra-ui/react'
+  Box,
+  Button,
+  Flex,
+  Grid,
+  GridItem,
+  Heading,
+  Image,
+  Text,
+  useColorMode,
+} from "@chakra-ui/react";
 
-import { ColorModeContext } from '@/context/colormode'
-import NextLink from 'next/link'
-import { useContext } from 'react'
+import NextLink from "next/link";
 
-export const SecBlog = ({el}) => {
-    const { colorMode } = useContext(ColorModeContext)
-    return (
-        <Box mb="40px">
-            <Flex flexDir={{base: "column", md:"row-reverse"}}>
-                <NextLink href={`/blogs/${el.id}`}>
-                    <Box cursor="pointer" bgImage={`/${el.blogImgUrl}`} bgSize="cover"  minW={{base:"100%", md:"40%"}} w={{base:"100%", md:"40%"}} h="100px" bgPosition="center"></Box>
-                </NextLink>
-                <Flex flexDir="column" justify="space-between" pl="30px" py="10px">
-                    <NextLink href={`/blogs/${el.id}`}>
-                        <Box cursor="pointer">
-                            <Text color="brand.secondary" 
-                                mb="15px" 
-                                fontSize="22px" 
-                                fontWeight="600">
-                                    {el.category}
-                            </Text>
-                            <Heading fontSize="28px" mb="15px" >{el.title}</Heading>
-                        </Box>   
-                    </NextLink> 
-                    <Flex>
-                        <NextLink href={`/authors/${el.authorId}`}>
-                            <Text fontWeight="600" cursor="pointer">{el.author}</Text>
-                        </NextLink>
-                        <Text color={colorMode === "dark" ? "whiteAlpha.600" : "blackAlpha.600"} fontWeight="500">{el.datePosted}</Text>
-                    </Flex>
-
-                </Flex>
-            </Flex>
-        </Box>
-    )
-}
+export const SecBlog = ({ el }) => {
+  const { colorMode, toggleColorMode } = useColorMode();
+  return (
+    <Box mb="40px">
+      <Flex flexDir={{ base: "column", md: "row-reverse" }}>
+        <NextLink href={`/blogs/${el.id}`}>
+          <Box
+            cursor="pointer"
+            bgImage={`/${el.blogImgUrl}`}
+            bgSize="cover"
+            minW={{ base: "100%", md: "40%" }}
+            w={{ base: "100%", md: "40%" }}
+            h="100px"
+            bgPosition="center"
+          ></Box>
+        </NextLink>
+        <Flex flexDir="column" justify="space-between" pl="30px" py="10px">
+          <NextLink href={`/blogs/${el.id}`}>
+            <Box cursor="pointer">
+              <Text
+                color="brand.secondary"
+                mb="15px"
+                fontSize="22px"
+                fontWeight="600"
+              >
+                {el.category}
+              </Text>
+              <Heading fontSize="28px" mb="15px">
+                {el.title}
+              </Heading>
+            </Box>
+          </NextLink>
+          <Flex>
+            <NextLink href={`/authors/${el.authorId}`}>
+              <Text fontWeight="600" cursor="pointer">
+                {el.author}
+              </Text>
+            </NextLink>
+            <Text
+              color={colorMode === "dark" ? "whiteAlpha.600" : "blackAlpha.600"}
+              fontWeight="500"
+            >
+              {el.datePosted}
+            </Text>
+          </Flex>
+        </Flex>
+      </Flex>
+    </Box>
+  );
+};
 export const MainBlog = ({el}) => {
     const { colorMode } = useContext(ColorModeContext)
     return (
