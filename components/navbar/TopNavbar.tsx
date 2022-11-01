@@ -10,9 +10,16 @@ import { BiEdit } from "react-icons/bi";
 import LightDarkSwitcher from "@/components/LightDarkSwitcher";
 import Link from "next/link";
 import { TopNavbarResources } from "./Navbar.resources";
+import { useRouter } from "next/router";
 
 const TopNavbar = () => {
   const { colorMode } = useColorMode();
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/be-an-editor");
+  };
+
   return (
     <Container maxW="container.xl">
       <Flex p={0} h={16} w="full" align="center" justify="space-between">
@@ -28,6 +35,7 @@ const TopNavbar = () => {
           fontSize="xl"
           h="full"
           leftIcon={<BiEdit />}
+          onClick={handleClick}
         >
           كن محررًا
         </Button>
