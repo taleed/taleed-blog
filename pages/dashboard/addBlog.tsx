@@ -24,8 +24,7 @@ const AddBlog = () => {
     <>
       <Box>hello</Box>
     </>
-    
-  )
+  );
 };
 
 AddBlog.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;

@@ -52,20 +52,20 @@ const BeAnEditor = () => {
     });
 
     if (user) {
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          first_name: values.first_name,
-          last_name: values.last_name,
-          username: values.username,
-          field: values.field,
-          speciality: values.speciality,
-          about: values.about,
-          facebook_account: values.facebook_account,
-          linkedin_account: values.linkedin_account,
-          twitter_account: values.twitter_account,
-        })
-        .eq("id", user.id);
+      const { data, error } = await supabase.from("profiles").insert({
+        id: user.id,
+        first_name: values.first_name,
+        last_name: values.last_name,
+        username: values.username,
+        field: values.field,
+        speciality: values.speciality,
+        about: values.about,
+        facebook_account: values.facebook_account,
+        linkedin_account: values.linkedin_account,
+        twitter_account: values.twitter_account,
+        avatar_url: values.avatar_url,
+      });
+      console.log("data, error ", data, error);
 
       if (!error) {
         toast({
@@ -74,7 +74,9 @@ const BeAnEditor = () => {
           status: "success",
           duration: 5000,
           isClosable: true,
+          position: "top-right",
         });
+        router.push("/login");
       }
     }
   };

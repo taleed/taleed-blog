@@ -1,10 +1,12 @@
 import "@fontsource/changa";
 
 import { ChakraProvider, createLocalStorageManager } from "@chakra-ui/react";
-import { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode, useState } from "react";
 
 import type { AppProps } from "next/app";
 import { NextPage } from "next";
+import { SessionContextProvider } from "@supabase/auth-helpers-react";
+import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import theme from "theme";
 
 type NextPageWithLayout = NextPage & {
@@ -18,13 +20,16 @@ type AppPropsWithLayout = AppProps & {
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const manager = createLocalStorageManager("talleed-theme-mode");
   const getLayout = Component.getLayout ?? ((page) => page);
+  const [supabaseClient] = useState(() => createBrowserSupabaseClient());
   return (
-    <ChakraProvider theme={theme} colorModeManager={manager}>
-      {getLayout(<Component {...pageProps} />)}
-      {/* <Layout>
-        <Component {...pageProps} />
-      </Layout> */}
-    </ChakraProvider>
+    <SessionContextProvider
+      supabaseClient={supabaseClient}
+      initialSession={pageProps.initialSession}
+    >
+      <ChakraProvider theme={theme} colorModeManager={manager}>
+        {getLayout(<Component {...pageProps} />)}
+      </ChakraProvider>
+    </SessionContextProvider>
   );
 }
 

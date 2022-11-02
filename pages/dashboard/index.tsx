@@ -17,34 +17,66 @@ interface MyBlogsProps {
 }
 
 const MYBLOGS: Array<MyBlogsProps> = [
-  {blogID: 1, category: 'علوم', blogImg:"/corona.jpg", title: "موجة فيروس كورونا الاخيرة", description: "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل", authorID: 1, authorName: "zakriaa rabah", createdDate: "22/10/2022", authorImg: "/authorimg.jpg"},
-  {blogID: 2, category: 'علوم', blogImg:"/corona.jpg", title: "موجة فيروس كورونا الاخيرة", description: "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل", authorID: 1, authorName: "zakriaa rabah", createdDate: "22/10/2022", authorImg: "/authorimg.jpg"},
-  {blogID: 3, category: 'علوم', blogImg:"/corona.jpg", title: "موجة فيروس كورونا الاخيرة", description: "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل", authorID: 1, authorName: "zakriaa rabah", createdDate: "22/10/2022", authorImg: "/authorimg.jpg"},
-]
+  {
+    blogID: 1,
+    category: "علوم",
+    blogImg: "/corona.jpg",
+    title: "موجة فيروس كورونا الاخيرة",
+    description:
+      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
+    authorID: 1,
+    authorName: "zakriaa rabah",
+    createdDate: "22/10/2022",
+    authorImg: "/authorimg.jpg",
+  },
+  {
+    blogID: 2,
+    category: "علوم",
+    blogImg: "/corona.jpg",
+    title: "موجة فيروس كورونا الاخيرة",
+    description:
+      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
+    authorID: 1,
+    authorName: "zakriaa rabah",
+    createdDate: "22/10/2022",
+    authorImg: "/authorimg.jpg",
+  },
+  {
+    blogID: 3,
+    category: "علوم",
+    blogImg: "/corona.jpg",
+    title: "موجة فيروس كورونا الاخيرة",
+    description:
+      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
+    authorID: 1,
+    authorName: "zakriaa rabah",
+    createdDate: "22/10/2022",
+    authorImg: "/authorimg.jpg",
+  },
+];
 
 const Dashboard = () => {
   return (
     <>
-      {
-        MYBLOGS.map((blog) => <MainBlog blogData={blog} key={blog.blogID} />)
-      }
+      {MYBLOGS.map((blog) => (
+        <MainBlog blogData={blog} key={blog.blogID} />
+      ))}
       <Flex justifyContent="center" pb={5}>
         <Button
-                bg="white"
-                border="2px"
-                px="20px"
-                mx="auto"
-                alignSelf="center"
-                h="50px"
-                borderColor="brand.secondary"
-                color="brand.secondary"
-              >
-                عرض المزيد
+          bg="white"
+          border="2px"
+          px="20px"
+          mx="auto"
+          alignSelf="center"
+          h="50px"
+          borderColor="brand.secondary"
+          color="brand.secondary"
+        >
+          عرض المزيد
         </Button>
       </Flex>
     </>
-    
-  )
+  );
 };
 
 Dashboard.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
