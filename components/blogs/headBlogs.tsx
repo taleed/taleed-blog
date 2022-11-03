@@ -6,15 +6,18 @@ import SecBlog from "@/components/blogs/secBlog";
 
 interface BlogDataProps {
     blogsData: {
-        blogID: number;
-        blogImg: string;
-        category: string;
+        categories: {name: string};
+        created_at: string;
+        excerpt: string;
+        id: number;
+        profiles: {
+            avatar_url: string;
+            first_name: string;
+            last_name: string;
+            username: string
+        };
+        thumbnail: string;
         title: string;
-        description: string;
-        authorID: number;
-        authorName: string;
-        createdDate: string;
-        authorImg: string;
     }[]
 }
 
@@ -33,7 +36,7 @@ export default function HeadBlogs({blogsData}: BlogDataProps){
                 {
                     blogsData.slice(1,4).map((blog) => {
                         return (
-                            <GridItem colSpan={1} key={blog.blogID}>
+                            <GridItem colSpan={1} key={blog.id}>
                                 <SecBlog blogData={blog} />
                             </GridItem>
                         )

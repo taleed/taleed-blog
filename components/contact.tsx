@@ -9,11 +9,9 @@ import {
   Select,
   Text,
   Textarea,
-  useColorMode,
 } from "@chakra-ui/react";
 
 export default function Contact({ setContactShow }) {
-  const { colorMode, toggleColorMode } = useColorMode();
   return (
     <Box
       position="fixed"
@@ -28,7 +26,7 @@ export default function Contact({ setContactShow }) {
       py="80px"
     >
       <Box
-        bgColor={colorMode === "dark" ? "brand.black" : "white"}
+        bgColor="white"
         rounded="xl"
         px="40px"
         py={{ base: "50px", md: "60px" }}

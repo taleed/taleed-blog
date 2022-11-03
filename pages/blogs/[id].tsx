@@ -1,254 +1,268 @@
 import {
   Box,
   Button,
+  Container,
   Flex,
   Heading,
   Image,
   Text,
-  useColorMode,
+  chakra,
 } from "@chakra-ui/react";
 import { FaRegFileAlt, FaUserCircle } from 'react-icons/fa'
-import { MainBlog, SecBlog } from "@/components/blogscomp"
+import { ReactElement, useEffect, useRef } from "react";
 
-import NextLink from "next/link";
+import { BlogProps } from "@/components/blogs/blogs.resource"
+import Layout from "@/layouts/Default";
+import Link from "next/link";
+import Loading from "@/components/loading";
+import SecBlog from "@/components/blogs/secBlog";
+import SideBlog from "@/components/blogs/sideBlogs";
+import { useState } from "react";
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 
-const POPBLOGS = [
-  {
-    id: 1,
-    authorId: 1,
-    author: "zakaria rabah",
-    authorImg: "authorimg.jpg",
-    datePosted: "20/08/2022",
-    blogImgUrl: "corona.jpg",
-    category: "فن",
-    title: "عالم الميكروبات يستمتع بالصَيف!",
-    body: "نظرا لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل الصيف؟",
-  },
-  {
-    id: 2,
-    authorId: 1,
-    author: "zakaria rabah",
-    authorImg: "authorimg.jpg",
-    datePosted: "20/08/2022",
-    blogImgUrl: "corona.jpg",
-    category: "فن",
-    title: "عالم الميكروبات يستمتع بالصَيف!",
-    body: "نظرا لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل الصيف؟",
-  },
-  {
-    id: 3,
-    authorId: 1,
-    author: "zakaria rabah",
-    authorImg: "authorimg.jpg",
-    datePosted: "20/08/2022",
-    blogImgUrl: "corona.jpg",
-    category: "فن",
-    title: "عالم الميكروبات يستمتع بالصَيف!",
-    body: "نظرا لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل الصيف؟",
-  },
-  {
-    id: 4,
-    authorId: 1,
-    author: "zakaria rabah",
-    authorImg: "authorimg.jpg",
-    datePosted: "20 / 08 / 2022",
-    blogImgUrl: "corona.jpg",
-    category: "فن",
-    title: "عالم الميكروبات يستمتع بالصَيف!",
-    body: "نظرا لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل الصيف؟",
-  },
-  {
-    id: 5,
-    authorId: 1,
-    author: "محمد المحرز",
-    authorImg: "authorimg.jpg",
-    datePosted: "20/08/2022",
-    blogImgUrl: "corona.jpg",
-    category: "فن",
-    title: "عالم الميكروبات يستمتع بالصَيف!",
-    body: "نظرا لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل الصيف؟",
-  },
-  {
-    id: 6,
-    authorId: 1,
-    author: "محمد المحرز",
-    authorImg: "authorimg.jpg",
-    datePosted: "20/08/2022",
-    blogImgUrl: "corona.jpg",
-    category: "فن",
-    title: "عالم الميكروبات يستمتع بالصَيف!",
-    body: "نظرا لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل الصيف؟",
-  },
-  {
-    id: 7,
-    authorId: 1,
-    author: "zakaria rabah",
-    authorImg: "authorimg.jpg",
-    datePosted: "20/08/2022",
-    blogImgUrl: "corona.jpg",
-    category: "فن",
-    title: "عالم الميكروبات يستمتع بالصَيف!",
-    body: "نظرا لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل الصيف؟",
-  },
-  {
-    id: 8,
-    authorId: 1,
-    author: "zakaria rabah",
-    authorImg: "authorimg.jpg",
-    datePosted: "20 / 08 / 2022",
-    blogImgUrl: "corona.jpg",
-    category: "فن",
-    title: "عالم الميكروبات يستمتع بالصَيف!",
-    body: "نظرا لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل الصيف؟",
-  },
-];
+function Blog() {
+  const supabaseClient = useSupabaseClient()
+  const [data, setData] = useState()
+  const [blog, setBlog] = useState()
+  const [sideData, setSideData] = useState()
+  const [authorsData, setAuthorsData] = useState()
+  const [authorBlogsLenght, setAuthorBlogsLenght] = useState(3)
+  const [popBlogsLenght, setPopBlogsLenght] = useState(3)
+  const showAuthorBlogsBtn = useRef()
+  const showPopBlogsBtn = useRef()
 
-const BLOG = {
-  id: 1,
-  authorId: 1,
-  author: "zakaria rabah",
-  authorImg: "authorimg.jpg",
-  datePosted: "20/08/2022",
-  blogImgUrl: "corona.jpg",
-  category: "فن",
-  title: "عالم الميكروبات يستمتع بالصَيف!",
-  body: "نظرا لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل الصيف؟",
-};
+  const getBlogsData = async () => {
+    const { data, error } = await supabaseClient
+    .from('posts')
+    .select(`
+      id,
+      title,
+      excerpt,
+      thumbnail,
+      created_at,
+      categories(name),
+      profiles(username,first_name,last_name,avatar_url,id)
+    `)
 
-export default function Blog() {
-  const { colorMode, toggleColorMode } = useColorMode();
+    if (error) {
+      console.log(error)
+      return
+    }
+    setData(data)
+  }
+
+  const getSideBlogsData = async () => {
+    const { data, error } = await supabaseClient
+    .from('posts')
+    .select(`
+      id,
+      title,
+      excerpt,
+      thumbnail,
+      created_at,
+      categories(name),
+      profiles(username,first_name,last_name,avatar_url,id)
+    `).limit(6)
+
+    if (error) {
+      console.log(error)
+      return
+    }
+    setSideData(data)
+  }
+
+  const getAuthorsData = async () => {
+    const { data, error } = await supabaseClient
+    .from('posts')
+    .select(`
+      id,
+      title,
+      excerpt,
+      thumbnail,
+      created_at,
+      categories(name),
+      profiles(username,first_name,last_name,avatar_url,id)
+    `)
+    .eq('user_id', location.href.split('/').pop().split('*').pop())
+
+    if (error) {
+      console.log(error)
+      return
+    }
+    setAuthorsData(data)
+  }
+
+  const getBlogData = async () => {
+    const { data, error } = await supabaseClient
+    .from('posts')
+    .select(`
+      id,
+      title,
+      body,
+      thumbnail,
+      created_at,
+      categories(name),
+      profiles(username,first_name,last_name,avatar_url,id)
+    `)
+    .eq('id', location.href.split('/').pop().split('*').shift()).single()
+    if (error) {
+      console.log(error)
+      return
+    }
+    setBlog(data)
+    console.log(data)
+  }
+
+  useEffect(() => {
+    getBlogData()
+    getBlogsData()
+    getSideBlogsData()
+    getAuthorsData()
+  }, [blog])
+  useEffect(() => {
+    if (!(showAuthorBlogsBtn.current === undefined)) if(authorsData.slice(0,authorBlogsLenght).length >= authorsData.length) showAuthorBlogsBtn.current.style.display= "none"
+  }, [authorBlogsLenght])
+  useEffect(() => {
+    if (!(showPopBlogsBtn.current === undefined)) if(data.slice(0,popBlogsLenght).length >= data.length) showPopBlogsBtn.current.style.display= "none"
+  }, [popBlogsLenght])
+
   return (
-    <Box px={{ base: "15px", md: "25px", lg: "3%", xl: "10%" }} mb="60px">
-      <Flex flexDir={{ base: "column", lg: "row" }} mt="80px">
-        <Flex flexDir="column" flex={1}>
-          <Text color="brand.secondary" fontSize="18px" fontWeight="600">
-            {BLOG.category}
-          </Text>
-          <Heading fontSize="26px" fontWeight="600" my="20px">
-            {BLOG.title}
-          </Heading>
-          <Flex justifyContent="space-between" w="full" alignItems="flex-end">
-            <Flex align="center">
-              <NextLink href={`/authors/${BLOG.authorId}`}>
+    <>
+    {!blog && <Loading />}
+    {
+      blog &&
+      <Container maxW="6xl" mb="60px">
+        <Flex flexDir={{ base: "column", lg: "row" }} mt="80px">
+          <Flex flexDir="column" flex={1}>
+            <chakra.span color="brand.secondary" fontSize="lg" fontWeight="600">
+              {blog.categories.name}
+            </chakra.span>
+            <Heading fontSize="3xl" fontWeight="600" mb="20px" mt="5px">
+              {blog.title}
+            </Heading>
+            <Flex justifyContent="space-between" w="full" alignItems="flex-end">
+              <Flex align="center">
                 <Image
-                  src={`/${BLOG.authorImg}`}
+                  src={`https://ythbjwovxnnbckdxlbds.supabase.co/storage/v1/object/public/avatars/${blog.profiles.avatar_url}`}
                   alt="صورة الكاتب"
                   w="50px"
                   h="50px"
                   ml="15px"
                   rounded="full"
                 />
-              </NextLink>
-              <Box>
-                <NextLink href={`/authors/${BLOG.authorId}`}>
-                  <Text fontWeight="600" cursor="pointer">
-                    {BLOG.author}
-                  </Text>
-                </NextLink>
-                <Flex>
-                  <Text
-                    ml="20px"
-                    color={
-                      colorMode === "dark" ? "whiteAlpha.600" : "blackAlpha.600"
-                    }
-                    fontWeight="500"
-                  >
-                    {BLOG.datePosted}
-                  </Text>
-                  <Flex ml="20px">
-                    <FaUserCircle fontSize="20px" color="#4C31BC" />
-                    <Text mr="7px" color="brand.primary">
-                      متع اذنك
+                <Box>
+                  <Link href={`/authors/${blog.profiles.username}`}>
+                    <Text fontWeight="600" cursor="pointer" _hover={{textDecor: "underline"}}>
+                      {`${blog.profiles.first_name} ${blog.profiles.last_name}`}
+                    </Text>
+                  </Link>
+                  <Flex>
+                    <Text
+                      ml="20px"
+                      color="blackAlpha.600"
+                      fontWeight="500"
+                    >
+                      {blog.created_at.slice(0,10)}
                     </Text>
                   </Flex>
-                </Flex>
-              </Box>
-            </Flex>
-            <Flex>
-              <Flex ml="20px">
-                <FaUserCircle fontSize="20px" />
-                <Text mr="7px">نسخ الرابط</Text>
-              </Flex>
-              <Flex>
-                <FaRegFileAlt fontSize="20px" />
-                <Text mr="7px">ابلاغ</Text>
+                </Box>
               </Flex>
             </Flex>
+            <Image
+              rounded={{ lg: "lg" }}
+              w="full"
+              my={5}
+              h={{ base: 64, lg: 96 }}
+              fit="cover"
+              src={`https://ythbjwovxnnbckdxlbds.supabase.co/storage/v1/object/public/blogs/${blog.thumbnail}`}
+              alt="Article"
+            />
+            <Box mb={10} dangerouslySetInnerHTML={{ __html: blog.body }}></Box>
+
+            {
+              authorsData && 
+              <Flex alignItems="center" flexDir="column">
+                <chakra.h2 color="brand.primary" fontSize="2xl" fontWeight="600" alignSelf="flex-start" mb={5}>
+                  المزيد من مقالات {`${blog.profiles.first_name} ${blog.profiles.last_name}`}
+                </chakra.h2>
+
+                <SideBlog blogsData={authorsData.slice(0,authorBlogsLenght)} />
+                
+                <Button bg="transparent" 
+                  border="2px"
+                  ref={showAuthorBlogsBtn}
+                  px="20px"
+                  alignSelf="center"
+                  h="50px"
+                  borderColor="brand.secondary" 
+                  color="brand.secondary"
+                  mb={5}
+                  onClick={() => {
+                    setAuthorBlogsLenght(authorBlogsLenght + 3)
+                  }}
+                  >
+                  عرض المزيد
+                </Button>            
+              </Flex>
+            }
+            
+            {
+              data &&
+              <Flex alignItems="center" flexDir="column">
+                <chakra.h2 color="brand.primary" fontSize="2xl" fontWeight="600" alignSelf="flex-start" mb={5}>
+                  المقالات الاكثر قراءة
+                </chakra.h2>
+                <SideBlog blogsData={data.slice(0,popBlogsLenght)} />
+                <Button bg="transparent" 
+                  border="2px"
+                  ref={showPopBlogsBtn}
+                  px="20px"
+                  alignSelf="center"
+                  h="50px"
+                  borderColor="brand.secondary" 
+                  color="brand.secondary"
+                  mb={5}
+                  onClick={() => {
+                    setPopBlogsLenght(popBlogsLenght + 3)
+                  }}
+                  >
+                  عرض المزيد
+                </Button>            
+              </Flex>
+            }
+            
           </Flex>
           <Box
-            my="20px"
-            cursor="pointer"
-            bgImage={`/${BLOG.blogImgUrl}`}
-            bgSize="cover"
-            minW={{ base: "100%" }}
-            w={{ base: "100%" }}
-            h="350px"
-            bgPosition="center"
-          ></Box>
+            minW={{ base: "full", lg: "300px" }}
+            w={{ base: "full", lg: "300px" }}
+            mr={{ base: "0", lg: "30px" }}
+            mt={{ base: "30px", lg: "0px" }}
+          >
+            <Box>
+            {
+              sideData && 
+              <Flex flexDir="column" mb={10}>
+                <chakra.h2 color="brand.primary" fontSize="2xl" fontWeight="600" mb="20px">المواضيع الاكثر شعبية</chakra.h2>
+                {
+                  sideData.map((blog) => {
+                    return (
+                        <Box mb={10} key={blog.id}>
+                            <SecBlog blogData={blog}/>
+                        </Box>        
+                    )
+                  })
+                }
+              </Flex>
+            }
+            <Flex minW={{base:"full" , lg:"300px"}} h={{base:"300px" , lg:"1500px"}} mt={{base:"30px" , lg:"0px"}} bgColor="blackAlpha.400" align="center" justify="center">Advertising</Flex>
+            </Box>
+          </Box>
         </Flex>
-        <Box
-          minW={{ base: "full", lg: "300px" }}
-          w={{ base: "full", lg: "300px" }}
-          h={{ base: "300px", lg: "1500px" }}
-          mr={{ base: "0", lg: "30px" }}
-          mt={{ base: "30px", lg: "0px" }}
-        >
-          <Box>
-            <Heading
-              fontSize="22px"
-              color="brand.primary"
-              fontWeight="600"
-              my="20px"
-            >
-              الكلمات المفتاحية
-            </Heading>
-            <Flex flexWrap="wrap">
-              <Text
-                ml="10px"
-                py="4px"
-                px="15px"
-                rounded="15px"
-                bgColor="blackAlpha.200"
-              >
-                فن
-              </Text>
-              <Text
-                ml="10px"
-                py="4px"
-                px="15px"
-                rounded="15px"
-                bgColor="blackAlpha.200"
-              >
-                علوم
-              </Text>
-              <Text
-                ml="10px"
-                py="4px"
-                px="15px"
-                rounded="15px"
-                bgColor="blackAlpha.200"
-              >
-                رياضة
-              </Text>
-            </Flex>
-          </Box>
-          <Box>
-            <Heading
-              fontSize="22px"
-              color="brand.primary"
-              fontWeight="600"
-              my="20px"
-            >
-              الاكثر شعبية
-            </Heading>
-            <Flex flexDir="column">
-              {POPBLOGS.map((el) => {
-                return <SecBlog el={el} key={el.id} />;
-              })}
-            </Flex>
-          </Box>
-        </Box>
-      </Flex>
-    </Box>
+      </Container>
+
+  }
+  </>
   );
 }
+Blog.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
+export default Blog;

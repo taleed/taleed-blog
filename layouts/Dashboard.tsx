@@ -31,6 +31,7 @@ export default function Layout({ children }: any) {
         <Box
           mr={{ base: 0, md: 60 }}
           p="4"
+          pt='10'
           minH={"calc(100vh - 80px)"}
           bg="blackAlpha.100"
         >

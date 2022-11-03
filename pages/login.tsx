@@ -13,10 +13,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 import Layout from "@/layouts/PageWithoutNavbars";
 import Link from "next/link";
-import NextLink from "next/link";
 import { ReactElement } from "react";
-import { supabase } from "@/utils/supabaseClient";
 import { useRouter } from "next/router";
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 
 type loginValues = {
   email: string;
@@ -24,6 +23,7 @@ type loginValues = {
 };
 
 const Login = () => {
+  const supabaseClient = useSupabaseClient()
   const {
     handleSubmit,
     register,
@@ -36,7 +36,7 @@ const Login = () => {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<loginValues> = async (values) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
       email: values.email,
       password: values.password,
     });
@@ -145,8 +145,8 @@ const Login = () => {
           py={2.5}
         >
           <Text color="white">
-            لديك حساب؟
-            <Link href="/login">
+            ليس لديك حساب؟
+            <Link href="/be-an-editor">
               <Button
                 ms={2}
                 as="a"
@@ -155,7 +155,7 @@ const Login = () => {
                 variant="link"
                 h="fit-content"
               >
-                تسجيل الدخول
+                تسجيل
               </Button>
             </Link>
           </Text>

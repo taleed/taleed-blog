@@ -11,15 +11,21 @@ import LightDarkSwitcher from "@/components/LightDarkSwitcher";
 import Link from "next/link";
 import { TopNavbarResources } from "./Navbar.resources";
 import { useRouter } from "next/router";
+import { useUser } from '@supabase/auth-helpers-react'
 
 const TopNavbar = () => {
   const { colorMode } = useColorMode();
   const router = useRouter();
+  const user = useUser();
 
   const handleClick = () => {
-    router.push("/be-an-editor");
+    if (!user) {
+      router.push("/be-an-editor")
+    } else {
+      router.push("/dashboard")
+    }
+    
   };
-
   return (
     <Container maxW="container.xl">
       <Flex p={0} h={16} w="full" align="center" justify="space-between">
@@ -37,7 +43,8 @@ const TopNavbar = () => {
           leftIcon={<BiEdit />}
           onClick={handleClick}
         >
-          كن محررًا
+          {!user && 'كن محررًا'}
+          {user && 'لوحة التحكم'}
         </Button>
         {/* PART 02 */}
         <LightDarkSwitcher />

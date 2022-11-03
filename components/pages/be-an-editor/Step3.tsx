@@ -16,6 +16,16 @@ import { BeAnEditorStepProps } from "@/types/be-an-editor";
 import { supabase } from "@/utils/supabaseClient";
 import { useState } from "react";
 
+function makeid(length: number) {
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
@@ -28,9 +38,7 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
     setUploading(true);
     const file = event.target.files[0];
     const fileExt = file.name.split(".").pop();
-    const filePath = `${watch!("first_name")}_${watch!(
-      "last_name"
-    )}.${fileExt}`;
+    const filePath = `${makeid(100)}.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
       .from("avatars")

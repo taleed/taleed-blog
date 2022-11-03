@@ -8,42 +8,42 @@ export const TopNavbarResources: NavbarResourcesType[] = [
   {
     order: 1,
     href: "/blogs/health",
-    label: "صحة",
+    label: "ثقافة",
   },
   {
     order: 2,
+    href: "/blogs/health",
+    label: "صحة",
+  },
+  {
+    order: 3,
     href: "/blogs/sports",
     label: "رياضة",
   },
   {
-    order: 3,
+    order: 4,
     href: "/blogs/sciences",
     label: "علوم",
   },
   {
-    order: 4,
+    order: 5,
     href: "/blogs/technology",
     label: "تكنولوجيا",
   },
   {
-    order: 5,
+    order: 6,
     href: "/blogs/economie",
     label: "اقتصاد",
   },
   {
-    order: 6,
+    order: 7,
     href: "/blogs/space",
     label: "فضاء",
   },
   {
-    order: 7,
+    order: 8,
     href: "/blogs/art",
     label: "فن",
-  },
-  {
-    order: 8,
-    href: "/blogs/religion",
-    label: "دين",
   },
 ];
 
@@ -55,7 +55,7 @@ export const MainNavbarResources: NavbarResourcesType[] = [
   },
   {
     order: 2,
-    href: "/blogs",
+    href: "/",
     label: "مدونات",
   },
   {

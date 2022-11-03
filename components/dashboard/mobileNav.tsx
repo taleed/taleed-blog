@@ -20,12 +20,24 @@ import {
 } from 'react-icons/fi';
 
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 
 interface MobileProps extends FlexProps {
     onOpen: () => void;
 }
 
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+  const supabaseClient = useSupabaseClient()
+  const router = useRouter();
+  const SignOutHandler = async () => {
+    const { error } = await supabaseClient.auth.signOut()
+    if(error) {
+      console.log(error)
+      return
+    }
+    router.push("/login");
+  }
     return (
       <Flex
         mr={{ base: 0, md: 60 }}
@@ -88,6 +100,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               <MenuDivider />
               <MenuItem>
                   <chakra.span
+                    onClick={SignOutHandler}
                     display="block"
                   >
                     تسجيل الخروج

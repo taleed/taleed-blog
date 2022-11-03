@@ -1,80 +1,86 @@
 import { Button, Flex } from "@chakra-ui/react";
+import { ReactElement, useEffect, useRef } from "react";
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 
 import Layout from "@/layouts/Dashboard";
-import MainBlog from "@/components/blogs/mainBlog";
-import { ReactElement } from "react";
+import Loading from "@/components/loading";
+import SideBlog from "@/components/blogs/sideBlogs";
+import { useState } from "react";
 
-interface MyBlogsProps {
-  blogID: number;
-  blogImg: string;
-  category: string;
+interface DataProps {
+  categories: {name: string};
+  created_at: string;
+  excerpt: string;
+  id: number;
+  profiles: {
+    avatar_url: string;
+    first_name: string;
+    last_name: string;
+    username: string
+  };
+  thumbnail: string;
   title: string;
-  description: string;
-  authorID: number;
-  authorName: string;
-  createdDate: string;
-  authorImg: string;
 }
 
-const MYBLOGS: Array<MyBlogsProps> = [
-  {
-    blogID: 1,
-    category: "علوم",
-    blogImg: "/corona.jpg",
-    title: "موجة فيروس كورونا الاخيرة",
-    description:
-      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
-    authorID: 1,
-    authorName: "zakriaa rabah",
-    createdDate: "22/10/2022",
-    authorImg: "/authorimg.jpg",
-  },
-  {
-    blogID: 2,
-    category: "علوم",
-    blogImg: "/corona.jpg",
-    title: "موجة فيروس كورونا الاخيرة",
-    description:
-      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
-    authorID: 1,
-    authorName: "zakriaa rabah",
-    createdDate: "22/10/2022",
-    authorImg: "/authorimg.jpg",
-  },
-  {
-    blogID: 3,
-    category: "علوم",
-    blogImg: "/corona.jpg",
-    title: "موجة فيروس كورونا الاخيرة",
-    description:
-      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
-    authorID: 1,
-    authorName: "zakriaa rabah",
-    createdDate: "22/10/2022",
-    authorImg: "/authorimg.jpg",
-  },
-];
-
 const Dashboard = () => {
+  const user = useUser();
+  const supabaseClient = useSupabaseClient()
+  const [data, setData] = useState()
+  const [dataLenght, setDataLenght] = useState(3)
+  const showBtn = useRef()
+  const getBlogsData = async () => {
+    if (user) {
+      const { data, error } = await supabaseClient
+      .from('posts')
+      .select(`
+        id,
+        title,
+        excerpt,
+        thumbnail,
+        created_at,
+        categories(name),
+        profiles(username,first_name,last_name,avatar_url,id)
+      `)
+      .eq('user_id', user?.id)
+      if (error) {
+        console.log(error)
+        return
+      }
+      setData(data)
+    }
+  }
+  useEffect(() => {
+    if (!user) return;
+    getBlogsData()
+  }, [user])
+  useEffect(() => {
+    if (!(showBtn.current === undefined)) if(data.slice(0,dataLenght).length >= data.length) showBtn.current.style.display= "none"
+  }, [dataLenght])
+  
   return (
     <>
-      {MYBLOGS.map((blog) => (
-        <MainBlog blogData={blog} key={blog.blogID} />
-      ))}
-      <Flex justifyContent="center" pb={5}>
-        <Button
-          bg="white"
-          border="2px"
-          px="20px"
-          mx="auto"
-          alignSelf="center"
-          h="50px"
-          borderColor="brand.secondary"
-          color="brand.secondary"
-        >
-          عرض المزيد
-        </Button>
-      </Flex>
+      {!data && <Loading />}
+      {
+        data && 
+        <Flex alignItems="center" flexDir="column">
+          <SideBlog edited={true} blogsData={data.slice(0,dataLenght)} />
+          <Button bg="transparent" 
+            border="2px"
+            ref={showBtn}
+            px="20px"
+            alignSelf="center"
+            h="50px"
+            borderColor="brand.secondary" 
+            color="brand.secondary"
+            mb={5}
+            onClick={() => {
+              setDataLenght(dataLenght + 3)
+            }}
+            >
+            عرض المزيد
+          </Button>
+        </Flex>    
+      }
     </>
   );
 };

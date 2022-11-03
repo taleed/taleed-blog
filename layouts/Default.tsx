@@ -1,4 +1,4 @@
-import { Box, Container, useColorModeValue } from "@chakra-ui/react";
+import { Box, useColorModeValue } from "@chakra-ui/react";
 
 import Footer from "@/components/footer";
 import Head from "next/head";
@@ -12,7 +12,7 @@ export default function Layout({ children }: any) {
       </Head>
       <Box w="full" bg={useColorModeValue("white", "brand.black")}>
         <Navbar />
-        <Container maxW="container.xl">{children}</Container>
+        <Box>{children}</Box>
         <Footer />
       </Box>
     </>
