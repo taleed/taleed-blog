@@ -1,185 +1,187 @@
-import { AuthorProps, BlogProps } from "@/components/blogs/blogs.resource";
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  Heading,
-  Image,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import { FaRegFileAlt, FaUserCircle } from "react-icons/fa";
+// import { AuthorProps, BlogProps } from "@/components/blogs/blogs.resource";
+// import {
+//   Box,
+//   Button,
+//   Container,
+//   Flex,
+//   Heading,
+//   Image,
+//   Text,
+//   useColorModeValue,
+// } from "@chakra-ui/react";
+// import { FaRegFileAlt, FaUserCircle } from "react-icons/fa";
 import { ReactElement, useEffect, useRef } from "react";
 
 import Layout from "@/layouts/Default";
-import Loading from "@/components/loading";
-import SideBlog from "@/components/blogs/sideBlogs";
-import { useState } from "react";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
-const AUTHORDATA: AuthorProps = {
-  authorName: "zakaria rabah",
-  speciality: "مؤسس المشروع وناشط إجتماعي",
-  about:
-    "وريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو أيوسمود تيمبور  أنكايديديونتيوت لابوري ات دولار ماجنا أليكيوا",
-  blogsNum: 7,
-  authorImg: "authorimg.jpg",
-};
-const AUTHORBLOGS: Array<BlogProps> = [
-  {
-    blogID: 1,
-    category: "علوم",
-    blogImg: "/corona.jpg",
-    title: "موجة فيروس كورونا الاخيرة",
-    description:
-      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
-    authorID: 1,
-    authorName: "zakriaa rabah",
-    createdDate: "22/10/2022",
-    authorImg: "/authorimg.jpg",
-  },
-  {
-    blogID: 2,
-    category: "علوم",
-    blogImg: "/corona.jpg",
-    title: "موجة فيروس كورونا الاخيرة",
-    description:
-      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
-    authorID: 1,
-    authorName: "zakriaa rabah",
-    createdDate: "22/10/2022",
-    authorImg: "/authorimg.jpg",
-  },
-  {
-    blogID: 3,
-    category: "علوم",
-    blogImg: "/corona.jpg",
-    title: "موجة فيروس كورونا الاخيرة",
-    description:
-      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
-    authorID: 1,
-    authorName: "zakriaa rabah",
-    createdDate: "22/10/2022",
-    authorImg: "/authorimg.jpg",
-  },
-  {
-    blogID: 4,
-    category: "علوم",
-    blogImg: "/corona.jpg",
-    title: "موجة فيروس كورونا الاخيرة",
-    description:
-      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
-    authorID: 1,
-    authorName: "zakriaa rabah",
-    createdDate: "22/10/2022",
-    authorImg: "/authorimg.jpg",
-  },
-  {
-    blogID: 5,
-    category: "علوم",
-    blogImg: "/corona.jpg",
-    title: "موجة فيروس كورونا الاخيرة",
-    description:
-      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
-    authorID: 1,
-    authorName: "zakriaa rabah",
-    createdDate: "22/10/2022",
-    authorImg: "/authorimg.jpg",
-  },
-  {
-    blogID: 6,
-    category: "علوم",
-    blogImg: "/corona.jpg",
-    title: "موجة فيروس كورونا الاخيرة",
-    description:
-      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
-    authorID: 1,
-    authorName: "zakriaa rabah",
-    createdDate: "22/10/2022",
-    authorImg: "/authorimg.jpg",
-  },
-  {
-    blogID: 7,
-    category: "علوم",
-    blogImg: "/corona.jpg",
-    title: "موجة فيروس كورونا الاخيرة",
-    description:
-      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
-    authorID: 1,
-    authorName: "zakriaa rabah",
-    createdDate: "22/10/2022",
-    authorImg: "/authorimg.jpg",
-  },
-  {
-    blogID: 8,
-    category: "علوم",
-    blogImg: "/corona.jpg",
-    title: "موجة فيروس كورونا الاخيرة",
-    description:
-      "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
-    authorID: 1,
-    authorName: "zakriaa rabah",
-    createdDate: "22/10/2022",
-    authorImg: "/authorimg.jpg",
-  },
-];
+// import Loading from "@/components/loading";
+// // import SideBlog from "@/components/blogs/sideBlogs";
+// import { useState } from "react";
+// import { useSupabaseClient } from "@supabase/auth-helpers-react";
+
+// const AUTHORDATA: AuthorProps = {
+//   authorName: "zakaria rabah",
+//   speciality: "مؤسس المشروع وناشط إجتماعي",
+//   about:
+//     "وريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو أيوسمود تيمبور  أنكايديديونتيوت لابوري ات دولار ماجنا أليكيوا",
+//   blogsNum: 7,
+//   authorImg: "authorimg.jpg",
+// };
+// const AUTHORBLOGS: Array<BlogProps> = [
+//   {
+//     blogID: 1,
+//     category: "علوم",
+//     blogImg: "/corona.jpg",
+//     title: "موجة فيروس كورونا الاخيرة",
+//     description:
+//       "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
+//     authorID: 1,
+//     authorName: "zakriaa rabah",
+//     createdDate: "22/10/2022",
+//     authorImg: "/authorimg.jpg",
+//   },
+//   {
+//     blogID: 2,
+//     category: "علوم",
+//     blogImg: "/corona.jpg",
+//     title: "موجة فيروس كورونا الاخيرة",
+//     description:
+//       "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
+//     authorID: 1,
+//     authorName: "zakriaa rabah",
+//     createdDate: "22/10/2022",
+//     authorImg: "/authorimg.jpg",
+//   },
+//   {
+//     blogID: 3,
+//     category: "علوم",
+//     blogImg: "/corona.jpg",
+//     title: "موجة فيروس كورونا الاخيرة",
+//     description:
+//       "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
+//     authorID: 1,
+//     authorName: "zakriaa rabah",
+//     createdDate: "22/10/2022",
+//     authorImg: "/authorimg.jpg",
+//   },
+//   {
+//     blogID: 4,
+//     category: "علوم",
+//     blogImg: "/corona.jpg",
+//     title: "موجة فيروس كورونا الاخيرة",
+//     description:
+//       "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
+//     authorID: 1,
+//     authorName: "zakriaa rabah",
+//     createdDate: "22/10/2022",
+//     authorImg: "/authorimg.jpg",
+//   },
+//   {
+//     blogID: 5,
+//     category: "علوم",
+//     blogImg: "/corona.jpg",
+//     title: "موجة فيروس كورونا الاخيرة",
+//     description:
+//       "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
+//     authorID: 1,
+//     authorName: "zakriaa rabah",
+//     createdDate: "22/10/2022",
+//     authorImg: "/authorimg.jpg",
+//   },
+//   {
+//     blogID: 6,
+//     category: "علوم",
+//     blogImg: "/corona.jpg",
+//     title: "موجة فيروس كورونا الاخيرة",
+//     description:
+//       "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
+//     authorID: 1,
+//     authorName: "zakriaa rabah",
+//     createdDate: "22/10/2022",
+//     authorImg: "/authorimg.jpg",
+//   },
+//   {
+//     blogID: 7,
+//     category: "علوم",
+//     blogImg: "/corona.jpg",
+//     title: "موجة فيروس كورونا الاخيرة",
+//     description:
+//       "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
+//     authorID: 1,
+//     authorName: "zakriaa rabah",
+//     createdDate: "22/10/2022",
+//     authorImg: "/authorimg.jpg",
+//   },
+//   {
+//     blogID: 8,
+//     category: "علوم",
+//     blogImg: "/corona.jpg",
+//     title: "موجة فيروس كورونا الاخيرة",
+//     description:
+//       "لحالات التسمّم الغذائي المسجّلة خلال فصل الصيف، يبدو أنّ الميكروبات أيضا جِدّ مستمتعة به، قد يكون الأمر غريبا لكنّه حقيقي ومدعاةً للتساؤل! لماذا تكثُر حالات التسمم الغِذائي في فصل",
+//     authorID: 1,
+//     authorName: "zakriaa rabah",
+//     createdDate: "22/10/2022",
+//     authorImg: "/authorimg.jpg",
+//   },
+// ];
 
 function Author() {
-  const supabaseClient = useSupabaseClient();
-  const [data, setData] = useState();
-  const [authorsData, setAuthorsData] = useState();
-  const [dataLenght, setDataLenght] = useState(3);
-  const showBtn = useRef();
-  const getBlogsData = async () => {
-    const { data, error } = await supabaseClient.from("posts").select(`
-      id,
-      title,
-      excerpt,
-      thumbnail,
-      created_at,
-      categories(name),
-      profiles(username,first_name,last_name,avatar_url,id)
-    `);
+  // const supabaseClient = useSupabaseClient();
+  // const [data, setData] = useState();
+  // const [authorsData, setAuthorsData] = useState();
+  // const [dataLenght, setDataLenght] = useState(3);
+  // const showBtn = useRef();
+  // const getBlogsData = async () => {
+  //   const { data, error } = await supabaseClient.from("posts").select(`
+  //     id,
+  //     title,
+  //     excerpt,
+  //     thumbnail,
+  //     created_at,
+  //     categories(name),
+  //     profiles(username,first_name,last_name,avatar_url,id)
+  //   `);
 
-    if (error) {
-      console.log(error);
-      return;
-    }
-    setData(data);
-  };
-  const getAuthorsData = async () => {
-    const { data, error } = await supabaseClient
-      .from("profiles")
-      .select(
-        `
-      username,first_name,last_name,avatar_url,field,speciality,about
-    `
-      )
-      .eq("username", location.href.split("/").pop())
-      .single();
-    if (error) {
-      console.log(error);
-      return;
-    }
-    setAuthorsData(data);
-    console.log(data);
-  };
-  useEffect(() => {
-    getBlogsData();
-    getAuthorsData();
-  }, []);
-  useEffect(() => {
-    if (!(showBtn.current === undefined))
-      if (data.slice(0, dataLenght).length >= data.length)
-        showBtn.current.style.display = "none";
-  }, [dataLenght]);
+  //   if (error) {
+  //     console.log(error);
+  //     return;
+  //   }
+  //   setData(data);
+  // };
+  // const getAuthorsData = async () => {
+  //   const { data, error } = await supabaseClient
+  //     .from("profiles")
+  //     .select(
+  //       `
+  //     username,first_name,last_name,avatar_url,field,speciality,about
+  //   `
+  //     )
+  //     .eq("username", location.href.split("/").pop())
+  //     .single();
+  //   if (error) {
+  //     console.log(error);
+  //     return;
+  //   }
+  //   setAuthorsData(data);
+  //   console.log(data);
+  // };
+  // useEffect(() => {
+  //   getBlogsData();
+  //   getAuthorsData();
+  // }, []);
+  // useEffect(() => {
+  //   if (!(showBtn.current === undefined))
+  //     if (data.slice(0, dataLenght).length >= data.length)
+  //       showBtn.current.style.display = "none";
+  // }, [dataLenght]);
 
-  const colors = useColorModeValue("white", "brand.black");
+  // const colors = useColorModeValue("white", "brand.black");
 
   return (
     <>
-      {!authorsData && <Loading />}
+      <h1>author page will be here</h1>
+      {/* {!authorsData && <Loading />}
       {authorsData && (
         <Box mb="60px">
           <Box
@@ -257,7 +259,7 @@ function Author() {
             </Container>
           )}
         </Box>
-      )}
+      )} */}
     </>
   );
 }
