@@ -6,25 +6,31 @@ import {
   Stack,
   Text,
   chakra,
+  useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 import Contact from "../contact";
 import NextLink from "next/link";
 import SocialMediaLinks from "./SocialMediaLinks";
-import { useState } from "react";
 
 const Footer = () => {
-  const [contactShow, setContactShow] = useState(false);
+  const contact = useDisclosure();
   return (
-    <Box as="footer" role="contentinfo" w="full" bgColor="brand.primary">
-      {contactShow && <Contact setContactShow={setContactShow} />}
+    <Box
+      as="footer"
+      role="contentinfo"
+      w="full"
+      bg={useColorModeValue("brand.primary", "grey.900")}
+    >
+      <Contact isOpen={contact.isOpen} onClose={contact.onClose} />
 
       <Flex
         mx="auto"
         maxW={{ md: "850px", lg: "900px", xl: "1000px" }}
         direction={{ base: "column", md: "row" }}
         justify="space-between"
-        align="flex-start"
+        align={{ base: "center", md: "flex-start" }}
         flexDirection={{ base: "column-reverse", lg: "row" }}
         py={20}
       >
@@ -56,13 +62,9 @@ const Footer = () => {
                   textAlign="center"
                   fontWeight="500"
                   color="white"
-                  onClick={() => {
-                    contactShow == true
-                      ? setContactShow(false)
-                      : setContactShow(true);
-                  }}
+                  onClick={contact.onOpen}
                 >
-                  <Text fontSize={18}>تواصل معنا</Text>
+                  <Text fontSize={"lg"}>تواصل معنا</Text>
                 </Button>
                 <NextLink href={"/"} passHref>
                   <Button
@@ -80,7 +82,7 @@ const Footer = () => {
                     fontWeight="500"
                     color="white"
                   >
-                    <Text fontSize={18}>اعلن معنا</Text>
+                    <Text fontSize={"lg"}>اعلن معنا</Text>
                   </Button>
                 </NextLink>
                 <NextLink href={"/"} passHref>
@@ -99,7 +101,7 @@ const Footer = () => {
                     fontWeight="500"
                     color="white"
                   >
-                    <Text fontSize={18}>مناصب شاغرة</Text>
+                    <Text fontSize={"lg"}>مناصب شاغرة</Text>
                   </Button>
                 </NextLink>
               </Stack>
@@ -129,7 +131,7 @@ const Footer = () => {
                     fontWeight="500"
                     color="white"
                   >
-                    <Text fontSize={18}>من نحن</Text>
+                    <Text fontSize={"lg"}>من نحن</Text>
                   </Button>
                 </NextLink>
                 <NextLink href={"/privacyPolicy"} passHref>
@@ -148,7 +150,7 @@ const Footer = () => {
                     fontWeight="500"
                     color="white"
                   >
-                    <Text fontSize={18}>سياسة الخصوصية</Text>
+                    <Text fontSize={"lg"}>سياسة الخصوصية</Text>
                   </Button>
                 </NextLink>
                 <NextLink href={"/"} passHref>
@@ -167,7 +169,7 @@ const Footer = () => {
                     fontWeight="500"
                     color="white"
                   >
-                    <Text fontSize={18}>فريق الادارة</Text>
+                    <Text fontSize={"lg"}>فريق الادارة</Text>
                   </Button>
                 </NextLink>
               </Stack>

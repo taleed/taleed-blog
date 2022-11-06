@@ -1,9 +1,11 @@
 import "@fontsource/changa";
+import "@/styles/quill.css";
 
 import { ChakraProvider, createLocalStorageManager } from "@chakra-ui/react";
 import { ReactElement, ReactNode, useState } from "react";
 
 import type { AppProps } from "next/app";
+import NextNProgress from "@/components/NextNProgress";
 import { NextPage } from "next";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
@@ -27,6 +29,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       initialSession={pageProps.initialSession}
     >
       <ChakraProvider theme={theme} colorModeManager={manager}>
+        <NextNProgress />
         {getLayout(<Component {...pageProps} />)}
       </ChakraProvider>
     </SessionContextProvider>

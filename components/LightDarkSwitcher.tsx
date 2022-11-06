@@ -45,7 +45,7 @@ const LightDarkSwitcher = () => {
       animate={isChecked ? "checked" : "unchecked"}
       transition={{ duration }}
       p="0"
-      mx={6}
+      mx={{ base: 0, md: 6 }}
     >
       <motion.svg
         width="20"

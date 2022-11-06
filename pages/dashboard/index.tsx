@@ -4,7 +4,6 @@ import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 
 import Layout from "@/layouts/Dashboard";
 import Loading from "@/components/loading";
-import SideBlog from "@/components/blogs/sideBlogs";
 import { useState } from "react";
 
 interface DataProps {
@@ -60,27 +59,26 @@ const Dashboard = () => {
   return (
     <>
       {!data && <Loading />}
-      {
-        data && 
+      {data && (
         <Flex alignItems="center" flexDir="column">
-          <SideBlog edited={true} blogsData={data.slice(0,dataLenght)} />
-          <Button bg="transparent" 
+          <Button
+            bg="transparent"
             border="2px"
             ref={showBtn}
             px="20px"
             alignSelf="center"
             h="50px"
-            borderColor="brand.secondary" 
+            borderColor="brand.secondary"
             color="brand.secondary"
             mb={5}
             onClick={() => {
-              setDataLenght(dataLenght + 3)
+              setDataLenght(dataLenght + 3);
             }}
-            >
+          >
             عرض المزيد
           </Button>
-        </Flex>    
-      }
+        </Flex>
+      )}
     </>
   );
 };

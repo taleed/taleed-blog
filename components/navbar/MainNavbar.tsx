@@ -24,7 +24,7 @@ const MainNavbar = () => {
       <Container h={16} display="flex" alignItems="center" maxW="container.xl">
         {/* PART 01 - LOGO */}
         <Link href="/" passHref>
-          <HStack spacing={5}>
+          <HStack mx={{ base: "auto", md: 0 }} spacing={5}>
             <Image src="/logo.svg" alt="talleed_logo" />
             <chakra.span color="white" fontWeight={800} fontSize="2xl">
               تليــد
@@ -32,7 +32,11 @@ const MainNavbar = () => {
           </HStack>
         </Link>
         {/* PART 02 - LINKS */}
-        <Flex justify="space-evenly" flex={1}>
+        <Flex
+          display={{ base: "none", md: "flex" }}
+          justify="space-evenly"
+          flex={1}
+        >
           {MainNavbarResources.map((link) => (
             <Link key={link.order} href={link.href}>
               <chakra.span
@@ -51,7 +55,11 @@ const MainNavbar = () => {
           ))}
         </Flex>
         {/* PART 03 - SEARCH INPUT */}
-        <InputGroup w={{ base: "full", md: "48", lg: "64" }} rounded="xl">
+        <InputGroup
+          display={{ base: "none", md: "initial" }}
+          w={{ base: "full", md: "48", lg: "64" }}
+          rounded="xl"
+        >
           <Input
             _focus={{ outline: "none", boxShadow: "none", border: 0 }}
             border={0}

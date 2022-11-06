@@ -32,24 +32,28 @@ const TopNavbar = () => {
         {/* PART 01 */}
         <Button
           rounded="none"
-          bg="brand.secondary"
+          bg={{ base: "transparent", md: "brand.secondary" }}
           _hover={{ bg: "#81EAFB" }}
           _focus={{ bg: "#81EAFB" }}
           _focusWithin={{ bg: "brand.secondary" }}
-          color="white"
-          px={6}
+          px={{ base: 0, md: 6 }}
           fontSize="xl"
           h="full"
+          color={{ base: "brand.secondary", md: "white" }}
           leftIcon={<BiEdit />}
           onClick={handleClick}
         >
-          {!user && 'كن محررًا'}
-          {user && 'لوحة التحكم'}
+          {!user && "كن محررًا"}
+          {user && "لوحة التحكم"}
         </Button>
         {/* PART 02 */}
         <LightDarkSwitcher />
         {/* PART 03 */}
-        <Flex justify="space-evenly" flex={1}>
+        <Flex
+          display={{ base: "none", md: "flex" }}
+          justify="space-evenly"
+          flex={1}
+        >
           {TopNavbarResources.map((link) => (
             <Link key={link.order} href={link.href}>
               <chakra.span

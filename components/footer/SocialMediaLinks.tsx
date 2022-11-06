@@ -1,4 +1,9 @@
-import { Button, ButtonGroupProps, HStack } from "@chakra-ui/react";
+import {
+  Button,
+  ButtonGroupProps,
+  HStack,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import {
   FaFacebookF,
   FaInstagram,
@@ -18,7 +23,7 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
         aria-label="Twitter"
         bgColor="white"
         rounded="full"
-        color="brand.primary"
+        color={useColorModeValue("brand.primary", "grey.900")}
         w={10}
         h={10}
         display="flex"
@@ -35,7 +40,7 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
         aria-label="Twitter"
         bgColor="white"
         rounded="full"
-        color="brand.primary"
+        color={useColorModeValue("brand.primary", "grey.900")}
         w={10}
         h={10}
         display="flex"
@@ -52,7 +57,7 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
         aria-label="Twitter"
         bgColor="white"
         rounded="full"
-        color="brand.primary"
+        color={useColorModeValue("brand.primary", "grey.900")}
         w={10}
         h={10}
         display="flex"
@@ -69,7 +74,7 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
         aria-label="Twitter"
         bgColor="white"
         rounded="full"
-        color="brand.primary"
+        color={useColorModeValue("brand.primary", "grey.900")}
         w={10}
         h={10}
         display="flex"
@@ -86,7 +91,7 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
         aria-label="Twitter"
         bgColor="white"
         rounded="full"
-        color="brand.primary"
+        color={useColorModeValue("brand.primary", "grey.900")}
         w={10}
         h={10}
         display="flex"

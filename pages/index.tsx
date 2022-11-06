@@ -1,143 +1,63 @@
-import { AuthorProps, BlogProps } from "@/components/blogs/blogs.resource"
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  HStack,
-  Image,
-  Text,
-  chakra,
-} from '@chakra-ui/react'
-import { ReactElement, useEffect, useRef } from "react";
+import { BlogWithCategoriesProfiles, FamousAuthor } from "@/types/blog";
 
-import HeadBlogs from "@/components/blogs/headBlogs";
+import { Box } from "@chakra-ui/react";
+import FamousEditor from "@/components/FamousEditors";
+import LatestBlogs from "@/components/LatestBlogs";
 import Layout from "@/layouts/Default";
-import Link from "next/link"
-import Loading from "@/components/loading";
-import SideBlog from "@/components/blogs/sideBlogs";
-import { useState } from "react";
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import { ReactElement } from "react";
+import { supabase } from "@/utils/supabaseClient";
 
-const Home = () => {
-  const supabaseClient = useSupabaseClient()
-  const [data, setData] = useState()
-  const [authorsData, setAuthorsData] = useState()
-  const [dataLenght, setDataLenght] = useState(7)
-  const showBtn = useRef()
-  const getBlogsData = async () => {
+interface Props {
+  latestBlogs: BlogWithCategoriesProfiles[];
+  newBlog: BlogWithCategoriesProfiles;
+  authors: FamousAuthor[];
+}
 
-    const { data, error } = await supabaseClient
-    .from('posts')
-    .select(`
-      id,
-      title,
-      excerpt,
-      thumbnail,
-      created_at,
-      categories(name),
-      profiles(username,first_name,last_name,avatar_url,id)
-    `)
-
-    if (error) {
-      console.log(error)
-      return
-    }
-    setData(data)
-  }
-  const getAuthorsData = async () => {
-    const { data, error } = await supabaseClient
-    .from('profiles')
-    .select(`
-      username,first_name,last_name,avatar_url,field
-    `)
-    .limit(6)
-    if (error) {
-      console.log(error)
-      return
-    }
-    setAuthorsData(data)
-  }
-  useEffect(() => {
-    getBlogsData()
-    getAuthorsData()
-  }, [])
-  useEffect(() => {
-    if (!(showBtn.current === undefined)) if(data.slice(0,dataLenght).length >= data.length) showBtn.current.style.display= "none"
-  }, [dataLenght])
+const Home = ({ newBlog, latestBlogs, authors }: Props) => {
   return (
-    <>
-    {!data && <Loading />}
-    {
-      data && 
-        <Box>
-          <Container maxW="6xl" mb="60px" mt="80px">
-            <HeadBlogs blogsData={data}/>
-          </Container>
-          {
-            authorsData &&
-            <Box w="full"
-                bg="brand.primary"  
-                my="40px"
-                >
-                <Flex h="300px" align="center" justifyContent="space-between" maxW="5xl" mx="auto">
-                  <Text w="100px" fontSize="2xl" color="white">اشهر المحررين</Text>
-                  <Flex>
-                    <HStack spacing='20px'>  
-                      {
-                        authorsData.map((author) => {
-                          return (
-                            <Link href={`/authors/${author.username}`} key={author.username}>
-                                <Flex flexDir="column" alignItems="center" cursor="pointer">
-                                    <Image src={`https://ythbjwovxnnbckdxlbds.supabase.co/storage/v1/object/public/avatars/${author.avatar_url}`} alt="كاتب" 
-                                        w="80px" h="80px"
-                                        rounded="full"/>
-                                    <Text my="5px" fontSize="20px" color="white">{`${author.first_name} ${author.last_name}`}</Text>
-                                    <Text fontSize="18px" color="white">{author.field}</Text>
-                                </Flex>
-                            </Link>   
-                          )
-                        })
-                      }
-                    </HStack>
-                  </Flex>
-                </Flex>
-                
-            </Box>
-          }
-          <Container maxW="6xl" mb="60px">
-            <Flex flexDir={{base:"column", lg:"row"}} mt="80px">
-              <Flex alignItems="center" flexDir="column">
-                <chakra.h2 color="brand.primary" fontSize="2xl" fontWeight="600" alignSelf="flex-start" mb={5}>
-                    المواضيع الاكثر قراءة
-                </chakra.h2>
-                <SideBlog blogsData={data.slice(3,dataLenght)} />
-                <Button bg="transparent" 
-                  border="2px"
-                  ref={showBtn}
-                  px="20px"
-                  alignSelf="center"
-                  h="50px"
-                  borderColor="brand.secondary" 
-                  color="brand.secondary"
-                  mb={5}
-                  onClick={() => {
-                    setDataLenght(dataLenght + 3)
-                  }}
-                  >
-                  عرض المزيد
-                </Button>            
-              </Flex>
-              <Flex minW={{base:"full" , lg:"300px"}} h={{base:"300px" , lg:"1500px"}} mr={{base:"0" , lg:"30px"}} mt={{base:"30px" , lg:"0px"}} bgColor="blackAlpha.400" align="center" justify="center">Advertising</Flex>
-            </Flex>
-          </Container>
-        </Box>
-    }
-      
-    </>
-  )
+    <Box>
+      <LatestBlogs newBlog={newBlog} latestBlogs={latestBlogs} />
+      <FamousEditor authors={authors} />
+    </Box>
+  );
 };
 
 Home.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
 
 export default Home;
+
+export const getStaticProps = async () => {
+  // Get The Newest Blog
+  const { data: newBlog } = await supabase
+    .from("posts")
+    .select(
+      "id,title,thumbnail,excerpt, created_at, categories!inner(name), profiles!inner(first_name, last_name, avatar_url)"
+    )
+    .order("created_at", {
+      ascending: false,
+    })
+    .limit(1)
+    .single();
+
+  // Get The Latest 3 Blogs
+  const { data: latestBlogs } = await supabase
+    .from("posts")
+    .select(
+      "id,title,thumbnail,excerpt,created_at, categories!inner(name), profiles!inner(first_name, last_name, avatar_url)"
+    )
+    .order("created_at", {
+      ascending: false,
+    })
+    .range(1, 3);
+
+  // Get Famous Authors
+  const { data: authors } = await supabase.rpc("famous_authors");
+
+  return {
+    props: {
+      newBlog,
+      latestBlogs,
+      authors,
+    },
+  };
+};
