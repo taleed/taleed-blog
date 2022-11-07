@@ -10,6 +10,16 @@ const overrides = {
         bg: props.colorMode === "dark" ? "brand.black" : "white",
         overflowX: "hidden",
       },
+      ".post-content p": {
+        fontSize: "1.375rem",
+        fontWeight: 500,
+        lineHeight: "46px",
+      },
+      ".post-content h3": {
+        fontSize: "3xl",
+        fontWeight: 600,
+        lineHeight: "55.2px",
+      },
     }),
   },
   direction: "rtl",

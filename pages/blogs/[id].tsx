@@ -41,7 +41,7 @@ function Blog({ post }: { post: any }) {
               as="h1"
               color={useColorModeValue("brand.black", "white")}
               fontSize="5xl"
-              fontWeight="600"
+              fontWeight="700"
               lineHeight="92px"
             >
               {post.title}
@@ -57,7 +57,7 @@ function Blog({ post }: { post: any }) {
                 <Box>
                   <Link href={`/authors/${post.profiles.username}`}>
                     <Text
-                      fontWeight="500"
+                      fontWeight="600"
                       fontSize="xl"
                       cursor="pointer"
                       _hover={{ textDecor: "underline" }}
@@ -87,7 +87,10 @@ function Blog({ post }: { post: any }) {
               src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/blogs/${post.thumbnail}`}
               alt="Article"
             />
-            <Box dangerouslySetInnerHTML={{ __html: post.body }}></Box>
+            <Box
+              className="post-content"
+              dangerouslySetInnerHTML={{ __html: post.body }}
+            ></Box>
 
             {/* {authorsData && (
               <Flex alignItems="center" flexDir="column">
