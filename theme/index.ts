@@ -20,6 +20,9 @@ const overrides = {
         fontWeight: 600,
         lineHeight: "55.2px",
       },
+      ".post-content ul, .post-content ol": {
+        paddingRight: "24px",
+      },
     }),
   },
   direction: "rtl",

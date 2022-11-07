@@ -25,7 +25,8 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.38.0",
     "react-icons": "^4.6.0",
-    "react-quill": "^2.0.0"
+    "react-quill": "^2.0.0",
+    "react-tag-input-component": "^2.0.2"
   },
   "devDependencies": {
     "@types/node": "18.11.0",

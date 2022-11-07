@@ -24,7 +24,11 @@ const MainNavbar = () => {
       <Container h={16} display="flex" alignItems="center" maxW="container.xl">
         {/* PART 01 - LOGO */}
         <Link href="/" passHref>
-          <HStack mx={{ base: "auto", md: 0 }} spacing={5}>
+          <HStack
+            _hover={{ cursor: "pointer" }}
+            mx={{ base: "auto", md: 0 }}
+            spacing={5}
+          >
             <Image src="/logo.svg" alt="talleed_logo" />
             <chakra.span color="white" fontWeight={800} fontSize="2xl">
               تليــد

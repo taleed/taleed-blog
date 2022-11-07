@@ -20,9 +20,9 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import Head from "next/head";
 import Layout from "@/layouts/Dashboard";
 import { ReactElement } from "react";
+import { TagsInput } from "react-tag-input-component";
 import dynamic from "next/dynamic";
 import { supabase } from "@/utils/supabaseClient";
-import { useRouter } from "next/router";
 import { useState } from "react";
 
 const QuillNoSSRWrapper = dynamic(import("react-quill"), {
@@ -95,12 +95,12 @@ function makeid(length: number) {
 
 const AddBlog = () => {
   const toast = useToast();
-  const router = useRouter();
   const user = useUser();
   const supabaseClient = useSupabaseClient();
   const [blogBody, setBlogBody] = useState("");
   const [BlogImgUrl, setBlogImgUrl] = useState<string | undefined>(undefined);
   const [uploading, setUploading] = useState<boolean>(false);
+  const [tags, setTags] = useState<Array<string>>([]);
   const {
     setValue,
     watch,
@@ -123,6 +123,7 @@ const AddBlog = () => {
         user_id: user.id,
         thumbnail: blogImg || "default.jpg",
         category_id: category,
+        tags,
       });
 
       if (!error) {
@@ -293,6 +294,16 @@ const AddBlog = () => {
               />
             </FormControl>
           </Box>
+          {/* tags */}
+          <FormControl mt={8} mb={6}>
+            <FormLabel htmlFor="tags">كلمات مفتاحية</FormLabel>
+            <TagsInput
+              value={tags}
+              onChange={setTags}
+              name="tags"
+              placeHolder="أضف كلمات مفتاحية"
+            />
+          </FormControl>
           {/* blog's content */}
           <VStack mb={16} mt={8} spacing={8}>
             <Box dir="ltr">

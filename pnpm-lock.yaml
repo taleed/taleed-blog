@@ -25,6 +25,7 @@ specifiers:
   react-hook-form: ^7.38.0
   react-icons: ^4.6.0
   react-quill: ^2.0.0
+  react-tag-input-component: ^2.0.2
   typescript: 4.8.4
 
 dependencies:
@@ -45,6 +46,7 @@ dependencies:
   react-hook-form: 7.38.0_react@18.2.0
   react-icons: 4.6.0_react@18.2.0
   react-quill: 2.0.0_biqbaboplfbrettd7655fr4n2y
+  react-tag-input-component: 2.0.2_biqbaboplfbrettd7655fr4n2y
 
 devDependencies:
   '@types/node': 18.11.0
@@ -3664,6 +3666,16 @@ packages:
       invariant: 2.2.4
       react: 18.2.0
       tslib: 2.4.0
+    dev: false
+
+  /react-tag-input-component/2.0.2_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-dydI9luVwwv9vrjE5u1TTnkcOVkOVL6mhFti8r6hLi78V2F2EKWQOLptURz79UYbDHLSk6tnbvGl8FE+sMpADg==}
+    peerDependencies:
+      react: ^16 || ^17 || ^18
+      react-dom: ^16 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /react/18.2.0:

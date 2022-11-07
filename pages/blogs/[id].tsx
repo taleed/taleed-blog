@@ -1,31 +1,33 @@
 import {
   Avatar,
+  Badge,
   Box,
-  Button,
   Container,
   Flex,
+  HStack,
   Heading,
   Image,
   Text,
   chakra,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { FaRegFileAlt, FaUserCircle } from "react-icons/fa";
-import { ReactElement, useEffect, useRef } from "react";
 
-import { BlogWithCategoriesProfiles } from "@/types/blog";
 import { GetStaticProps } from "next";
+import Head from "next/head";
 import Layout from "@/layouts/Default";
 import Link from "next/link";
-import Loading from "@/components/loading";
+import { ReactElement } from "react";
 import { supabase } from "@/utils/supabaseClient";
-import { useState } from "react";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
-function Blog({ post }: { post: any }) {
-  console.log("post ", post);
+function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
+  const similar_posts_date = useColorModeValue("grey.500", "white");
+  const similar_posts_author = useColorModeValue("grey.500", "white");
+  const similar_posts_title = useColorModeValue("brand.black", "white");
   return (
     <>
+      <Head>
+        <title>{post.title}</title>
+      </Head>
       <Container my={20} maxW="container.xl">
         <Flex flexDir={{ base: "column", lg: "row" }} mt="80px">
           <Flex flexDir="column" flex={1}>
@@ -46,7 +48,12 @@ function Blog({ post }: { post: any }) {
             >
               {post.title}
             </Heading>
-            <Flex justifyContent="space-between" w="full" alignItems="flex-end">
+            <Flex
+              mb={10}
+              justifyContent="space-between"
+              w="full"
+              alignItems="flex-end"
+            >
               <Flex align="center">
                 <Avatar
                   me={3}
@@ -55,7 +62,7 @@ function Blog({ post }: { post: any }) {
                   name={`${post.profiles.first_name} ${post.profiles.last_name}`}
                 />
                 <Box>
-                  <Link href={`/authors/${post.profiles.username}`}>
+                  <Link href={`/authors/${post.profiles.username}`} passHref>
                     <Text
                       fontWeight="600"
                       fontSize="xl"
@@ -157,12 +164,39 @@ function Blog({ post }: { post: any }) {
               </Flex>
             )} */}
           </Flex>
-          <Box
-            minW={{ base: "full", lg: "300px" }}
-            w={{ base: "full", lg: "300px" }}
-            mr={{ base: "0", lg: "30px" }}
-            mt={{ base: "30px", lg: "0px" }}
-          >
+          <Box ms={{ base: 0, md: 10 }} w={{ base: "full", md: "35%" }}>
+            {!post.tags ? null : (
+              <Box mb={6}>
+                <chakra.h2
+                  color="brand.primary"
+                  fontSize="2xl"
+                  fontWeight="700"
+                  lineHeight="46px"
+                  mb={2}
+                >
+                  الكلمات المفتاحية
+                </chakra.h2>
+                <Flex flexWrap="wrap">
+                  {post.tags.map((tag: string, index: number) => (
+                    <Badge
+                      key={index}
+                      fontWeight={500}
+                      fontSize="lg"
+                      lineHeight="33.12px"
+                      variant="solid"
+                      color="brand.black"
+                      bg="purple.100"
+                      rounded="full"
+                      padding="4px 22px"
+                      mb={2}
+                      me={1}
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                </Flex>
+              </Box>
+            )}
             <Flex flexDir="column" mb={10}>
               <chakra.h2
                 color="brand.primary"
@@ -170,15 +204,56 @@ function Blog({ post }: { post: any }) {
                 fontWeight="600"
                 mb="20px"
               >
-                المواضيع الاكثر شعبية
+                مواضيع ذات صلة
               </chakra.h2>
-              {new Array(5).fill(0).map((blog, index) => {
-                return (
-                  <Box mb={10} key={index}>
-                    blog here
-                  </Box>
-                );
-              })}
+              {similar_posts.length === 0 && "لا توجد مواضيع ذات صلة بعد"}
+              {similar_posts &&
+                similar_posts.map((post, index: index) => {
+                  return (
+                    <Box
+                      pb={2}
+                      borderBottom="1px solid #E7E8E8"
+                      mb={10}
+                      key={index}
+                    >
+                      <chakra.span
+                        color="brand.secondary"
+                        fontSize="md"
+                        fontWeight="600"
+                        lineHeight="29.44px"
+                      >
+                        {post.categories.name}
+                      </chakra.span>
+                      <Heading
+                        as="h3"
+                        color={similar_posts_title}
+                        fontSize="md"
+                        fontWeight="700"
+                        lineHeight="29.44px"
+                      >
+                        {post.title}
+                      </Heading>
+                      <HStack>
+                        <Text
+                          fontWeight="400"
+                          lineHeight="30px"
+                          fontSize="md"
+                          color={similar_posts_author}
+                        >
+                          {`${post.profiles.first_name} ${post.profiles.last_name}`}
+                        </Text>
+                        <chakra.span
+                          color={similar_posts_date}
+                          fontSize="sm"
+                          fontWeight="500"
+                          lineHeight="25.76px"
+                        >
+                          {post.created_at.slice(0, 10)}
+                        </chakra.span>
+                      </HStack>
+                    </Box>
+                  );
+                })}
             </Flex>
           </Box>
         </Flex>
@@ -197,15 +272,31 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { data: post } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, body, categories!inner(name), profiles!inner(first_name, last_name, avatar_url)"
+      "id,title,thumbnail,excerpt, created_at, body, tags, categories!inner(name), profiles!inner(first_name, last_name,username, avatar_url)"
     )
     .eq("id", id)
     .single();
 
+  if (post) {
+    const { data: similar_posts } = await supabase
+      .from("posts")
+      .select(
+        "id,title, created_at, categories!inner(name), profiles!inner(first_name, last_name)"
+      )
+      .filter("categories.name", "eq", post!.categories!.name)
+      .filter("id", "not.eq", post.id)
+      .range(0, 5);
+
+    return {
+      props: {
+        post,
+        similar_posts,
+      },
+    };
+  }
+
   return {
-    props: {
-      post,
-    },
+    props: {},
   };
 };
 
@@ -231,7 +322,7 @@ export const getStaticPaths = async () => {
   const { data: posts, error: posts_error } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, body, categories!inner(name), profiles!inner(first_name, last_name,username, avatar_url)"
+      "id,title,thumbnail,excerpt, created_at, body, tags, categories!inner(name), profiles!inner(first_name, last_name,username, avatar_url)"
     );
 
   if (posts_error) {
