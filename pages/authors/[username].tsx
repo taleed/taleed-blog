@@ -2,9 +2,11 @@ import {
   Avatar,
   Box,
   Container,
+  Flex,
   HStack,
   Heading,
   Icon,
+  Image,
   Text,
   chakra,
   useColorModeValue,
@@ -17,28 +19,38 @@ import { ReactElement } from "react";
 import { supabase } from "@/utils/supabaseClient";
 
 function Author({ profile, posts }: { profile: any; posts: any }) {
-  console.log("profile ", profile);
-  console.log("posts ", posts);
-
   const title_color = useColorModeValue("brand.black", "white");
   const excerpt_color = useColorModeValue("#4F4F4F", "#F0F0F0");
   const author_color = useColorModeValue("brand.black", "#F0F0F0");
+  const author_avatar_border_color = useColorModeValue(
+    "4px solid white",
+    "4px solid #222"
+  );
+  const author_posts_box_border = useColorModeValue(
+    "1px solid #EDEAF8",
+    "1px solid #414447"
+  );
   return (
     <>
       <Box h="182px" bg="purple.300" />
-      <Container position="relative" top={-16} mb={20} maxW="container.xl">
+      <Container
+        position="relative"
+        top={{ base: -14, md: -16 }}
+        mb={20}
+        maxW="container.xl"
+      >
         <Avatar
-          border="4px solid white"
+          border={author_avatar_border_color}
           position="relative"
-          size="2xl"
+          size={{ base: "xl", md: "2xl" }}
           src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${profile.avatar_url}`}
           name={`${profile.first_name} ${profile.last_name}`}
         />
         <Heading
           as="h1"
-          fontSize="5xl"
+          fontSize={{ base: "3xl", md: "5xl" }}
           fontWeight={700}
-          lineHeight="92px"
+          lineHeight={{ base: "47.84px", md: "92px" }}
           color={useColorModeValue("brand.black", "white")}
         >
           {`${profile.first_name} ${profile.last_name}`}
@@ -46,8 +58,8 @@ function Author({ profile, posts }: { profile: any; posts: any }) {
         <HStack>
           <Icon as={BsFillFileTextFill} w={18} h={18} color="#9DA2A4" />
           <chakra.span
-            fontSize="lg"
-            lineHeight="47px"
+            fontSize={{ base: "sm", md: "lg" }}
+            lineHeight={{ base: "47px" }}
             fontWeight={500}
             color="#9DA2A4"
           >
@@ -55,10 +67,10 @@ function Author({ profile, posts }: { profile: any; posts: any }) {
           </chakra.span>
         </HStack>
         <Text
-          color="#4F4F4F"
-          lineHeight="38px"
+          color={useColorModeValue("#4F4F4F", "grey.300")}
+          lineHeight={{ base: "33px", md: "38px" }}
           fontWeight={500}
-          fontSize="1.375rem"
+          fontSize={{ base: "md", md: "1.375rem" }}
         >
           {profile.about}
         </Text>
@@ -67,63 +79,83 @@ function Author({ profile, posts }: { profile: any; posts: any }) {
             color={useColorModeValue("brand.primary", "brand.secondary")}
             as="h2"
             mb={6}
+            fontSize={{ base: "2xl", md: "5xl" }}
           >
             المقالات
           </Heading>
           {posts &&
             posts.map((post, index: number) => (
-              <Box mt={4} pb={8} borderBottom="1px solid #EDEAF8" key={index}>
-                <chakra.span
-                  color="brand.secondary"
-                  fontSize="1.625rem"
-                  fontWeight="600"
-                  lineHeight="47.84px"
-                >
-                  {post.categories.name}
-                </chakra.span>
-                <Heading
-                  as="h3"
-                  color={title_color}
-                  fontSize="5xl"
-                  fontWeight="700"
-                  lineHeight="92px"
-                >
-                  {post.title}
-                </Heading>
-                <Text
-                  noOfLines={3}
-                  fontWeight={400}
-                  fontSize={"md"}
-                  color={excerpt_color}
-                >
-                  {post.excerpt}
-                </Text>
-                <HStack mt={{ base: 3, md: 2.5 }}>
-                  <Avatar
-                    size={"md"}
-                    name={`${profile.first_name} ${profile.last_name}`}
-                    src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${profile.avatar_url}`}
-                  />
-                  <Box>
-                    <chakra.span
-                      fontWeight={600}
-                      fontSize={"md"}
-                      display="block"
-                      color={author_color}
-                    >
-                      {`${profile.first_name} ${profile.last_name}`}
-                    </chakra.span>
-                    <chakra.span
-                      fontWeight={500}
-                      fontSize={"sm"}
-                      display="block"
-                      color="grey.400"
-                    >
-                      {new Date(post.created_at).toLocaleDateString("en-US")}
-                    </chakra.span>
-                  </Box>
-                </HStack>
-              </Box>
+              <Flex
+                mt={4}
+                pb={8}
+                borderBottom={author_posts_box_border}
+                justify="space-between"
+                align="center"
+                key={index}
+              >
+                <Box me={4}>
+                  <chakra.span
+                    color="brand.secondary"
+                    fontSize={{ base: "md", md: "1.625rem" }}
+                    fontWeight="600"
+                    lineHeight={{ base: "27.6px", md: "47.84px" }}
+                  >
+                    {post.categories.name}
+                  </chakra.span>
+                  <Heading
+                    my={3}
+                    as="h3"
+                    color={title_color}
+                    fontSize={{ base: "xl", md: "4xl" }}
+                    fontWeight="700"
+                    lineHeight={{ base: "33.12px", md: "92px" }}
+                  >
+                    {post.title}
+                  </Heading>
+                  <Text
+                    noOfLines={3}
+                    fontWeight={400}
+                    fontSize={"md"}
+                    color={excerpt_color}
+                  >
+                    {post.excerpt}
+                  </Text>
+                  <HStack mt={{ base: 3, md: 2.5 }}>
+                    <Avatar
+                      size={"md"}
+                      name={`${profile.first_name} ${profile.last_name}`}
+                      src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${profile.avatar_url}`}
+                    />
+                    <Box>
+                      <chakra.span
+                        fontWeight={600}
+                        fontSize={"md"}
+                        display="block"
+                        color={author_color}
+                      >
+                        {`${profile.first_name} ${profile.last_name}`}
+                      </chakra.span>
+                      <chakra.span
+                        fontWeight={500}
+                        fontSize={"sm"}
+                        display="block"
+                        color="grey.400"
+                      >
+                        {new Date(post.created_at).toLocaleDateString("en-US")}
+                      </chakra.span>
+                    </Box>
+                  </HStack>
+                </Box>
+                <Image
+                  display={{ base: "none", md: "initial" }}
+                  rounded={{ lg: "lg" }}
+                  my={5}
+                  w="40%"
+                  fit="cover"
+                  src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/blogs/${post.thumbnail}`}
+                  alt={`${post.title} thumbnail`}
+                />
+              </Flex>
             ))}
         </Box>
       </Container>

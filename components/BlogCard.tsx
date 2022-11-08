@@ -81,7 +81,7 @@ const BlogCardContent = ({
     <Box
       ms={{ base: 0, md: type === "new" ? 35 : "0" }}
       maxW={{ base: "full", md: type === "new" ? "60%" : "full" }}
-      alignSelf={type === "new" ? "center" : "flex-start"}
+      alignSelf="flex-start"
       textAlign={{ base: "start" }}
       flex="1"
       mt={type === "latest" ? 6 : { base: 4, md: 0 }}

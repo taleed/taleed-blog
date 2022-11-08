@@ -4,6 +4,7 @@ import {
   FormLabel,
   Input,
   Stack,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 import { BeAnEditorStepProps } from "@/types/be-an-editor";
@@ -18,10 +19,10 @@ const Step1 = ({ register, errors }: BeAnEditorStepProps) => {
           <Input
             autoComplete="off"
             borderRadius={10}
-            bg="blackAlpha.50"
+            bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
             border={0}
             _focus={{
-              bg: "blackAlpha.100",
+              bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
             }}
             type="text"
             placeholder=""
@@ -39,10 +40,10 @@ const Step1 = ({ register, errors }: BeAnEditorStepProps) => {
           <Input
             autoComplete="off"
             borderRadius={10}
-            bg="blackAlpha.50"
+            bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
             border={0}
             _focus={{
-              bg: "blackAlpha.100",
+              bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
             }}
             type="text"
             placeholder=""
@@ -61,10 +62,10 @@ const Step1 = ({ register, errors }: BeAnEditorStepProps) => {
         <Input
           autoComplete="off"
           borderRadius={10}
-          bg="blackAlpha.50"
+          bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
           border={0}
           _focus={{
-            bg: "blackAlpha.100",
+            bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
           }}
           type="text"
           placeholder=""

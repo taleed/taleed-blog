@@ -6,6 +6,7 @@ import {
   Select,
   Stack,
   Textarea,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 import { BeAnEditorStepProps } from "@/types/be-an-editor";
@@ -23,6 +24,9 @@ const Step2 = ({ register, errors, setValue, watch }: BeAnEditorStepProps) => {
         <FormControl isRequired isInvalid={errors.field ? true : false}>
           <FormLabel>المجال</FormLabel>
           <Select
+            bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
+            border="none"
+            rounded="lg"
             onChange={handleSelectField}
             placeholder="اختر مجال مُعين"
             size="lg"
@@ -40,10 +44,10 @@ const Step2 = ({ register, errors, setValue, watch }: BeAnEditorStepProps) => {
           <Input
             autoComplete="off"
             borderRadius={10}
-            bg="blackAlpha.50"
+            bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
             border={0}
             _focus={{
-              bg: "blackAlpha.100",
+              bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
             }}
             type="text"
             placeholder=""
@@ -64,10 +68,10 @@ const Step2 = ({ register, errors, setValue, watch }: BeAnEditorStepProps) => {
           resize="none"
           p={4}
           borderRadius={10}
-          bg="blackAlpha.50"
+          bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
           border={0}
           _focus={{
-            bg: "blackAlpha.100",
+            bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
           }}
           _disabled={{
             bg: "blackAlpha.100",
@@ -83,10 +87,10 @@ const Step2 = ({ register, errors, setValue, watch }: BeAnEditorStepProps) => {
         <Input
           autoComplete="off"
           borderRadius={10}
-          bg="blackAlpha.50"
+          bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
           border={0}
           _focus={{
-            bg: "blackAlpha.100",
+            bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
           }}
           type="text"
           placeholder=""
@@ -102,10 +106,10 @@ const Step2 = ({ register, errors, setValue, watch }: BeAnEditorStepProps) => {
         <Input
           autoComplete="off"
           borderRadius={10}
-          bg="blackAlpha.50"
+          bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
           border={0}
           _focus={{
-            bg: "blackAlpha.100",
+            bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
           }}
           type="text"
           placeholder=""
@@ -121,10 +125,10 @@ const Step2 = ({ register, errors, setValue, watch }: BeAnEditorStepProps) => {
         <Input
           autoComplete="off"
           borderRadius={10}
-          bg="blackAlpha.50"
+          bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
           border={0}
           _focus={{
-            bg: "blackAlpha.100",
+            bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
           }}
           type="text"
           placeholder=""

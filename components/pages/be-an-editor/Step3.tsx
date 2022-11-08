@@ -9,6 +9,7 @@ import {
   InputRightElement,
   Spinner,
   VStack,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
@@ -17,11 +18,12 @@ import { supabase } from "@/utils/supabaseClient";
 import { useState } from "react";
 
 function makeid(length: number) {
-  var result           = '';
-  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   var charactersLength = characters.length;
-  for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
 }
@@ -29,6 +31,8 @@ function makeid(length: number) {
 const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
+
+  const icons_color = useColorModeValue("#697689", "whiteAlpha.200");
 
   const uploadAvatar = async (event: any) => {
     if (!event.target.files || event.target.files.length === 0) {
@@ -80,7 +84,7 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
           <FormLabel
             htmlFor="avatar"
             w="full"
-            bg="grey.200"
+            bg={useColorModeValue("grey.200", "grey.800")}
             rounded="md"
             textAlign="center"
             py={2}
@@ -88,7 +92,10 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
             display="flex"
             alignItems="center"
             justifyContent="center"
-            _hover={{ bg: "grey.300", cursor: "pointer" }}
+            _hover={{
+              bg: useColorModeValue("grey.300", "grey.600"),
+              cursor: "pointer",
+            }}
             _focus={{ outline: "none" }}
           >
             {uploading ? <Spinner size="md" /> : "قم باختيار صورتك الشخصية"}
@@ -112,10 +119,10 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
           <Input
             autoComplete="off"
             borderRadius={10}
-            bg="blackAlpha.50"
+            bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
             border={0}
             _focus={{
-              bg: "blackAlpha.100",
+              bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
             }}
             type="email"
             placeholder=""
@@ -138,10 +145,10 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
             <Input
               autoComplete="off"
               borderRadius={10}
-              bg="blackAlpha.50"
+              bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
               border={0}
               _focus={{
-                bg: "blackAlpha.100",
+                bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
               }}
               type={showPassword ? "text" : "password"}
               placeholder=""
@@ -162,9 +169,9 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
               transform="translateY(-50%)"
             >
               {!showPassword ? (
-                <BsEye color="#697689" />
+                <BsEye color={icons_color} />
               ) : (
-                <BsEyeSlash color="#697689" />
+                <BsEyeSlash color={icons_color} />
               )}
             </InputRightElement>
           </InputGroup>
@@ -181,10 +188,10 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
             <Input
               autoComplete="off"
               borderRadius={10}
-              bg="blackAlpha.50"
+              bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
               border={0}
               _focus={{
-                bg: "blackAlpha.100",
+                bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
               }}
               type={showConfirmPassword ? "text" : "password"}
               placeholder=""
@@ -203,9 +210,9 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
               transform="translateY(-50%)"
             >
               {!showConfirmPassword ? (
-                <BsEye color="#697689" />
+                <BsEye color={icons_color} />
               ) : (
-                <BsEyeSlash color="#697689" />
+                <BsEyeSlash color={icons_color} />
               )}
             </InputRightElement>
           </InputGroup>

@@ -7,15 +7,17 @@ import {
   Heading,
   Input,
   Text,
+  useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
+import Head from "next/head";
 import Layout from "@/layouts/PageWithoutNavbars";
 import Link from "next/link";
 import { ReactElement } from "react";
 import { useRouter } from "next/router";
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 type loginValues = {
   email: string;
@@ -23,7 +25,7 @@ type loginValues = {
 };
 
 const Login = () => {
-  const supabaseClient = useSupabaseClient()
+  const supabaseClient = useSupabaseClient();
   const {
     handleSubmit,
     register,
@@ -36,7 +38,7 @@ const Login = () => {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<loginValues> = async (values) => {
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
+    const { error } = await supabaseClient.auth.signInWithPassword({
       email: values.email,
       password: values.password,
     });
@@ -54,13 +56,31 @@ const Login = () => {
     router.push("/dashboard");
   };
   return (
-    <Box py="40px" bg="url(/bglogo.png)">
-      <Box mx="auto" maxW="500px" bg="white" rounded="15px">
+    <>
+      <Head>
+        <title>تليد - تسجيل الدخول</title>
+        <meta name="description" content="login into talleed" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <Box
+        mx="auto"
+        maxW="500px"
+        bg={useColorModeValue("white", "grey.900")}
+        rounded="15px"
+      >
         <Box p="40px">
-          <Heading fontSize="20px" color="brand.primary">
+          <Heading
+            fontSize="3xl"
+            color={useColorModeValue("brand.primary", "brand.secondary")}
+            mb={2}
+          >
             تسجيل الدخول
           </Heading>
-          <Text mb="20px" mt="5px" fontSize="16px">
+          <Text
+            color={useColorModeValue("#4F4F4F", "grey.100")}
+            maxW="xl"
+            mb={6}
+          >
             انضم الينا وكن من اشهر المحررين
           </Text>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -69,10 +89,10 @@ const Login = () => {
               <Input
                 autoComplete="off"
                 borderRadius={10}
-                bg="blackAlpha.50"
+                bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
                 border={0}
                 _focus={{
-                  bg: "blackAlpha.100",
+                  bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
                 }}
                 size="lg"
                 type="email"
@@ -97,10 +117,10 @@ const Login = () => {
               <Input
                 autoComplete="off"
                 borderRadius={10}
-                bg="blackAlpha.50"
+                bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
                 border={0}
                 _focus={{
-                  bg: "blackAlpha.100",
+                  bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
                 }}
                 size="lg"
                 id="password"
@@ -139,7 +159,7 @@ const Login = () => {
           </form>
         </Box>
         <Box
-          bgColor="brand.primary"
+          bgColor={useColorModeValue("brand.primary", "purple.300")}
           roundedBottom="xl"
           textAlign="center"
           py={2.5}
@@ -161,7 +181,7 @@ const Login = () => {
           </Text>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

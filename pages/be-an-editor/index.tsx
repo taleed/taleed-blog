@@ -1,4 +1,12 @@
-import { Box, Button, Heading, Stack, Text, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Heading,
+  Stack,
+  Text,
+  useColorModeValue,
+  useToast,
+} from "@chakra-ui/react";
 import { ReactElement, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -42,10 +50,8 @@ const BeAnEditor = () => {
   const handleFormCompletion: SubmitHandler<BeAnEditorFormFields> = async (
     values
   ) => {
-    console.log("values ", values);
     const {
       data: { user },
-      error,
     } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
@@ -65,7 +71,6 @@ const BeAnEditor = () => {
         twitter_account: values.twitter_account,
         avatar_url: values.avatar_url,
       });
-      console.log("data, error ", data, error);
 
       if (!error) {
         toast({
@@ -201,11 +206,15 @@ const BeAnEditor = () => {
         <meta name="description" content="be an editor in talleed" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Box bg="white" p={8} roundedTop="xl">
-        <Heading fontSize="3xl" color="brand.primary" mb={2}>
+      <Box bg={useColorModeValue("white", "grey.900")} p={8} roundedTop="xl">
+        <Heading
+          fontSize="3xl"
+          color={useColorModeValue("brand.primary", "brand.secondary")}
+          mb={2}
+        >
           كن محررًا
         </Heading>
-        <Text maxW="xl" mb={6}>
+        <Text color={useColorModeValue("#4F4F4F", "grey.100")} maxW="xl" mb={6}>
           لوريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو
           أيوسمود تيمبور أنكايديد يونتيوت لابوري ات دولار ماجنا أليكيوا .
         </Text>

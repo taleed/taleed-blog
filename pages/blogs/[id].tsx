@@ -16,35 +16,42 @@ import { GetStaticProps } from "next";
 import Head from "next/head";
 import Layout from "@/layouts/Default";
 import Link from "next/link";
+import NextLink from "next/link";
 import { ReactElement } from "react";
 import { supabase } from "@/utils/supabaseClient";
 
 function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
-  const similar_posts_date = useColorModeValue("grey.500", "white");
+  const similar_posts_date = useColorModeValue("grey.500", "grey.300");
   const similar_posts_author = useColorModeValue("grey.500", "white");
   const similar_posts_title = useColorModeValue("brand.black", "white");
+  const tags_bg_color = useColorModeValue("purple.100", "grey.800");
+  const tags_color = useColorModeValue("brand.black", "white");
+  const seperator_color = useColorModeValue(
+    "1px solid #E7E8E8",
+    "1px solid #7C62E5"
+  );
   return (
     <>
       <Head>
         <title>{post.title}</title>
       </Head>
-      <Container my={20} maxW="container.xl">
-        <Flex flexDir={{ base: "column", lg: "row" }} mt="80px">
+      <Container my={{ base: 10, md: 20 }} maxW="container.xl">
+        <Flex flexDir={{ base: "column", lg: "row" }}>
           <Flex flexDir="column" flex={1}>
             <chakra.span
               color="brand.secondary"
-              fontSize="1.625rem"
+              fontSize={{ base: "xl", md: "1.625rem" }}
               fontWeight="600"
-              lineHeight="47.84px"
+              lineHeight={{ base: "36.8px", md: "47.84px" }}
             >
               {post.categories.name}
             </chakra.span>
             <Heading
               as="h1"
               color={useColorModeValue("brand.black", "white")}
-              fontSize="5xl"
+              fontSize={{ base: "2xl", md: "5xl" }}
               fontWeight="700"
-              lineHeight="92px"
+              lineHeight={{ base: "47.84px", md: "92px" }}
             >
               {post.title}
             </Heading>
@@ -57,7 +64,7 @@ function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
               <Flex align="center">
                 <Avatar
                   me={3}
-                  size="lg"
+                  size={{ base: "md", md: "lg" }}
                   src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${post.profiles.avatar_url}`}
                   name={`${post.profiles.first_name} ${post.profiles.last_name}`}
                 />
@@ -65,7 +72,7 @@ function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
                   <Link href={`/authors/${post.profiles.username}`} passHref>
                     <Text
                       fontWeight="600"
-                      fontSize="xl"
+                      fontSize={{ base: "md", md: "xl" }}
                       cursor="pointer"
                       _hover={{ textDecor: "underline" }}
                       color={useColorModeValue("brand.black", "white")}
@@ -76,7 +83,7 @@ function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
                   <Flex>
                     <chakra.span
                       color={useColorModeValue("grey.500", "#9DA2A4")}
-                      fontSize="lg"
+                      fontSize={{ base: "sm", md: "lg" }}
                       fontWeight="400"
                     >
                       {post.created_at.slice(0, 10)}
@@ -97,82 +104,21 @@ function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
             <Box
               className="post-content"
               dangerouslySetInnerHTML={{ __html: post.body }}
-            ></Box>
-
-            {/* {authorsData && (
-              <Flex alignItems="center" flexDir="column">
-                <chakra.h2
-                  color="brand.primary"
-                  fontSize="2xl"
-                  fontWeight="600"
-                  alignSelf="flex-start"
-                  mb={5}
-                >
-                  المزيد من مقالات{" "}
-                  {`${blog.profiles.first_name} ${blog.profiles.last_name}`}
-                </chakra.h2>
-
-                <SideBlog blogsData={authorsData.slice(0, authorBlogsLenght)} />
-
-                <Button
-                  bg="transparent"
-                  border="2px"
-                  ref={showAuthorBlogsBtn}
-                  px="20px"
-                  alignSelf="center"
-                  h="50px"
-                  borderColor="brand.secondary"
-                  color="brand.secondary"
-                  mb={5}
-                  onClick={() => {
-                    setAuthorBlogsLenght(authorBlogsLenght + 3);
-                  }}
-                >
-                  عرض المزيد
-                </Button>
-              </Flex>
-            )} */}
-
-            {/* {data && (
-              <Flex alignItems="center" flexDir="column">
-                <chakra.h2
-                  color="brand.primary"
-                  fontSize="2xl"
-                  fontWeight="600"
-                  alignSelf="flex-start"
-                  mb={5}
-                >
-                  المقالات الاكثر قراءة
-                </chakra.h2>
-                <SideBlog blogsData={data.slice(0, popBlogsLenght)} />
-                <Button
-                  bg="transparent"
-                  border="2px"
-                  ref={showPopBlogsBtn}
-                  px="20px"
-                  alignSelf="center"
-                  h="50px"
-                  borderColor="brand.secondary"
-                  color="brand.secondary"
-                  mb={5}
-                  onClick={() => {
-                    setPopBlogsLenght(popBlogsLenght + 3);
-                  }}
-                >
-                  عرض المزيد
-                </Button>
-              </Flex>
-            )} */}
+            />
           </Flex>
-          <Box ms={{ base: 0, md: 10 }} w={{ base: "full", md: "35%" }}>
+          <Box
+            display={{ base: "none", md: "initial" }}
+            ms={{ base: 0, md: 10 }}
+            w={{ base: "full", md: "35%" }}
+          >
             {!post.tags ? null : (
               <Box mb={6}>
                 <chakra.h2
                   color="brand.primary"
                   fontSize="2xl"
-                  fontWeight="700"
-                  lineHeight="46px"
-                  mb={2}
+                  fontWeight="600"
+                  lineHeight="44.16px"
+                  mb={3}
                 >
                   الكلمات المفتاحية
                 </chakra.h2>
@@ -184,12 +130,12 @@ function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
                       fontSize="lg"
                       lineHeight="33.12px"
                       variant="solid"
-                      color="brand.black"
-                      bg="purple.100"
+                      color={tags_color}
+                      bg={tags_bg_color}
                       rounded="full"
                       padding="4px 22px"
                       mb={2}
-                      me={1}
+                      me={2}
                     >
                       {tag}
                     </Badge>
@@ -202,7 +148,8 @@ function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
                 color="brand.primary"
                 fontSize="2xl"
                 fontWeight="600"
-                mb="20px"
+                lineHeight="44.16px"
+                mb={3}
               >
                 مواضيع ذات صلة
               </chakra.h2>
@@ -210,48 +157,61 @@ function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
               {similar_posts &&
                 similar_posts.map((post, index: index) => {
                   return (
-                    <Box
-                      pb={2}
-                      borderBottom="1px solid #E7E8E8"
-                      mb={10}
-                      key={index}
-                    >
-                      <chakra.span
-                        color="brand.secondary"
-                        fontSize="md"
-                        fontWeight="600"
-                        lineHeight="29.44px"
+                    <NextLink key={index} href={`/blogs/${post.id}`} passHref>
+                      <Flex
+                        pb={2}
+                        borderBottom={seperator_color}
+                        mb={10}
+                        align="center"
+                        _hover={{ cursor: "pointer" }}
                       >
-                        {post.categories.name}
-                      </chakra.span>
-                      <Heading
-                        as="h3"
-                        color={similar_posts_title}
-                        fontSize="md"
-                        fontWeight="700"
-                        lineHeight="29.44px"
-                      >
-                        {post.title}
-                      </Heading>
-                      <HStack>
-                        <Text
-                          fontWeight="400"
-                          lineHeight="30px"
-                          fontSize="md"
-                          color={similar_posts_author}
-                        >
-                          {`${post.profiles.first_name} ${post.profiles.last_name}`}
-                        </Text>
-                        <chakra.span
-                          color={similar_posts_date}
-                          fontSize="sm"
-                          fontWeight="500"
-                          lineHeight="25.76px"
-                        >
-                          {post.created_at.slice(0, 10)}
-                        </chakra.span>
-                      </HStack>
-                    </Box>
+                        <Box flex={1}>
+                          <chakra.span
+                            color="brand.secondary"
+                            fontSize="md"
+                            fontWeight="600"
+                            lineHeight="29.44px"
+                          >
+                            {post.categories.name}
+                          </chakra.span>
+                          <Heading
+                            as="h3"
+                            color={similar_posts_title}
+                            fontSize="md"
+                            fontWeight="700"
+                            lineHeight="29.44px"
+                            my={2}
+                          >
+                            {post.title}
+                          </Heading>
+                          <HStack align="center">
+                            <Text
+                              fontWeight="400"
+                              lineHeight="30px"
+                              fontSize="md"
+                              color={similar_posts_author}
+                            >
+                              {`${post.profiles.first_name} ${post.profiles.last_name}`}
+                            </Text>
+                            <chakra.span
+                              color={similar_posts_date}
+                              fontSize="sm"
+                              fontWeight="500"
+                            >
+                              {post.created_at.slice(0, 10)}
+                            </chakra.span>
+                          </HStack>
+                        </Box>
+                        <Image
+                          rounded={{ lg: "lg" }}
+                          my={5}
+                          h={{ base: 20, lg: 20 }}
+                          fit="cover"
+                          src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/blogs/${post.thumbnail}`}
+                          alt={`${post.title} thumbnail`}
+                        />
+                      </Flex>
+                    </NextLink>
                   );
                 })}
             </Flex>
@@ -281,7 +241,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const { data: similar_posts } = await supabase
       .from("posts")
       .select(
-        "id,title, created_at, categories!inner(name), profiles!inner(first_name, last_name)"
+        "id,title, created_at, thumbnail, categories!inner(name), profiles!inner(first_name, last_name)"
       )
       .filter("categories.name", "eq", post!.categories!.name)
       .filter("id", "not.eq", post.id)

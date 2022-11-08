@@ -98,14 +98,14 @@ const FamousEditor: FC<Props> = ({ authors }) => {
             <Box key={index}>
               <VStack>
                 <Avatar
-                  size={"lg"}
+                  size={{ base: "md", md: "lg" }}
                   name={`${author.first_name} ${author.last_name}`}
                   src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${author.avatar_url}`}
                 />
                 <Box textAlign="center">
                   <chakra.span
                     fontWeight={600}
-                    fontSize={"xl"}
+                    fontSize={{ base: "md", md: "xl" }}
                     display="block"
                     color="white"
                   >
@@ -113,7 +113,7 @@ const FamousEditor: FC<Props> = ({ authors }) => {
                   </chakra.span>
                   <chakra.span
                     fontWeight={400}
-                    fontSize={"md"}
+                    fontSize={{ base: "sm", md: "md" }}
                     display="block"
                     color="white"
                   >
