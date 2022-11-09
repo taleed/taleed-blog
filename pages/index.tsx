@@ -184,8 +184,9 @@ export const getStaticProps = async () => {
       "id,title,thumbnail,excerpt,created_at, categories!inner(name), profiles!inner(first_name, last_name, avatar_url)"
     )
     .order("created_at", {
-      ascending: false,
-    });
+      ascending: true,
+    })
+    .range(0, 10);
 
   if (newBlog) {
     query = query.not("id", "eq", newBlog?.id);

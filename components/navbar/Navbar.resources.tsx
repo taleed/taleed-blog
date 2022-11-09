@@ -7,42 +7,42 @@ type NavbarResourcesType = {
 export const TopNavbarResources: NavbarResourcesType[] = [
   {
     order: 1,
-    href: "/blogs/health",
+    href: "/category/health",
     label: "ثقافة",
   },
   {
     order: 2,
-    href: "/blogs/health",
+    href: "/category/health",
     label: "صحة",
   },
   {
     order: 3,
-    href: "/blogs/sports",
+    href: "/category/sports",
     label: "رياضة",
   },
   {
     order: 4,
-    href: "/blogs/sciences",
+    href: "/category/sciences",
     label: "علوم",
   },
   {
     order: 5,
-    href: "/blogs/technology",
+    href: "/category/technology",
     label: "تكنولوجيا",
   },
   {
     order: 6,
-    href: "/blogs/economie",
+    href: "/category/economie",
     label: "اقتصاد",
   },
   {
     order: 7,
-    href: "/blogs/space",
+    href: "/category/space",
     label: "فضاء",
   },
   {
     order: 8,
-    href: "/blogs/art",
+    href: "/category/art",
     label: "فن",
   },
 ];
