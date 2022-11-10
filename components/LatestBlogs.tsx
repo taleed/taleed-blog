@@ -28,23 +28,29 @@ const LatestBlogs = ({ newBlog, latestBlogs }: Props) => {
           md: "repeat(6, 1fr)",
         }}
       >
-        <GridItem
-          colSpan={{ base: 1, sm: 1, md: 6 }}
-          bg={bgColor}
-          rounded={"lg"}
-        >
-          <BlogCard type="new" data={newBlog} />
-        </GridItem>
-        {latestBlogs.map((blog: BlogWithCategoriesProfiles) => (
+        {newBlog && (
           <GridItem
-            key={blog.id}
-            colSpan={{ base: 1, sm: 1, md: 2 }}
+            colSpan={{ base: 1, sm: 1, md: 6 }}
             bg={bgColor}
             rounded={"lg"}
           >
-            <BlogCard type="latest" data={blog} />
+            <BlogCard type="new" data={newBlog} />
           </GridItem>
-        ))}
+        )}
+        {latestBlogs.length === 0 ? null : (
+          <>
+            {latestBlogs.map((blog: BlogWithCategoriesProfiles) => (
+              <GridItem
+                key={blog.id}
+                colSpan={{ base: 1, sm: 1, md: 2 }}
+                bg={bgColor}
+                rounded={"lg"}
+              >
+                <BlogCard type="latest" data={blog} />
+              </GridItem>
+            ))}
+          </>
+        )}
       </Grid>
     </Container>
   );

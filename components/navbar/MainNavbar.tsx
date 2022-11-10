@@ -28,6 +28,7 @@ const MainNavbar = () => {
             _hover={{ cursor: "pointer" }}
             mx={{ base: "auto", md: 0 }}
             spacing={5}
+            px={6}
           >
             <Image src="/logo.svg" alt="talleed_logo" />
             <chakra.span color="white" fontWeight={800} fontSize="2xl">
@@ -40,6 +41,7 @@ const MainNavbar = () => {
           display={{ base: "none", md: "flex" }}
           justify="space-evenly"
           flex={1}
+          mx={16}
         >
           {MainNavbarResources.map((link) => (
             <Link key={link.order} href={link.href}>

@@ -53,7 +53,7 @@ const Login = () => {
       });
       return;
     }
-    router.push("/dashboard");
+    router.push("/dashboard/add-blog");
   };
   return (
     <>

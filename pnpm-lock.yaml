@@ -17,6 +17,7 @@ specifiers:
   eslint-config-next: 12.3.1
   framer-motion: ^6
   next: 12.3.1
+  nextjs-google-analytics: ^2.2.0
   nodemailer: ^6.8.0
   nprogress-support-rtl: ^0.3.1
   prop-types: ^15.8.1
@@ -38,6 +39,7 @@ dependencies:
   '@supabase/supabase-js': 2.0.0
   framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
   next: 12.3.1_6tziyx3dehkoeijunclpkpolha
+  nextjs-google-analytics: 2.2.0_next@12.3.1+react@18.2.0
   nodemailer: 6.8.0
   nprogress-support-rtl: 0.3.1
   prop-types: 15.8.1
@@ -2801,6 +2803,14 @@ packages:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
     dev: true
 
+  /fsevents/2.3.2:
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /function-bind/1.1.1:
     resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==}
 
@@ -3303,6 +3313,18 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
+    dev: false
+
+  /nextjs-google-analytics/2.2.0_next@12.3.1+react@18.2.0:
+    resolution: {integrity: sha512-UJz/nWEMnuPuEv2kwsX/4UOxZS49StvZ+GERBbtKnkHXrvL5tMIoeCzncM83Jd7GlUluoUW3KC39sAHm5JRcQQ==}
+    peerDependencies:
+      next: '>=11.0.0'
+      react: '>=17.0.0'
+    dependencies:
+      next: 12.3.1_6tziyx3dehkoeijunclpkpolha
+      react: 18.2.0
+    optionalDependencies:
+      fsevents: 2.3.2
     dev: false
 
   /node-fetch/2.6.7:

@@ -25,9 +25,10 @@ interface Props {
   latestBlogs: BlogWithCategoriesProfiles[];
   newBlog: BlogWithCategoriesProfiles;
   restBlogs: BlogWithCategoriesProfiles[];
+  category: { name: string };
 }
 
-const Category = ({ newBlog, latestBlogs, restBlogs }: Props) => {
+const Category = ({ newBlog, latestBlogs, restBlogs, category }: Props) => {
   const seperator_color = useColorModeValue(
     "1px solid #E7E8E8",
     "1px solid #7C62E5"
@@ -40,7 +41,7 @@ const Category = ({ newBlog, latestBlogs, restBlogs }: Props) => {
   return (
     <>
       <Head>
-        <title>{`تليد - مواضيع في ${newBlog.categories.name}`}</title>
+        <title>{`تليد - مواضيع في ${category.name}`}</title>
       </Head>
       <Container my={{ base: 10 }} maxW="container.xl">
         <Flex
@@ -48,13 +49,13 @@ const Category = ({ newBlog, latestBlogs, restBlogs }: Props) => {
           _before={{
             content: '""',
             borderBottom: "2px solid",
-            borderColor: useColorModeValue("gray.200", "gray.700"),
+            borderColor: useColorModeValue("grey.200", "whiteAlpha.300"),
             flexGrow: 1,
           }}
           _after={{
             content: '""',
             borderBottom: "2px solid",
-            borderColor: useColorModeValue("gray.200", "gray.700"),
+            borderColor: useColorModeValue("grey.200", "whiteAlpha.300"),
             flexGrow: 1,
           }}
         >
@@ -62,9 +63,9 @@ const Category = ({ newBlog, latestBlogs, restBlogs }: Props) => {
             mx={4}
             fontWeight={400}
             fontSize="5xl"
-            color="brand.primary"
+            color={useColorModeValue("brand.primary", "brand.secondary")}
           >
-            {newBlog.categories.name}
+            {category.name}
           </chakra.span>
         </Flex>
         <LatestBlogs newBlog={newBlog} latestBlogs={latestBlogs} />
@@ -224,11 +225,18 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
   const { data: restBlogs } = await query;
 
+  const { data: category } = await supabase
+    .from("categories")
+    .select("name")
+    .eq("slug", slug)
+    .single();
+
   return {
     props: {
       newBlog,
       latestBlogs,
       restBlogs,
+      category,
     },
   };
 };

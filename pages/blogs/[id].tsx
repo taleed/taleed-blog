@@ -2,6 +2,7 @@ import {
   Avatar,
   Badge,
   Box,
+  Button,
   Container,
   Flex,
   HStack,
@@ -11,13 +12,14 @@ import {
   chakra,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { ReactElement, useEffect, useState } from "react";
 
 import { GetStaticProps } from "next";
 import Head from "next/head";
 import Layout from "@/layouts/Default";
 import Link from "next/link";
+import Logo from "@/components/Logo";
 import NextLink from "next/link";
-import { ReactElement } from "react";
 import { supabase } from "@/utils/supabaseClient";
 
 function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
@@ -30,6 +32,33 @@ function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
     "1px solid #E7E8E8",
     "1px solid #7C62E5"
   );
+
+  const [likes, setLikes] = useState<number | null>(null);
+  const [liked, setLiked] = useState<boolean>(false);
+
+  const getLikes = async () => {
+    const { data } = await supabase
+      .from("posts")
+      .select("likes")
+      .eq("id", post.id)
+      .single();
+    setLikes(data?.likes);
+  };
+
+  const incrementLikes = async () => {
+    const { data } = await supabase.rpc("increment_likes", {
+      post_id: post.id,
+    });
+    setLikes(data);
+    setLiked(true);
+  };
+
+  useEffect(() => {
+    getLikes();
+  }, []);
+
+  const ads_color = useColorModeValue("#F4F5F5", "#2F3133");
+
   return (
     <>
       <Head>
@@ -105,6 +134,25 @@ function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
               className="post-content"
               dangerouslySetInnerHTML={{ __html: post.body }}
             />
+
+            <Box mt={16}>
+              <Button
+                onClick={incrementLikes}
+                isDisabled={liked}
+                display="flex"
+                p={6}
+                rounded="full"
+                border="1px solid"
+                borderColor={useColorModeValue("grey.200", "grey.400")}
+                variant="unstyled"
+                leftIcon={
+                  <Logo fill={useColorModeValue("#A5A6A6", "#7C62E5")} />
+                }
+                color={useColorModeValue("grey.900", "#7C62E5")}
+              >
+                {likes} إعجاب
+              </Button>
+            </Box>
           </Flex>
           <Box
             display={{ base: "none", md: "initial" }}
@@ -215,6 +263,7 @@ function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
                   );
                 })}
             </Flex>
+            <Box id="ads" className="ads" h="100vh" bg={ads_color} />
           </Box>
         </Flex>
       </Container>

@@ -29,7 +29,7 @@ export default function Custom404() {
           spacing={{ base: 8, md: 0 }}
           px={{ base: 4, md: 0 }}
         >
-          <Box>
+          <Box mb={12}>
             <Heading
               fontWeight={900}
               fontSize={{ base: "4xl", sm: "5xl", md: "6xl", lg: "7xl" }}

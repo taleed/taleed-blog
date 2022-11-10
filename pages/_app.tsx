@@ -5,6 +5,7 @@ import { ChakraProvider, createLocalStorageManager } from "@chakra-ui/react";
 import { ReactElement, ReactNode, useState } from "react";
 
 import type { AppProps } from "next/app";
+import { GoogleAnalytics } from "nextjs-google-analytics";
 import NextNProgress from "@/components/NextNProgress";
 import { NextPage } from "next";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
@@ -29,6 +30,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       initialSession={pageProps.initialSession}
     >
       <ChakraProvider theme={theme} colorModeManager={manager}>
+        <GoogleAnalytics trackPageViews={{ ignoreHashChange: true }} />
         <NextNProgress />
         {getLayout(<Component {...pageProps} />)}
       </ChakraProvider>

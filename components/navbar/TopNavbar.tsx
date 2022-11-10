@@ -10,6 +10,10 @@ import {
   Flex,
   HStack,
   IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Text,
   VStack,
   chakra,
@@ -21,6 +25,7 @@ import { MainNavbarResources, TopNavbarResources } from "./Navbar.resources";
 import { MdMenu, MdOutlineClose } from "react-icons/md";
 
 import { BiEdit } from "react-icons/bi";
+import { IoIosArrowDropdown } from "react-icons/io";
 import LightDarkSwitcher from "@/components/LightDarkSwitcher";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -36,7 +41,7 @@ const TopNavbar = () => {
     if (!user) {
       router.push("/be-an-editor");
     } else {
-      router.push("/dashboard");
+      router.push("/dashboard/add-blog");
     }
   };
 
@@ -61,7 +66,7 @@ const TopNavbar = () => {
           {user && "لوحة التحكم"}
         </Button>
         {/* PART 02 */}
-        <HStack spacing={1}>
+        <HStack me={{ base: 0, md: 16 }} spacing={1}>
           <LightDarkSwitcher />
           <Flex display={{ base: "flex", md: "none" }}>
             <IconButton
@@ -92,9 +97,10 @@ const TopNavbar = () => {
         <Flex
           display={{ base: "none", md: "flex" }}
           justify="space-evenly"
+          align="center"
           flex={1}
         >
-          {TopNavbarResources.map((link) => (
+          {TopNavbarResources.slice(0, 8).map((link) => (
             <Link key={link.order} href={link.href}>
               <chakra.span
                 display="block"
@@ -110,6 +116,32 @@ const TopNavbar = () => {
               </chakra.span>
             </Link>
           ))}
+          <Menu>
+            <MenuButton
+              display={{ base: "none", md: "inherit" }}
+              as={Button}
+              bg={useColorModeValue("blackAlpha.200", "whiteAlpha.200")}
+              _hover={{
+                bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
+              }}
+              _focus={{
+                bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
+              }}
+              rightIcon={<IoIosArrowDropdown />}
+            >
+              المزيد
+            </MenuButton>
+            <MenuList
+              display={{ base: "none", md: "inherit" }}
+              bg={useColorModeValue("white", "grey.700")}
+            >
+              {TopNavbarResources.slice(8).map((link) => (
+                <MenuItem key={link.order}>
+                  <Link href={link.href}>{link.label}</Link>
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
         </Flex>
       </Flex>
       {/* Drawer */}

@@ -45,27 +45,47 @@ export const TopNavbarResources: NavbarResourcesType[] = [
     href: "/category/art",
     label: "فن",
   },
+  {
+    order: 9,
+    href: "/category/art",
+    label: "مجال1",
+  },
+  {
+    order: 10,
+    href: "/category/art",
+    label: "مجال2",
+  },
+  {
+    order: 11,
+    href: "/category/art",
+    label: "مجال3",
+  },
+  {
+    order: 12,
+    href: "/category/art",
+    label: "مجال4",
+  },
 ];
 
 export const MainNavbarResources: NavbarResourcesType[] = [
   {
     order: 1,
-    href: "#",
+    href: "/category/news",
     label: "تغطيات متنوعة",
   },
   {
     order: 2,
-    href: "#",
+    href: "/category/blogs",
     label: "مدونات",
   },
   {
     order: 3,
-    href: "#",
+    href: "/category/philosophy_of_science",
     label: "فلسفة علوم",
   },
   {
     order: 4,
-    href: "#",
+    href: "/category/scientific_research",
     label: "بحث علمي",
   },
 ];

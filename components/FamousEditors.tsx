@@ -13,58 +13,11 @@ import {
 
 import { FC } from "react";
 import { FamousAuthor } from "@/types/blog";
+import Link from "next/link";
 
 type Props = {
   authors: FamousAuthor[];
 };
-
-const temp_data: FamousAuthor[] = [
-  {
-    first_name: "ouss",
-    last_name: "zizou",
-    speciality: "speciality",
-    posts_count: 10,
-    avatar_url:
-      "7KTgejP4kJZwWvXf7VsEXS1z5BzBUAC5i3lLynXqk54y8Ch9EeAjPrSdRlNCyTI4xJJnVoLKUskTGZFO9hoO4sXz5lbEuotZrgJd.png",
-  },
-  {
-    first_name: "first",
-    last_name: "last",
-    speciality: "speciality",
-    posts_count: 9,
-    avatar_url: "",
-  },
-  {
-    first_name: "first",
-    last_name: "last",
-    speciality: "speciality",
-    posts_count: 7,
-    avatar_url:
-      "7KTgejP4kJZwWvXf7VsEXS1z5BzBUAC5i3lLynXqk54y8Ch9EeAjPrSdRlNCyTI4xJJnVoLKUskTGZFO9hoO4sXz5lbEuotZrgJd.png",
-  },
-  {
-    first_name: "first",
-    last_name: "last",
-    speciality: "speciality",
-    posts_count: 5,
-    avatar_url: "",
-  },
-  {
-    first_name: "first",
-    last_name: "last",
-    speciality: "speciality",
-    posts_count: 3,
-    avatar_url: "",
-  },
-  {
-    first_name: "first",
-    last_name: "last",
-    speciality: "speciality",
-    posts_count: 2,
-    avatar_url:
-      "7KTgejP4kJZwWvXf7VsEXS1z5BzBUAC5i3lLynXqk54y8Ch9EeAjPrSdRlNCyTI4xJJnVoLKUskTGZFO9hoO4sXz5lbEuotZrgJd.png",
-  },
-];
 
 const FamousEditor: FC<Props> = ({ authors }) => {
   return (
@@ -102,24 +55,26 @@ const FamousEditor: FC<Props> = ({ authors }) => {
                   name={`${author.first_name} ${author.last_name}`}
                   src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${author.avatar_url}`}
                 />
-                <Box textAlign="center">
-                  <chakra.span
-                    fontWeight={600}
-                    fontSize={{ base: "md", md: "xl" }}
-                    display="block"
-                    color="white"
-                  >
-                    {`${author.first_name} ${author.last_name}`}
-                  </chakra.span>
-                  <chakra.span
-                    fontWeight={400}
-                    fontSize={{ base: "sm", md: "md" }}
-                    display="block"
-                    color="white"
-                  >
-                    {author.speciality}
-                  </chakra.span>
-                </Box>
+                <Link href={`/authors/${author.username}`} passHref>
+                  <Box _hover={{ cursor: "pointer" }} textAlign="center">
+                    <chakra.span
+                      fontWeight={600}
+                      fontSize={{ base: "md", md: "xl" }}
+                      display="block"
+                      color="white"
+                    >
+                      {`${author.first_name} ${author.last_name}`}
+                    </chakra.span>
+                    <chakra.span
+                      fontWeight={400}
+                      fontSize={{ base: "sm", md: "md" }}
+                      display="block"
+                      color="white"
+                    >
+                      {author.speciality}
+                    </chakra.span>
+                  </Box>
+                </Link>
               </VStack>
             </Box>
           ))}

@@ -10,6 +10,5 @@ interface LinkItemProps {
 
 export const LinkItems: Array<LinkItemProps> = [
   { name: "الرئيسية", href: "/", icon: FiHome },
-  { name: "مقالاتي", href: "/dashboard", icon: FiFileText },
   { name: "اضف مقال جديد", href: "/dashboard/add-blog", icon: FiFilePlus },
 ];

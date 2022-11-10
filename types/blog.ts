@@ -32,6 +32,7 @@ export interface FamousAuthor {
   first_name: string;
   last_name: string;
   avatar_url: string;
+  username: string;
   speciality: string;
   posts_count: number;
 }
