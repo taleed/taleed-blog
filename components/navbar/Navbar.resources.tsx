@@ -7,7 +7,7 @@ type NavbarResourcesType = {
 export const TopNavbarResources: NavbarResourcesType[] = [
   {
     order: 1,
-    href: "/category/health",
+    href: "/category/culture",
     label: "ثقافة",
   },
   {
@@ -17,12 +17,12 @@ export const TopNavbarResources: NavbarResourcesType[] = [
   },
   {
     order: 3,
-    href: "/category/sports",
+    href: "/category/sport",
     label: "رياضة",
   },
   {
     order: 4,
-    href: "/category/sciences",
+    href: "/category/science",
     label: "علوم",
   },
   {
@@ -32,7 +32,7 @@ export const TopNavbarResources: NavbarResourcesType[] = [
   },
   {
     order: 6,
-    href: "/category/economie",
+    href: "/category/economy",
     label: "اقتصاد",
   },
   {
@@ -55,7 +55,7 @@ export const MainNavbarResources: NavbarResourcesType[] = [
   },
   {
     order: 2,
-    href: "/",
+    href: "#",
     label: "مدونات",
   },
   {

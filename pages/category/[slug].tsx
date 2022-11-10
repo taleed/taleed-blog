@@ -11,9 +11,10 @@ import {
   chakra,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { BlogWithCategoriesProfiles, FamousAuthor } from "@/types/blog";
 
-import FamousEditor from "@/components/FamousEditors";
+import { BlogWithCategoriesProfiles } from "@/types/blog";
+import { GetStaticProps } from "next";
+import Head from "next/head";
 import LatestBlogs from "@/components/LatestBlogs";
 import Layout from "@/layouts/Default";
 import NextLink from "next/link";
@@ -23,11 +24,10 @@ import { supabase } from "@/utils/supabaseClient";
 interface Props {
   latestBlogs: BlogWithCategoriesProfiles[];
   newBlog: BlogWithCategoriesProfiles;
-  authors: FamousAuthor[];
-  mostViewedBlogs: BlogWithCategoriesProfiles[];
+  restBlogs: BlogWithCategoriesProfiles[];
 }
 
-const Home = ({ newBlog, latestBlogs, authors, mostViewedBlogs }: Props) => {
+const Category = ({ newBlog, latestBlogs, restBlogs }: Props) => {
   const seperator_color = useColorModeValue(
     "1px solid #E7E8E8",
     "1px solid #7C62E5"
@@ -38,11 +38,37 @@ const Home = ({ newBlog, latestBlogs, authors, mostViewedBlogs }: Props) => {
   const category_color = useColorModeValue("brand.secondary", "grey.300");
   const excerpt_color = useColorModeValue("#4F4F4F", "#F0F0F0");
   return (
-    <Box>
-      <LatestBlogs newBlog={newBlog} latestBlogs={latestBlogs} />
-      <FamousEditor authors={authors} />
-      {mostViewedBlogs.length > 0 && (
-        <Container my={{ base: 10, md: 20 }} maxW="container.xl">
+    <>
+      <Head>
+        <title>{`تليد - مواضيع في ${newBlog.categories.name}`}</title>
+      </Head>
+      <Container my={{ base: 10 }} maxW="container.xl">
+        <Flex
+          align={"center"}
+          _before={{
+            content: '""',
+            borderBottom: "2px solid",
+            borderColor: useColorModeValue("gray.200", "gray.700"),
+            flexGrow: 1,
+          }}
+          _after={{
+            content: '""',
+            borderBottom: "2px solid",
+            borderColor: useColorModeValue("gray.200", "gray.700"),
+            flexGrow: 1,
+          }}
+        >
+          <chakra.span
+            mx={4}
+            fontWeight={400}
+            fontSize="5xl"
+            color="brand.primary"
+          >
+            {newBlog.categories.name}
+          </chakra.span>
+        </Flex>
+        <LatestBlogs newBlog={newBlog} latestBlogs={latestBlogs} />
+        {restBlogs.length > 0 && (
           <Box my={8}>
             <chakra.h2
               color="brand.primary"
@@ -55,7 +81,7 @@ const Home = ({ newBlog, latestBlogs, authors, mostViewedBlogs }: Props) => {
               المواضيع الأكثر قراءة
             </chakra.h2>
             <VStack align="flex-start">
-              {mostViewedBlogs.map((post, index) => {
+              {restBlogs.map((post, index) => {
                 return (
                   <NextLink key={index} href={`/blogs/${post.id}`} passHref>
                     <Flex
@@ -141,53 +167,54 @@ const Home = ({ newBlog, latestBlogs, authors, mostViewedBlogs }: Props) => {
               })}
             </VStack>
           </Box>
-        </Container>
-      )}
-    </Box>
+        )}
+      </Container>
+    </>
   );
 };
 
-Home.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
+Category.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
 
-export default Home;
+export default Category;
 
-export const getStaticProps = async () => {
-  // Get The Newest Blog
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { slug } = params!;
+
+  // Get The Newest Blog (by category)
   const { data: newBlog } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, categories!inner(name), profiles!inner(first_name, last_name, avatar_url)"
+      "id,title,thumbnail,excerpt, created_at, categories!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)"
     )
+    .eq("categories.slug", slug)
     .order("created_at", {
       ascending: false,
     })
     .limit(1)
     .single();
 
-  // Get The Latest 3 Blogs
+  // Get The Latest 3 Blogs (by category)
   const { data: latestBlogs } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt,created_at, categories!inner(name), profiles!inner(first_name, last_name, avatar_url)"
+      "id,title,thumbnail,excerpt,created_at, categories!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)"
     )
+    .eq("categories.slug", slug)
     .order("created_at", {
       ascending: false,
     })
     .range(1, 3);
 
-  // Get Famous Authors
-  const { data: authors } = await supabase.rpc("famous_authors");
-
-  // Most Viewed Blogs
+  // Rest Blogs (by category)
   let query = supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt,created_at, categories!inner(name), profiles!inner(first_name, last_name, avatar_url)"
+      "id,title,thumbnail,excerpt,created_at, categories!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)"
     )
+    .eq("categories.slug", slug)
     .order("created_at", {
       ascending: true,
-    })
-    .range(0, 10);
+    });
 
   if (newBlog) {
     query = query.not("id", "eq", newBlog?.id);
@@ -195,14 +222,53 @@ export const getStaticProps = async () => {
   if (latestBlogs && latestBlogs?.length > 0) {
     query = query.not("id", "in", `(${latestBlogs.map((blog) => blog.id)})`);
   }
-  const { data: mostViewedBlogs } = await query;
+  const { data: restBlogs } = await query;
 
   return {
     props: {
       newBlog,
       latestBlogs,
-      authors,
-      mostViewedBlogs,
+      restBlogs,
     },
+  };
+};
+
+interface Params {
+  params: {
+    slug: string;
+  };
+}
+
+export const getStaticPaths = async () => {
+  // When this is true (in preview environments) don't
+  // prerender any static pages
+  // (faster builds, but slower initial page load)
+  if (process.env.SKIP_BUILD_STATIC_GENERATION) {
+    return {
+      paths: [],
+      fallback: "blocking",
+    };
+  }
+
+  let paths: Params[] = [];
+
+  const { data: categories, error: error } = await supabase
+    .from("categories")
+    .select("slug");
+
+  if (error) {
+    return {
+      paths: [],
+      fallback: false,
+    };
+  }
+
+  paths = categories.map((category: any) => ({
+    params: { slug: category.slug },
+  }));
+
+  return {
+    paths,
+    fallback: false,
   };
 };
