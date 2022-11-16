@@ -18,7 +18,7 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
       <Button
         variant="unstyled"
         as="a"
-        href="#"
+        href="https://twitter.com/Taleed01?t=4vsHk2jCyx4DRhVMyJSi4A&s=07"
         target={"_blank"}
         aria-label="Twitter"
         bgColor="white"
@@ -35,9 +35,9 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
       <Button
         variant="unstyled"
         as="a"
-        href="#"
+        href="https://youtube.com/channel/UCAfKWA8D1tlUVBPUmPIrSFQ"
         target={"_blank"}
-        aria-label="Twitter"
+        aria-label="YouTube"
         bgColor="white"
         rounded="full"
         color={useColorModeValue("brand.primary", "grey.900")}
@@ -52,9 +52,9 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
       <Button
         variant="unstyled"
         as="a"
-        href="#"
+        href="https://instagram.com/taleed01?igshid=YmMyMTA2M2Y="
         target={"_blank"}
-        aria-label="Twitter"
+        aria-label="Instagram"
         bgColor="white"
         rounded="full"
         color={useColorModeValue("brand.primary", "grey.900")}
@@ -69,9 +69,9 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
       <Button
         variant="unstyled"
         as="a"
-        href="#"
+        href="https://www.facebook.com/taleed01"
         target={"_blank"}
-        aria-label="Twitter"
+        aria-label="Facebook"
         bgColor="white"
         rounded="full"
         color={useColorModeValue("brand.primary", "grey.900")}
@@ -86,9 +86,9 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
       <Button
         variant="unstyled"
         as="a"
-        href="#"
+        href="https://t.me/taleed01"
         target={"_blank"}
-        aria-label="Twitter"
+        aria-label="Telegram"
         bgColor="white"
         rounded="full"
         color={useColorModeValue("brand.primary", "grey.900")}
