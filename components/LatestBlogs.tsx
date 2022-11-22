@@ -37,18 +37,19 @@ const LatestBlogs = ({ newBlog, latestBlogs }: Props) => {
             <BlogCard type="new" data={newBlog} />
           </GridItem>
         )}
-        {latestBlogs.length === 0 ? null : (
+        {latestBlogs && latestBlogs.length === 0 ? null : (
           <>
-            {latestBlogs.map((blog: BlogWithCategoriesProfiles) => (
-              <GridItem
-                key={blog.id}
-                colSpan={{ base: 1, sm: 1, md: 2 }}
-                bg={bgColor}
-                rounded={"lg"}
-              >
-                <BlogCard type="latest" data={blog} />
-              </GridItem>
-            ))}
+            {latestBlogs &&
+              latestBlogs.map((blog: BlogWithCategoriesProfiles) => (
+                <GridItem
+                  key={blog.id}
+                  colSpan={{ base: 1, sm: 1, md: 2 }}
+                  bg={bgColor}
+                  rounded={"lg"}
+                >
+                  <BlogCard type="latest" data={blog} />
+                </GridItem>
+              ))}
           </>
         )}
       </Grid>

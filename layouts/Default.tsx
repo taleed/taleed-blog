@@ -11,7 +11,10 @@ export default function Layout({ children }: any) {
         <title>تليد - الرئيسية</title>
       </Head>
       <Box w="full" bg={useColorModeValue("white", "brand.black")}>
-        <Navbar />
+        <Navbar
+          topMenus={children.props.topMenus}
+          subMenus={children.props.subMenus}
+        />
         <Box>{children}</Box>
         <Footer />
       </Box>

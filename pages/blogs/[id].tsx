@@ -19,10 +19,18 @@ import Head from "next/head";
 import Layout from "@/layouts/Default";
 import Link from "next/link";
 import Logo from "@/components/Logo";
+import { NavbarResourcesType } from "@/types/blog";
 import NextLink from "next/link";
 import { supabase } from "@/utils/supabaseClient";
 
-function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
+interface Props {
+  post: any;
+  similar_posts: any;
+  topMenus: NavbarResourcesType[];
+  subMenus: NavbarResourcesType[];
+}
+
+function Blog({ post, similar_posts }: Props) {
   const similar_posts_date = useColorModeValue("grey.500", "grey.300");
   const similar_posts_author = useColorModeValue("grey.500", "white");
   const similar_posts_title = useColorModeValue("brand.black", "white");
@@ -73,7 +81,8 @@ function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
               fontWeight="600"
               lineHeight={{ base: "36.8px", md: "47.84px" }}
             >
-              {post.categories.name}
+              {post.top_menus && post.top_menus.name}
+              {post.sub_menus && post.sub_menus.name}
             </chakra.span>
             <Heading
               as="h1"
@@ -220,7 +229,8 @@ function Blog({ post, similar_posts }: { post: any; similar_posts: any }) {
                             fontWeight="600"
                             lineHeight="29.44px"
                           >
-                            {post.categories.name}
+                            {post.top_menus && post.top_menus.name}
+                            {post.sub_menus && post.sub_menus.name}
                           </chakra.span>
                           <Heading
                             as="h3"
@@ -278,34 +288,83 @@ export default Blog;
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { id } = params!;
 
-  const { data: post } = await supabase
+  // Get Top menu links
+  const { data: topMenus } = await supabase
+    .from("top_menus")
+    .select("id, name, slug, order")
+    .order("order", {
+      ascending: true,
+    });
+
+  // Get Sub menu links
+  const { data: subMenus } = await supabase
+    .from("sub_menus")
+    .select("id, name, slug, order")
+    .order("order", {
+      ascending: true,
+    });
+
+  const { data: post_top_menu } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, body, tags, categories!inner(name), profiles!inner(first_name, last_name,username, avatar_url)"
+      "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(first_name, last_name,username, avatar_url)"
     )
     .eq("id", id)
     .single();
 
-  if (post) {
-    const { data: similar_posts } = await supabase
+  const { data: post_sub_menu } = await supabase
+    .from("posts")
+    .select(
+      "id,title,thumbnail,excerpt, created_at, body, tags, sub_menus!inner(name), profiles!inner(first_name, last_name,username, avatar_url)"
+    )
+    .eq("id", id)
+    .single();
+
+  if (post_top_menu) {
+    const { data: similar_posts_top_menus } = await supabase
       .from("posts")
       .select(
-        "id,title, created_at, thumbnail, categories!inner(name), profiles!inner(first_name, last_name)"
+        "id,title, created_at, thumbnail, top_menus!inner(name), profiles!inner(first_name, last_name)"
       )
-      .filter("categories.name", "eq", post!.categories!.name)
-      .filter("id", "not.eq", post.id)
+      .filter("top_menus.name", "eq", post_top_menu!.top_menus!.name)
+      .filter("id", "not.eq", post_top_menu.id)
       .range(0, 5);
 
     return {
       props: {
-        post,
-        similar_posts,
+        post: post_top_menu,
+        similar_posts: similar_posts_top_menus,
+        topMenus,
+        subMenus,
+      },
+    };
+  }
+
+  if (post_sub_menu) {
+    const { data: similar_posts_sub_menus } = await supabase
+      .from("posts")
+      .select(
+        "id,title, created_at, thumbnail, sub_menus!inner(name), profiles!inner(first_name, last_name)"
+      )
+      .filter("sub_menus.name", "eq", post_sub_menu!.sub_menus!.name)
+      .filter("id", "not.eq", post_sub_menu.id)
+      .range(0, 5);
+
+    return {
+      props: {
+        post: post_sub_menu,
+        similar_posts: similar_posts_sub_menus,
+        topMenus,
+        subMenus,
       },
     };
   }
 
   return {
-    props: {},
+    props: {
+      topMenus,
+      subMenus,
+    },
   };
 };
 
@@ -326,27 +385,38 @@ export const getStaticPaths = async () => {
     };
   }
 
-  let paths: Params[] = [];
+  let paths_top_menus: Params[] = [];
+  let paths_sub_menus: Params[] = [];
 
-  const { data: posts, error: posts_error } = await supabase
+  const { data: posts_top_menus, error: posts_top_menus_error } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, body, tags, categories!inner(name), profiles!inner(first_name, last_name,username, avatar_url)"
+      "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(first_name, last_name,username, avatar_url)"
     );
 
-  if (posts_error) {
+  const { data: posts_sub_menus, error: posts_sub_menus_error } = await supabase
+    .from("posts")
+    .select(
+      "id,title,thumbnail,excerpt, created_at, body, tags, sub_menus!inner(name), profiles!inner(first_name, last_name,username, avatar_url)"
+    );
+
+  if (posts_top_menus_error || posts_sub_menus_error) {
     return {
       paths: [],
       fallback: false,
     };
   }
 
-  paths = posts.map((post: any) => ({
+  paths_top_menus = posts_top_menus.map((post: any) => ({
+    params: { id: post.id },
+  }));
+
+  paths_sub_menus = posts_sub_menus.map((post: any) => ({
     params: { id: post.id },
   }));
 
   return {
-    paths,
+    paths: [...paths_top_menus, ...paths_sub_menus],
     fallback: false,
   };
 };

@@ -21,17 +21,22 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { MainNavbarResources, TopNavbarResources } from "./Navbar.resources";
 import { MdMenu, MdOutlineClose } from "react-icons/md";
 
 import { BiEdit } from "react-icons/bi";
+import { FC } from "react";
 import { IoIosArrowDropdown } from "react-icons/io";
 import LightDarkSwitcher from "@/components/LightDarkSwitcher";
 import Link from "next/link";
+import { NavbarResourcesType } from "@/types/blog";
 import { useRouter } from "next/router";
 import { useUser } from "@supabase/auth-helpers-react";
 
-const TopNavbar = () => {
+type Props = {
+  items: NavbarResourcesType[];
+};
+
+const TopNavbar: FC<Props> = ({ items }) => {
   const { colorMode } = useColorMode();
   const router = useRouter();
   const user = useUser();
@@ -100,22 +105,25 @@ const TopNavbar = () => {
           align="center"
           flex={1}
         >
-          {TopNavbarResources.slice(0, 8).map((link) => (
-            <Link key={link.order} href={link.href}>
-              <chakra.span
-                display="block"
-                _hover={{
-                  cursor: "pointer",
-                  color:
-                    colorMode === "dark" ? "brand.secondary" : "brand.primary",
-                }}
-                fontWeight={500}
-                fontSize="xl"
-              >
-                {link.label}
-              </chakra.span>
-            </Link>
-          ))}
+          {items &&
+            items.slice(0, 8).map((link) => (
+              <Link key={link.order} href={`/category/top/${link.slug}`}>
+                <chakra.span
+                  display="block"
+                  _hover={{
+                    cursor: "pointer",
+                    color:
+                      colorMode === "dark"
+                        ? "brand.secondary"
+                        : "brand.primary",
+                  }}
+                  fontWeight={500}
+                  fontSize="xl"
+                >
+                  {link.name}
+                </chakra.span>
+              </Link>
+            ))}
           <Menu>
             <MenuButton
               display={{ base: "none", md: "inherit" }}
@@ -135,11 +143,12 @@ const TopNavbar = () => {
               display={{ base: "none", md: "inherit" }}
               bg={useColorModeValue("white", "grey.700")}
             >
-              {TopNavbarResources.slice(8).map((link) => (
-                <MenuItem key={link.order}>
-                  <Link href={link.href}>{link.label}</Link>
-                </MenuItem>
-              ))}
+              {items &&
+                items.slice(8).map((link) => (
+                  <MenuItem key={link.order}>
+                    <Link href={`/category/top/${link.slug}`}>{link.name}</Link>
+                  </MenuItem>
+                ))}
             </MenuList>
           </Menu>
         </Flex>
@@ -156,20 +165,30 @@ const TopNavbar = () => {
 
           <DrawerBody>
             <VStack align="flex-start" mt={16} spacing={2}>
-              {TopNavbarResources.map((link: any, index: number) => (
-                <Link passHref href={`/${link.href}`} key={index}>
-                  <Box w="full" rounded="lg" py={1} px={4}>
-                    <Text fontWeight={600}>{link.label}</Text>
-                  </Box>
-                </Link>
-              ))}
-              {MainNavbarResources.map((link: any, index: number) => (
-                <Link passHref href={`/${link.href}`} key={`MNR-${index}`}>
-                  <Box w="full" rounded="lg" py={1} px={4}>
-                    <Text fontWeight={600}>{link.label}</Text>
-                  </Box>
-                </Link>
-              ))}
+              {items &&
+                items.map((link, index: number) => (
+                  <Link
+                    passHref
+                    href={`/category/top/${link.slug}`}
+                    key={index}
+                  >
+                    <Box w="full" rounded="lg" py={1} px={4}>
+                      <Text fontWeight={600}>{link.name}</Text>
+                    </Box>
+                  </Link>
+                ))}
+              {items &&
+                items.map((link, index: number) => (
+                  <Link
+                    passHref
+                    href={`/category/${link.slug}`}
+                    key={`MNR-${index}`}
+                  >
+                    <Box w="full" rounded="lg" py={1} px={4}>
+                      <Text fontWeight={600}>{link.name}</Text>
+                    </Box>
+                  </Link>
+                ))}
             </VStack>
           </DrawerBody>
         </DrawerContent>

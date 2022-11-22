@@ -95,7 +95,8 @@ const BlogCardContent = ({
         fontSize={type === "new" ? { base: "md", md: "xl" } : "md"}
         color={useColorModeValue("brand.secondary", "grey.300")}
       >
-        {blog.categories.name}
+        {blog.top_menus && blog.top_menus.name}
+        {blog.sub_menus && blog.sub_menus.name}
       </chakra.span>
       <Heading
         color={useColorModeValue("brand.black", "brand.secondary")}

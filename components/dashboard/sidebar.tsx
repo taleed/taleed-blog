@@ -8,6 +8,8 @@ import {
   chakra,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 
 import Link from "next/link";
 import { LinkItems } from "@/components/dashboard/sidebar.resources";
@@ -18,6 +20,27 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+  const [isAdmin, setIsAdmin] = useState(null);
+  const supabase = useSupabaseClient();
+
+  const getProfile = async () => {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("is_admin")
+      .single();
+    if (profile) {
+      setIsAdmin(profile.is_admin);
+    }
+  };
+
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  if (isAdmin === null) {
+    return;
+  }
+
   return (
     <Box
       transition="3s ease"
@@ -46,11 +69,17 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         </Link>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon} href={link.href}>
-          {link.name}
-        </NavItem>
-      ))}
+      {LinkItems.map((link) => {
+        if (link.needAdminPermissions === true && isAdmin !== true) {
+          return;
+        } else {
+          return (
+            <NavItem key={link.name} icon={link.icon} href={link.href}>
+              {link.name}
+            </NavItem>
+          );
+        }
+      })}
     </Box>
   );
 };

@@ -38,7 +38,7 @@ const Login = () => {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<loginValues> = async (values) => {
-    const { error } = await supabaseClient.auth.signInWithPassword({
+    const { error, data: user } = await supabaseClient.auth.signInWithPassword({
       email: values.email,
       password: values.password,
     });
@@ -52,8 +52,26 @@ const Login = () => {
         position: "top-right",
       });
       return;
+    } else {
+      const { data: profile } = await supabaseClient
+        .from("profiles")
+        .select("approved, is_admin")
+        .single();
+      if (profile && profile.approved === true) {
+        localStorage.setItem("talled_isAdmin", profile.is_admin);
+        router.push("/dashboard/add-blog");
+      } else {
+        toast({
+          title: "حدث خطأ",
+          description: "لم يتم تفعيل حسابك بعد. يُرجى الإعادة في وقت لاحق",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+          position: "top-right",
+        });
+        return;
+      }
     }
-    router.push("/dashboard/add-blog");
   };
   return (
     <>

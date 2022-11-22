@@ -47,37 +47,38 @@ const FamousEditor: FC<Props> = ({ authors }) => {
           gap={6}
           columns={{ base: 2, md: 6 }}
         >
-          {authors.map((author, index) => (
-            <Box key={index}>
-              <VStack>
-                <Avatar
-                  size={{ base: "md", md: "lg" }}
-                  name={`${author.first_name} ${author.last_name}`}
-                  src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${author.avatar_url}`}
-                />
-                <Link href={`/authors/${author.username}`} passHref>
-                  <Box _hover={{ cursor: "pointer" }} textAlign="center">
-                    <chakra.span
-                      fontWeight={600}
-                      fontSize={{ base: "md", md: "xl" }}
-                      display="block"
-                      color="white"
-                    >
-                      {`${author.first_name} ${author.last_name}`}
-                    </chakra.span>
-                    <chakra.span
-                      fontWeight={400}
-                      fontSize={{ base: "sm", md: "md" }}
-                      display="block"
-                      color="white"
-                    >
-                      {author.speciality}
-                    </chakra.span>
-                  </Box>
-                </Link>
-              </VStack>
-            </Box>
-          ))}
+          {authors &&
+            authors.map((author, index) => (
+              <Box key={index}>
+                <VStack>
+                  <Avatar
+                    size={{ base: "md", md: "lg" }}
+                    name={`${author.first_name} ${author.last_name}`}
+                    src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${author.avatar_url}`}
+                  />
+                  <Link href={`/authors/${author.username}`} passHref>
+                    <Box _hover={{ cursor: "pointer" }} textAlign="center">
+                      <chakra.span
+                        fontWeight={600}
+                        fontSize={{ base: "md", md: "xl" }}
+                        display="block"
+                        color="white"
+                      >
+                        {`${author.first_name} ${author.last_name}`}
+                      </chakra.span>
+                      <chakra.span
+                        fontWeight={400}
+                        fontSize={{ base: "sm", md: "md" }}
+                        display="block"
+                        color="white"
+                      >
+                        {author.speciality}
+                      </chakra.span>
+                    </Box>
+                  </Link>
+                </VStack>
+              </Box>
+            ))}
         </SimpleGrid>
       </Flex>
     </Box>

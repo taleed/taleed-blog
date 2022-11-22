@@ -75,9 +75,9 @@ const BeAnEditor = () => {
       if (!error) {
         toast({
           title: "تم انشاء الحساب",
-          description: "تم انشاء حسابك بنجاح, يُمكنك تسجيل الدخول الآن.",
+          description: "سيتم مراجعة حسابك في غضون 2-3 أيام عمل",
           status: "success",
-          duration: 5000,
+          duration: 9000,
           isClosable: true,
           position: "top-right",
         });

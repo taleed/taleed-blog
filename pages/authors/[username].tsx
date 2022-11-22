@@ -15,10 +15,18 @@ import {
 import { BsFillFileTextFill } from "react-icons/bs";
 import { GetStaticProps } from "next";
 import Layout from "@/layouts/Default";
+import { NavbarResourcesType } from "@/types/blog";
 import { ReactElement } from "react";
 import { supabase } from "@/utils/supabaseClient";
 
-function Author({ profile, posts }: { profile: any; posts: any }) {
+interface Props {
+  profile: any;
+  posts: any;
+  topMenus: NavbarResourcesType[];
+  subMenus: NavbarResourcesType[];
+}
+
+function Author({ profile, posts }: Props) {
   const title_color = useColorModeValue("brand.black", "white");
   const excerpt_color = useColorModeValue("#4F4F4F", "#F0F0F0");
   const author_color = useColorModeValue("brand.black", "#F0F0F0");
@@ -102,7 +110,8 @@ function Author({ profile, posts }: { profile: any; posts: any }) {
                         fontWeight="600"
                         lineHeight={{ base: "27.6px", md: "47.84px" }}
                       >
-                        {post.categories.name}
+                        {post.top_menus && post.top_menus.name}
+                        {post.sub_menus && post.sub_menus.name}
                       </chakra.span>
                       <Heading
                         my={3}
@@ -194,6 +203,22 @@ export default Author;
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { username } = params!;
 
+  // Get Top menu links
+  const { data: topMenus } = await supabase
+    .from("top_menus")
+    .select("id, name, slug, order")
+    .order("order", {
+      ascending: true,
+    });
+
+  // Get Sub menu links
+  const { data: subMenus } = await supabase
+    .from("sub_menus")
+    .select("id, name, slug, order")
+    .order("order", {
+      ascending: true,
+    });
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
@@ -201,23 +226,31 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     .single();
 
   if (profile) {
-    const { data: posts } = await supabase
+    const { data: posts_top_menus } = await supabase
       .from("posts")
-      .select(
-        "id,title, excerpt, thumbnail, created_at, categories!inner(name)"
-      )
+      .select("id,title, excerpt, thumbnail, created_at, top_menus!inner(name)")
+      .eq("user_id", profile.id);
+
+    const { data: posts_sub_menus } = await supabase
+      .from("posts")
+      .select("id,title, excerpt, thumbnail, created_at, sub_menus!inner(name)")
       .eq("user_id", profile.id);
 
     return {
       props: {
         profile,
-        posts,
+        posts: posts_top_menus === null ? posts_sub_menus : posts_top_menus,
+        topMenus,
+        subMenus,
       },
     };
   }
 
   return {
-    props: {},
+    props: {
+      topMenus,
+      subMenus,
+    },
   };
 };
 

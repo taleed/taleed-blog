@@ -14,10 +14,15 @@ import {
 } from "@chakra-ui/react";
 
 import { BiSearch } from "react-icons/bi";
+import { FC } from "react";
 import Link from "next/link";
-import { MainNavbarResources } from "./Navbar.resources";
+import { NavbarResourcesType } from "@/types/blog";
 
-const MainNavbar = () => {
+type Props = {
+  items: NavbarResourcesType[];
+};
+
+const MainNavbar: FC<Props> = ({ items }) => {
   const { colorMode } = useColorMode();
   return (
     <Box bg={useColorModeValue("brand.primary", "grey.900")}>
@@ -43,22 +48,23 @@ const MainNavbar = () => {
           flex={1}
           mx={16}
         >
-          {MainNavbarResources.map((link) => (
-            <Link key={link.order} href={link.href}>
-              <chakra.span
-                display="block"
-                color="white"
-                _hover={{
-                  cursor: "pointer",
-                  color: "brand.secondary",
-                }}
-                fontWeight={500}
-                fontSize="xl"
-              >
-                {link.label}
-              </chakra.span>
-            </Link>
-          ))}
+          {items &&
+            items.map((link) => (
+              <Link key={link.order} href={`/category/sub/${link.slug}`}>
+                <chakra.span
+                  display="block"
+                  color="white"
+                  _hover={{
+                    cursor: "pointer",
+                    color: "brand.secondary",
+                  }}
+                  fontWeight={500}
+                  fontSize="xl"
+                >
+                  {link.name}
+                </chakra.span>
+              </Link>
+            ))}
         </Flex>
         {/* PART 03 - SEARCH INPUT */}
         <InputGroup

@@ -44,3 +44,10 @@ export interface BlogWithCategories extends BaseBlog {
 export interface BlogWithCategoriesProfiles extends BlogWithCategories {
   profiles: Profile;
 }
+
+export type NavbarResourcesType = {
+  id: number;
+  order: number;
+  slug: string;
+  name: string;
+};
