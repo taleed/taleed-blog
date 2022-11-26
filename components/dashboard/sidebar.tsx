@@ -21,12 +21,14 @@ interface SidebarProps extends BoxProps {
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   const [isAdmin, setIsAdmin] = useState(null);
+  const user = useUser();
   const supabase = useSupabaseClient();
 
   const getProfile = async () => {
     const { data: profile } = await supabase
       .from("profiles")
       .select("is_admin")
+      .eq("id", user?.id)
       .single();
     if (profile) {
       setIsAdmin(profile.is_admin);
@@ -34,15 +36,13 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   };
 
   useEffect(() => {
+    if (!user) return;
     getProfile();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const sidebar_bg = useColorModeValue("white", "brand.black");
   const sidebar_border_color = useColorModeValue("gray.200", "gray.700");
-
-  if (isAdmin === null) {
-    return;
-  }
 
   return (
     <Box

@@ -56,6 +56,7 @@ const Login = () => {
       const { data: profile } = await supabaseClient
         .from("profiles")
         .select("approved, is_admin")
+        .eq("id", user.user?.id)
         .single();
       if (profile && profile.approved === true) {
         localStorage.setItem("talled_isAdmin", profile.is_admin);
