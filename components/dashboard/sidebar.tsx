@@ -37,6 +37,9 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
     getProfile();
   }, []);
 
+  const sidebar_bg = useColorModeValue("white", "brand.black");
+  const sidebar_border_color = useColorModeValue("gray.200", "gray.700");
+
   if (isAdmin === null) {
     return;
   }
@@ -44,9 +47,9 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   return (
     <Box
       transition="3s ease"
-      bg={useColorModeValue("white", "brand.black")}
+      bg={sidebar_bg}
       borderLeft="1px"
-      borderLeftColor={useColorModeValue("gray.200", "gray.700")}
+      borderLeftColor={sidebar_border_color}
       w={{ base: "full", md: 60 }}
       pos="fixed"
       h="full"
