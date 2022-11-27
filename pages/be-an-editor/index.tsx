@@ -215,8 +215,7 @@ const BeAnEditor = () => {
           كن محررًا
         </Heading>
         <Text color={useColorModeValue("#4F4F4F", "grey.100")} maxW="xl" mb={6}>
-          لوريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو
-          أيوسمود تيمبور أنكايديد يونتيوت لابوري ات دولار ماجنا أليكيوا .
+        من هنا تبدأ رحلتك في عالم تليد ، نرافقك لتفيد وتستفيد لكي يعرف العالم أكثر .
         </Text>
         <form onSubmit={handleSubmit(handleFormCompletion)}>
           {renderFormStep()}

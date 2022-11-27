@@ -11,11 +11,15 @@ import {
 } from "@chakra-ui/react";
 
 import Contact from "../contact";
+import Announce from "../Annouce";
+import JobVacancy from "../JobVacancy";
 import NextLink from "next/link";
 import SocialMediaLinks from "./SocialMediaLinks";
 
 const Footer = () => {
   const contact = useDisclosure();
+  const announce = useDisclosure();
+  const jobVacancy = useDisclosure();
   return (
     <Box
       as="footer"
@@ -24,6 +28,8 @@ const Footer = () => {
       bg={useColorModeValue("brand.primary", "grey.900")}
     >
       <Contact isOpen={contact.isOpen} onClose={contact.onClose} />
+      <Announce isOpen={announce.isOpen} onClose={announce.onClose} />
+      <JobVacancy isOpen={jobVacancy.isOpen} onClose={jobVacancy.onClose} />
 
       <Flex
         mx="auto"
@@ -66,44 +72,42 @@ const Footer = () => {
                 >
                   <Text fontSize={"lg"}>تواصل معنا</Text>
                 </Button>
-                <NextLink href={"/"} passHref>
-                  <Button
-                    as="a"
-                    bgColor="transparent"
-                    rounded="0px"
-                    cursor="pointer"
-                    borderBottom="2px solid"
-                    borderColor="transparent"
-                    _active={{ bgColor: "transparent", borderColor: "white" }}
-                    _hover={{ bgColor: "transparent", borderColor: "white" }}
-                    aria-label={"اعلن معنا"}
-                    px="0"
-                    textAlign="center"
-                    fontWeight="500"
-                    color="white"
-                  >
-                    <Text fontSize={"lg"}>اعلن معنا</Text>
-                  </Button>
-                </NextLink>
-                <NextLink href={"/"} passHref>
-                  <Button
-                    as="a"
-                    bgColor="transparent"
-                    rounded="0px"
-                    cursor="pointer"
-                    borderBottom="2px solid"
-                    borderColor="transparent"
-                    _active={{ bgColor: "transparent", borderColor: "white" }}
-                    _hover={{ bgColor: "transparent", borderColor: "white" }}
-                    aria-label={"مناصب شاغرة"}
-                    px="0"
-                    textAlign="center"
-                    fontWeight="500"
-                    color="white"
-                  >
-                    <Text fontSize={"lg"}>مناصب شاغرة</Text>
-                  </Button>
-                </NextLink>
+                <Button
+                  as="a"
+                  bgColor="transparent"
+                  rounded="0px"
+                  cursor="pointer"
+                  borderBottom="2px solid"
+                  borderColor="transparent"
+                  _active={{ bgColor: "transparent", borderColor: "white" }}
+                  _hover={{ bgColor: "transparent", borderColor: "white" }}
+                  aria-label={"اعلن معنا"}
+                  px="0"
+                  textAlign="center"
+                  fontWeight="500"
+                  color="white"
+                  onClick={announce.onOpen}
+                >
+                  <Text fontSize={"lg"}>اعلن معنا</Text>
+                </Button>
+                <Button
+                  as="a"
+                  bgColor="transparent"
+                  rounded="0px"
+                  cursor="pointer"
+                  borderBottom="2px solid"
+                  borderColor="transparent"
+                  _active={{ bgColor: "transparent", borderColor: "white" }}
+                  _hover={{ bgColor: "transparent", borderColor: "white" }}
+                  aria-label={"مناصب شاغرة"}
+                  px="0"
+                  textAlign="center"
+                  fontWeight="500"
+                  color="white"
+                  onClick={jobVacancy.onOpen}
+                >
+                  <Text fontSize={"lg"}>مناصب شاغرة</Text>
+                </Button>
               </Stack>
             </Stack>
             <Stack spacing="5">
