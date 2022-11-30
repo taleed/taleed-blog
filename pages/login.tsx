@@ -38,42 +38,57 @@ const Login = () => {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<loginValues> = async (values) => {
-    const { error, data: user } = await supabaseClient.auth.signInWithPassword({
+    await supabaseClient.auth.signInWithPassword({
       email: values.email,
       password: values.password,
-    });
-    if (error) {
-      toast({
-        title: "حدث خطأ",
-        description: error.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "top-right",
-      });
-      return;
-    } else {
-      const { data: profile } = await supabaseClient
+    })
+    .then(async (res) => {
+      const data = res.data;
+      if(data.session && data.user) {
+        await supabaseClient
         .from("profiles")
         .select("approved, is_admin")
-        .eq("id", user.user?.id)
-        .single();
-      if (profile && profile.approved === true) {
-        localStorage.setItem("talled_isAdmin", profile.is_admin);
-        router.push("/dashboard/add-blog");
+        .eq("id", data.user?.id)
+        .single()
+        .then((res) => {
+          const data = res.data;          
+          if (data?.approved && data.is_admin) {
+            localStorage.setItem("talled_isAdmin", data?.is_admin);
+            router.push("/dashboard/add-blog");
+          } else {
+            toast({
+              title: "قيد المعاينة",
+              description: "لم يتم تفعيل حسابك بعد. يُرجى الإعادة في وقت لاحق",
+              status: "info",
+              duration: 9000,
+              isClosable: true,
+              position: "top-right",
+            });      
+          }
+        })
       } else {
         toast({
-          title: "حدث خطأ",
-          description: "لم يتم تفعيل حسابك بعد. يُرجى الإعادة في وقت لاحق",
+          title: "معلومات عن الحساب",
+          description: "لا يوجد حساب مرتبط بهذا البريد الالكتروني أو كلمة السر خاطئة",
           status: "error",
           duration: 9000,
           isClosable: true,
           position: "top-right",
         });
-        return;
       }
-    }
+    })
+    .catch((e) => {
+      toast({
+        title: "حدث خطأ",
+        description: e.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+    });
   };
+
   return (
     <>
       <Head>
