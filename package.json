@@ -13,6 +13,7 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@fontsource/changa": "^4.5.10",
+    "@fontsource/tajawal": "^4.5.9",
     "@supabase/auth-helpers-nextjs": "^0.4.1",
     "@supabase/auth-helpers-react": "^0.3.0",
     "@supabase/supabase-js": "^2.0.0",

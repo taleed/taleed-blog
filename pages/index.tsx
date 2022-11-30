@@ -1,3 +1,4 @@
+
 import {
   Avatar,
   Box,
@@ -17,7 +18,7 @@ import {
   NavbarResourcesType,
 } from "@/types/blog";
 import { ReactElement, useEffect } from "react";
-
+import '@fontsource/tajawal/400.css'
 import FamousEditor from "@/components/FamousEditors";
 import LatestBlogs from "@/components/LatestBlogs";
 import Layout from "@/layouts/Default";
