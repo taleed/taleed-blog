@@ -2,6 +2,7 @@ import { Box, Container, Flex, Heading, Text } from "@chakra-ui/react";
 
 import Layout from "@/layouts/Default";
 import { ReactElement } from "react";
+import '@fontsource/tajawal/400.css'
 
 function About() {
   return (
