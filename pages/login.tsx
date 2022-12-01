@@ -11,7 +11,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
-
+import '@fontsource/tajawal/400.css'
 import Head from "next/head";
 import Layout from "@/layouts/PageWithoutNavbars";
 import Link from "next/link";
@@ -50,10 +50,10 @@ const Login = () => {
         .select("approved, is_admin")
         .eq("id", data.user?.id)
         .single()
-        .then((res) => {
-          const data = res.data;          
+        .then(res => res.data)
+        .then(data => {              
           if (data?.approved && data.is_admin) {
-            localStorage.setItem("talled_isAdmin", data?.is_admin);
+            localStorage.setItem("is_admin", data?.is_admin);
             router.push("/dashboard/add-blog");
           } else {
             toast({

@@ -9,10 +9,10 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
-import { BeAnEditorStepProps } from "@/types/be-an-editor";
+import { EditorProps } from "@/types/editor";
 import { ChangeEvent } from "react";
 
-const Step2 = ({ register, errors, setValue, watch }: BeAnEditorStepProps) => {
+const Step2 = ({ register, errors, setValue, watch }: EditorProps) => {
   const handleSelectField = (e: ChangeEvent<HTMLSelectElement>) => {
     setValue!("field", e.target.value);
   };

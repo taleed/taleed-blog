@@ -7,9 +7,9 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
-import { BeAnEditorStepProps } from "@/types/be-an-editor";
+import { EditorProps } from "@/types/editor";
 
-const Step1 = ({ register, errors }: BeAnEditorStepProps) => {
+const Step1 = ({ register, errors }: EditorProps) => {
   return (
     <>
       <Stack direction={{ base: "column", md: "row" }} spacing={6}>

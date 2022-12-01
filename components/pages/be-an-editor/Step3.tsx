@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
-import { BeAnEditorStepProps } from "@/types/be-an-editor";
+import { EditorProps } from "@/types/editor";
 import { supabase } from "@/utils/supabaseClient";
 import { useState } from "react";
 
@@ -28,7 +28,7 @@ function makeid(length: number) {
   return result;
 }
 
-const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
+const Step3 = ({ register, errors, watch, setValue }: EditorProps) => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
 
