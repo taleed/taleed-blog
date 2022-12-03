@@ -1,4 +1,4 @@
-import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
+import { Box, Heading, IconButton, SimpleGrid, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
 
 import Layout from "@/layouts/Dashboard";
@@ -6,9 +6,36 @@ import StatsCard from "@/components/dashboard/Stat";
 import { supabase } from "../../utils/supabaseClient";
 
 const Statistics = () => {
+  const [visitorList, setVisitorsList] = useState<any[]>([])
   const [visitors, setVisitors] = useState(0);
   const [articles, setArticles] = useState(0);
   const [editors, setEditors] = useState(0);
+
+  const getVisitorsList = async () => {
+    try {
+      const { error, data } = await supabase.from('visitors').select()
+      if (error) {
+        toast({
+          title: "حدث خطأ",
+          description: error.message,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+        return;
+      } else {
+        setVisitorsList(data)
+      }
+    } catch (error: any) {
+      toast({
+        title: "حدث خطأ",
+        description: error.message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }
 
   const getVisitors = async () => {
     const { data, error: err_view_count } = await supabase
@@ -47,6 +74,7 @@ const Statistics = () => {
     getVisitors();
     getArticles();
     getEditors();
+    getVisitorsList();
   }, []);
 
   return (
@@ -61,6 +89,29 @@ const Statistics = () => {
         <StatsCard title={"عدد المقالات"} stat={articles} />
         <StatsCard title={"عدد المحررين"} stat={editors} />
       </SimpleGrid>
+      <Heading mt={16}>قائمة الزوار</Heading>
+      <TableContainer bg="white" mt={16}>
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>البريد الإلكتروني</Th>
+              <Th>IP</Th>
+              <Th>الدولة</Th>
+              <Th>وقت الزيارة</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {visitorList.map((d: any, i: number) => (
+              <Tr key={i}>
+                <Td>{d.email}</Td>
+                <Td>{d.ip}</Td>
+                <Td>{d.country}</Td>
+                <Td>{new Date(d.created_at).toLocaleDateString()}</Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 };
@@ -72,3 +123,7 @@ export default Statistics;
 export async function getStaticProps() {
   return { props: { title: "HomePage" } };
 }
+function toast(arg0: { title: string; description: string; status: string; duration: number; isClosable: boolean; }) {
+  throw new Error("Function not implemented.");
+}
+

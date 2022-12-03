@@ -11,6 +11,7 @@ import { NextPage } from "next";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import theme from "theme";
+import LocationProvider from "@/components/LocationProvider";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -32,7 +33,8 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <ChakraProvider theme={theme} colorModeManager={manager}>
         <GoogleAnalytics trackPageViews={{ ignoreHashChange: true }} />
         <NextNProgress />
-        {getLayout(<Component {...pageProps} />)}
+        <LocationProvider/>
+          {getLayout(<Component {...pageProps} />)}
       </ChakraProvider>
     </SessionContextProvider>
   );
