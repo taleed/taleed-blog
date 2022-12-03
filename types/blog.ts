@@ -1,49 +1,29 @@
-export interface BaseBlog {
-  id: number;
-  created_at: string;
-  updated_at: string;
+export interface Blog {
+  id: BigInteger;
+
   title: string;
+  poster_url: string;  // main picture/image of a blog.
   body: string;
   excerpt: string;
-  status: string;
-  user_id: string;
-  delete_at: string | null;
-  deleted_by: string | null;
-  thumbnail: string;
+  is_verified: Boolean | null,
+  status: string;  
+  likes: BigInteger,
+  
+  deleted_by: string | null; // this reference the Editor.
+  deleted_at: string | null;
+  
+  created_at: string;
+  updated_at: string;
+  
+  user_id: string; // this reference the Author/user.
   categroy_id: string;
 }
 
-export interface Profile {
-  id: string;
-  created_at: string;
-  first_name: string;
-  last_name: string;
-  username: string;
-  field: string;
-  speciality: string;
-  about: string;
-  facebook_account: string;
-  instagram_account: string;
-  twitter_account: string;
-  avatar_url: string;
-}
 
-export interface FamousAuthor {
-  first_name: string;
-  last_name: string;
-  avatar_url: string;
-  username: string;
-  speciality: string;
-  posts_count: number;
-}
+// profile/account aren't tables in the database.
 
-export interface BlogWithCategories extends BaseBlog {
-  categories: { name: string };
-}
-
-export interface BlogWithCategoriesProfiles extends BlogWithCategories {
-  profiles: Profile;
-}
+// the "FAME" can be understood as (ration = likes count / blogs) > (0.7) and bingoo >>> author is famous.
+// POPULAR blog (likes count / period of time .. plus other criteria)
 
 export type NavbarResourcesType = {
   id: number;

@@ -76,7 +76,7 @@ const formats = [
 ];
 
 type FormValues = {
-  category: number;
+  category: string;
   title: string;
   excerpt: string;
   blogImg: string;
@@ -108,37 +108,48 @@ const AddBlog = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ mode: "all" });
+
   const onSubmit: SubmitHandler<FormValues> = async ({
     category,
     title,
     excerpt,
     blogImg,
   }) => {
-    if (user) {
-      const { error } = await supabaseClient.from("posts").insert({
+      const { data } = await supabaseClient.from("categories").select('id').eq("name", category).single();
+      await supabaseClient.from("blogs")
+      .insert({
         title: title,
+        poster_url: blogImg || "default.jpg",
         body: blogBody,
         excerpt: excerpt,
-        status: "published",
-        user_id: user.id,
-        thumbnail: blogImg || "default.jpg",
-        category_id: category,
-        tags,
-      });
-
-      if (!error) {
-        toast({
+        is_verified: false,
+        status: "VERIFICATION_ON_PROGRESS",  // PUBLISHED | VERIFICATION_ON_PROGRESS | BANNED | REJECTED.
+        user_id: user?.id,
+        category_id: data?.id,
+        tags: JSON.stringify(tags),
+      })
+      .then( res => {        
+        if(res.error)
+          toast({
+            title: "تم انشاء المقالة",
+            description: "تم انشاء المقالة بنجاح, يُمكن للجميع رؤيتها الآن.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top-right",
+            });        
+        
+        if(res.status === 201) {
+          toast({
           title: "تم انشاء المقالة",
-          description: "تم انشاء المقالة بنجاح, يُمكن للجميع رؤيتها الآن.",
+          description: "تم انشاء المقالة بنجاح.",
           status: "success",
           duration: 5000,
           isClosable: true,
           position: "top-right",
-        });
-      } else {
-        console.log("[error - add new post]: ", error.message);
-      }
-    }
+          });          
+        }
+      });    
   };
 
   const uploadImage = async (event: any) => {
@@ -184,14 +195,14 @@ const AddBlog = () => {
                 required: "هذا الحقل اجباري",
               })}
             >
-              <option value={1}>ثقافة</option>
-              <option value={2}>صحة</option>
-              <option value={3}>رياضة</option>
-              <option value={4}>علوم</option>
-              <option value={5}>تكنولوجيا</option>
-              <option value={6}>اقتصاد</option>
-              <option value={7}>فضاء</option>
-              <option value={8}>فن</option>
+              <option value={"ثقافة"}>ثقافة</option>
+              <option value={"صحة"}>صحة</option>
+              <option value={"رياضة"}>رياضة</option>
+              <option value={"علوم"}>علوم</option>
+              <option value={"تكنولوجيا"}>تكنولوجيا</option>
+              <option value={"اقتصاد"}>اقتصاد</option>
+              <option value={"فضاء"}>فضاء</option>
+              <option value={"فن"}>فن</option>
             </Select>
             <FormErrorMessage>{errors.category?.message}</FormErrorMessage>
           </FormControl>
