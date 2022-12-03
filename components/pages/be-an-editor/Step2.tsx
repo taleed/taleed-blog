@@ -9,10 +9,10 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
-import { EditorProps } from "@/types/editor";
+import { UserProps } from "@/types/user";
 import { ChangeEvent } from "react";
 
-const Step2 = ({ register, errors, setValue, watch }: EditorProps) => {
+const Step2 = ({ register, errors, setValue, watch }: UserProps) => {
   const handleSelectField = (e: ChangeEvent<HTMLSelectElement>) => {
     setValue!("field", e.target.value);
   };

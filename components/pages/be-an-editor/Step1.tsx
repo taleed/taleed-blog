@@ -7,9 +7,9 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
-import { EditorProps } from "@/types/editor";
+import { UserProps } from "@/types/user";
 
-const Step1 = ({ register, errors }: EditorProps) => {
+const Step1 = ({ register, errors }: UserProps) => {
   return (
     <>
       <Stack direction={{ base: "column", md: "row" }} spacing={6}>
@@ -28,9 +28,7 @@ const Step1 = ({ register, errors }: EditorProps) => {
             placeholder=""
             size="lg"
             id="first_name"
-            {...register!("first_name", {
-              required: "الرجاء ادخال الإسم",
-            })}
+            {...register!("first_name", { required: "الرجاء ادخال الإسم", })}
           />
           <FormErrorMessage>{errors.first_name?.message}</FormErrorMessage>
         </FormControl>

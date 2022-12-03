@@ -10,7 +10,7 @@ import {
 import { ReactElement, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import '@fontsource/tajawal/500.css'
-import { Editor } from "@/types/editor";
+import { User } from "@/types/user";
 import Head from "next/head";
 import Layout from "@/layouts/PageWithoutNavbars";
 import Link from "next/link";
@@ -20,10 +20,8 @@ import Step3 from "@/components/pages/be-an-editor/Step3";
 import { supabase } from "@/utils/supabaseClient";
 import { useRouter } from "next/router";
 
-const steps = [{ label: "Step 1" }, { label: "Step 2" }, { label: "Step 3" }];
-
-const BeAnEditor = () => {
-  const { watch, register, setValue, handleSubmit, formState: { isSubmitting, errors },} = useForm<Editor>({ mode: "all",});
+const CreateAccount = () => {
+  const { watch, register, setValue, handleSubmit, formState: { isSubmitting, errors },} = useForm<User>({ mode: "all",});
 
   const BTN_NEXT_CONTENT = "التالي";
   const BTN_SUBMIT_CONTENT = "انشاء الحساب";
@@ -41,55 +39,52 @@ const BeAnEditor = () => {
     setFormStep((s) => s - 1);
   };
 
-  const handleFormCompletion: SubmitHandler<Editor> = async (values) => {
-    await supabase.auth.signUp({
-      email: values.email,
-      password: values.password,
-    })
-    .then(res => res.data)
-    .then(async data => {
-      if(data.user) {
-        await supabase.from("profiles")
-        .insert({
-          id: data.user.id,
-          first_name: values.first_name,
-          last_name: values.last_name,
-          username: values.username,
-          field: values.field,
-          speciality: values.speciality,
-          about: values.about,
-          facebook_account: values.facebook_account,
-          linkedin_account: values.linkedin_account,
-          twitter_account: values.twitter_account,
-          avatar_url: values.avatar_url,
-        })
-        .then((res) => {
-          const data = res.data;
-          if(data) {
-            toast({
-              title: "تم انشاء الحساب",
-              description: "سيتم مراجعة حسابك في غضون 2-3 أيام عمل",
-              status: "success",
-              duration: 9000,
-              isClosable: true,
-              position: "top-right",
-            });
-            router.push("/login");
-          } else {
+  const handleFormCompletion: SubmitHandler<User> = async (values) => {
+    try {
+      await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+        options: {
+          data: {
+            first_name: values.first_name,
+            last_name: values.last_name,
+            username: values.username,
+            speciality: values.speciality,            
+            avatar_url: values.avatar_url,
+            linkedin_account: values.linkedin_account ?? null,
+            twitter_account: values.twitter_account ?? null,
+            facebook_account: values.facebook_account ?? null,
+            about: values.about ?? null,
+            status: "PENDING" // PENDING | BLOCKED | VERIFIED 
+          }
+        }
+      }).then(res => {
+        if(res.error) {
             toast({
               title: "فشل إنشاء حساب",
-              description: "يرجى التدقيق في معلومات التسجيل",
-              status: "warning",
+              description: res.error?.message, // "يرجى التدقيق في معلومات التسجيل",
+              status: "error",
               duration: 9000,
               isClosable: true,
               position: "top-right",
             });
-          }
-          
-        })
-      }
-    })
-    .catch((e) => {
+        }
+
+        if(res.data) {
+          toast({
+            title: "تم انشاء الحساب",
+            description: "سيتم مراجعة حسابك في غضون 2-3 أيام عمل",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+            position: "top-right",
+          });
+          router.push("/login");
+        }
+        console.log(res.data)
+      })
+    }    
+    catch(e) {
       toast({
         title:"حدث خطأ ما",
         description: "يرجى المحاولة لاحقا",
@@ -97,8 +92,8 @@ const BeAnEditor = () => {
         duration: 9000,
         isClosable: true,
         position: "top-right",
-      });
-    })
+      }); 
+    }
   };
 
   const renderFormStep = () => {
@@ -144,9 +139,7 @@ const BeAnEditor = () => {
           errors.username !== undefined;
         break;
       case 1:
-        result =
-          watch("field") === undefined ||
-          errors.field !== undefined ||
+        result =          
           watch("speciality") === undefined ||
           watch("speciality") === "" ||
           errors.speciality !== undefined ||
@@ -156,8 +149,6 @@ const BeAnEditor = () => {
         break;
       case 2:
         result =
-          watch("avatar_url") === undefined ||
-          errors.avatar_url !== undefined ||
           watch("email") === undefined ||
           errors.email !== undefined ||
           watch("password") === undefined ||
@@ -264,6 +255,6 @@ const BeAnEditor = () => {
   );
 };
 
-BeAnEditor.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
+CreateAccount.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
 
-export default BeAnEditor;
+export default CreateAccount;

@@ -6,26 +6,26 @@ import {
   UseFormWatch,
 } from "react-hook-form";
 
-export type Editor = {
+export type User = {
+  id: BigInteger;
   email: string;
+  password: string;
   username: string;
   first_name: string;
   last_name: string;
   speciality: string;
-  password: string;
-  field: string;
   avatar_url: string;
-  confirm_password: string;
   linkedin_account: string;
   twitter_account: string;
   facebook_account: string;
   about: string;
+  user_id: BigInteger
 };
 
-export type EditorProps = {
-  register: UseFormRegister<Editor>;
-  setValue?: UseFormSetValue<Editor>;
-  control?: Control<Editor, object>;
-  watch?: UseFormWatch<Editor>;
-  errors: FieldErrors<Editor>;
+export type UserProps = {
+  register: UseFormRegister<User>;
+  setValue?: UseFormSetValue<User>;
+  control?: Control<User, object>;
+  watch?: UseFormWatch<User>;
+  errors: FieldErrors<User>;
 };
