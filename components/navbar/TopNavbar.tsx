@@ -44,7 +44,7 @@ const TopNavbar: FC<Props> = ({ items }) => {
 
   const handleClick = () => {
     if (!user) {
-      router.push("/create_editor_account");
+      router.push("/create_account");
     } else {
       router.push("/dashboard/add-blog");
     }

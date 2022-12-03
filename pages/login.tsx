@@ -43,38 +43,39 @@ const Login = () => {
       password: values.password,
     })
     .then(async (res) => {
-      const data = res.data;
-      if(data.session && data.user) {
-        await supabaseClient
-        .from("profiles")
-        .select("approved, is_admin")
-        .eq("id", data.user?.id)
-        .single()
-        .then(res => res.data)
-        .then(data => {              
-          if (data?.approved && data.is_admin) {
-            localStorage.setItem("is_admin", data?.is_admin);
-            router.push("/dashboard/add-blog");
-          } else {
-            toast({
-              title: "قيد المعاينة",
-              description: "لم يتم تفعيل حسابك بعد. يُرجى الإعادة في وقت لاحق",
-              status: "info",
-              duration: 9000,
-              isClosable: true,
-              position: "top-right",
-            });      
-          }
-        })
-      } else {
+      if(res.error) {
         toast({
           title: "معلومات عن الحساب",
-          description: "لا يوجد حساب مرتبط بهذا البريد الالكتروني أو كلمة السر خاطئة",
+          description: res.error.message,//"لا يوجد حساب مرتبط بهذا البريد الالكتروني أو كلمة السر خاطئة",
           status: "error",
           duration: 9000,
           isClosable: true,
           position: "top-right",
         });
+      }
+
+      const data = res.data;
+      console.log(res)
+      if(data.session && data.user) {
+        if(data.user.user_metadata.status === "PENDING") {
+          toast({
+            title: "قيد المعاينة",
+            description: "لم يتم تفعيل حسابك بعد. يُرجى الإعادة في وقت لاحق",
+            status: "info",
+            duration: 9000,
+            isClosable: true,
+            position: "top-right",
+          });
+          console.log(`welcome back ${data.user.user_metadata.username}`)
+          router.push("/dashboard/add-blog"); 
+        } else {
+          /**
+           * to check whether a user is "admin" just use the retrieved  "data.user.id" value on "user_has_role" database.table
+           */
+          // localStorage.setItem("is_admin", true); // let all user go in for now
+          console.log(`welcome back ${data.user.user_metadata.username}`)
+          router.push("/dashboard/add-blog");
+        }
       }
     })
     .catch((e) => {
@@ -200,7 +201,7 @@ const Login = () => {
         >
           <Text color="white">
             ليس لديك حساب؟
-            <Link href="/be-an-editor">
+            <Link href="/create_account">
               <Button
                 ms={2}
                 as="a"
