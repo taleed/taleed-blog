@@ -1,5 +1,5 @@
-import { FiBarChart, FiFilePlus, FiHome, FiUsers } from "react-icons/fi";
-
+import { FiBarChart, FiFilePlus, FiHome, FiUsers} from "react-icons/fi";
+import { BsCardChecklist } from "react-icons/bs"
 import { IconType } from "react-icons";
 
 interface LinkItemProps {
@@ -15,6 +15,12 @@ export const LinkItems: Array<LinkItemProps> = [
     name: "احصائيات",
     href: "/dashboard/statistics",
     icon: FiBarChart,
+    needAdminPermissions: true,
+  },
+  {
+    name: "ادارة المقالات",
+    href: "/dashboard/manage-blogs",
+    icon: BsCardChecklist,
     needAdminPermissions: true,
   },
   {
