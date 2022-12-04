@@ -41,7 +41,7 @@ const ManageBlogs =  () => {
   const paginateData = async (from:number, to:number) => {
     return await supabase.from('posts')
           .select("id,user_id(id, username), title, likes, tags, body,"+
-                  "category_id(id, name), status, excerpt, thumbnail",
+                  "category_id(id, name), status, excerpt, thumbnail, views",
                   { count: "exact" })
           .order("created_at", { ascending: true })
           .range(from, to);
@@ -171,6 +171,7 @@ const ManageBlogs =  () => {
               <Th>عنوان المقال</Th>
               <Th>المحرر</Th>
               <Th>عدد الاعجابات</Th>
+              <Th>عدد الزيارات</Th>
               <Th>المجال</Th>
               <Th>عمليات (Actions)</Th>
             </Tr>
@@ -181,6 +182,7 @@ const ManageBlogs =  () => {
                 <Td>{d.title}</Td>
                 <Td>{d.user_id.username}</Td>
                 <Td>{d.likes}</Td>
+                <Td>{d.views}</Td>
                 <Td>{d.category_id.name}</Td>
                 <Td>
                 <Stack direction="row">
@@ -231,7 +233,5 @@ export default ManageBlogs;
 export async function getStaticProps() {
   return { props: { title: "HomePage" } };
 }
-function toast(arg0: { title: string; description: string; status: string; duration: number; isClosable: boolean; }) {
-  throw new Error("Function not implemented.");
-}
+
 

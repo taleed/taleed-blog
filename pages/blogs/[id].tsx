@@ -61,8 +61,28 @@ function Blog({ post, similar_posts }: Props) {
     setLiked(true);
   };
 
+  const addViewer = async () => {
+    const location = JSON.parse(localStorage.getItem('location') ?? "{}")
+
+    if (!location) {
+      return
+    }
+
+    try {
+      let {data} = await supabase.auth.getUser()
+      await supabase.rpc('add_post_viewer', {
+        new_id: post.id,
+        ip: location.ip,
+        email: data.user?.email ?? "Anonymous"
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   useEffect(() => {
     getLikes();
+    addViewer();
   }, []);
 
   const ads_color = useColorModeValue("#F4F5F5", "#2F3133");
