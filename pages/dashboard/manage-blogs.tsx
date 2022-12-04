@@ -1,6 +1,6 @@
 import { Box, Button, Heading, IconButton, Input, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
-import { FaTrash, FaEdit, FaShare } from "react-icons/fa";
+import { FaTrash, FaEdit, FaShare, FaRegSave } from "react-icons/fa";
 import Layout from "@/layouts/Dashboard";
 import { supabase } from "../../utils/supabaseClient";
 import { useRouter } from "next/router";
@@ -72,7 +72,7 @@ const ManageBlogs =  () => {
   }
 
   const handlePublish = async (id: number) => {
-    const { error, status } = await supabase.from('posts')
+    const { error } = await supabase.from('posts')
                                     .update({ status: "published"})
                                     .eq("id", id)
     if (!error) {
@@ -94,8 +94,31 @@ const ManageBlogs =  () => {
     }
   }
 
+  const handleDraft = async (id: number) => {
+    const { error } = await supabase.from('posts')
+                                    .update({ status: "draft"})
+                                    .eq("id", id)
+    if (!error) {
+      toast({
+        title: "تم تعليق المقالة",
+        description: "تم تعليق المقالة بنجاح.",
+        status: "success",
+        duration: 1000,
+        isClosable: true,
+        position: "top-right",
+        onCloseComplete() {
+          new Promise(async () => {
+            await handleAfterUpdate()
+          })
+        },
+      });
+    } else {
+      console.log("[error - share post]: ", error.message);
+    }
+  }
+
   const handleDelete = async (id: number) => {
-    const { error, status } = await supabase.from('posts').delete().eq("id", id)
+    const { error } = await supabase.from('posts').delete().eq("id", id)
 
     if (!error) {
       toast({
@@ -166,6 +189,13 @@ const ManageBlogs =  () => {
                     aria-label="accept and share blog post"
                     icon={<FaShare />}
                   />}
+
+                  {d.status === "published" && <IconButton
+                    onClick={async () => await handleDraft(d.id)}
+                    aria-label="draft blog post"
+                    icon={<FaRegSave />}
+                  />}
+
                   <IconButton
                     onClick={() => router.push({
                         pathname: "/dashboard/edit-blog",
