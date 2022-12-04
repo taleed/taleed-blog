@@ -201,7 +201,7 @@ export const getStaticProps = async () => {
     )
     .order("created_at", {
       ascending: false,
-    })
+    }).eq("statu", "published")
     .limit(1)
     .single();
   const { data: newBlogSubMenu } = await supabase
@@ -211,7 +211,7 @@ export const getStaticProps = async () => {
     )
     .order("created_at", {
       ascending: false,
-    })
+    }).eq("statu", "published")
     .limit(1)
     .single();
 
@@ -220,7 +220,7 @@ export const getStaticProps = async () => {
     .from("posts")
     .select(
       "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url)"
-    )
+    ).eq("statu", "published")
     .order("created_at", {
       ascending: false,
     })
@@ -230,7 +230,7 @@ export const getStaticProps = async () => {
     .from("posts")
     .select(
       "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url)"
-    )
+    ).eq("statu", "published")
     .order("created_at", {
       ascending: false,
     })
@@ -244,7 +244,7 @@ export const getStaticProps = async () => {
     .from("posts")
     .select(
       "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url)"
-    )
+    ).eq("statu", "published")
     .order("created_at", {
       ascending: true,
     })
@@ -254,7 +254,7 @@ export const getStaticProps = async () => {
     .from("posts")
     .select(
       "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url)"
-    )
+    ).eq("statu", "published")
     .order("created_at", {
       ascending: true,
     })

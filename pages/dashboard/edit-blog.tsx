@@ -138,13 +138,12 @@ const AddBlog = () => {
           duration: 5000,
           isClosable: true,
           position: "top-right",
+          onCloseComplete:  () => {
+            router.push('/dasboard/manage-blogs')
+          }
         });
       } else {
         console.log("[error - update a post post]: ", error.message);
-      }
-
-      if(status == 200) {
-        router.push('dasboard/manage-blogs')
       }
     }
   };

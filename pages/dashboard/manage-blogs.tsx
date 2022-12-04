@@ -72,10 +72,13 @@ const ManageBlogs =  () => {
   }
 
   const handlePublish = async (id: number) => {
-    const { error } = await supabase.from('posts')
-                                    .update({ status: "published"})
-                                    .eq("id", id)
-    if (!error) {
+
+    try {
+      await fetch('/api/manage-blogs/'+id, {
+        method: 'PATCH',
+        body: JSON.stringify({statu: "published"})
+      }).then(res => res.json())
+
       toast({
         title: "تم نشر المقالة",
         description: "تم نشر المقالة بنجاح, يُمكن للجميع رؤيتها الآن.",
@@ -89,16 +92,18 @@ const ManageBlogs =  () => {
           })
         },
       });
-    } else {
-      console.log("[error - share post]: ", error.message);
+    } catch (e: any) {
+      console.log("[error - share post]: ", e.message);
     }
+
   }
 
   const handleDraft = async (id: number) => {
-    const { error } = await supabase.from('posts')
-                                    .update({ status: "draft"})
-                                    .eq("id", id)
-    if (!error) {
+    try {
+      await fetch('/api/manage-blogs/'+id, {
+        method: 'PATCH',
+        body: JSON.stringify({statu: "draft"})
+      }).then(res => res.json())
       toast({
         title: "تم تعليق المقالة",
         description: "تم تعليق المقالة بنجاح.",
@@ -112,15 +117,17 @@ const ManageBlogs =  () => {
           })
         },
       });
-    } else {
-      console.log("[error - share post]: ", error.message);
+    } catch(e:any) {
+      console.log("[error - share post]: ", e.message);
     }
   }
 
   const handleDelete = async (id: number) => {
-    const { error } = await supabase.from('posts').delete().eq("id", id)
+    try {
+      await fetch('/api/manage-blogs/'+id, {
+        method: 'DELETE',
+      }).then(res => res.json())
 
-    if (!error) {
       toast({
         title: "تم حذف المقالة",
         description: "تم حذف المقالة بنجاح.",
@@ -134,8 +141,8 @@ const ManageBlogs =  () => {
           })
         },
       });
-    } else {
-      console.log("[error - delete post]: ", error.message);
+    } catch (e: any) {
+      console.log("[error - delete post]: ", e.message);
     }
   }
 
