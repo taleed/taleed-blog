@@ -1,4 +1,5 @@
 import transporter from "@/utils/emailConfig";
+import structureNotifications from "@/utils/notificationHelpers";
 import { supabaseAdmin } from "@/utils/supabaseAdmin";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { NextApiHandler } from "next";
@@ -7,7 +8,7 @@ const handler:NextApiHandler =  async (req, res) => {
   const supabase = createServerSupabaseClient({ req, res });
 
   const { data:user } = await supabase.auth.getUser()
-  const { data:profile } = await supabaseAdmin.from('profiles').select('id, is_admin').eq("id", user.user?.id)
+  const { data:profile } = await supabaseAdmin.from('profiles').select('id, is_admin, username').eq("id", user.user?.id)
   const id = req.query.id
 
   if (req.body) {
@@ -35,8 +36,10 @@ const handler:NextApiHandler =  async (req, res) => {
         throw new Error(error.message);
       }
 
+      const {text, color } = structureNotifications(data?.[0].title, profile?.[0].username, "edited")
+
       if (user?.user?.id === data?.[0].user_id) {
-        notifyAdmins(data?.[0].id, user?.user?.id as string, "edited")
+        notifyAdmins(data?.[0].id, user?.user?.id as string, "edited", text, color)
 
       } else if (!profile?.[0].is_admin) {
         await supabaseAdmin.from('notification').insert({
@@ -45,6 +48,8 @@ const handler:NextApiHandler =  async (req, res) => {
           object_id: id,
           to: data?.[0].user_id,
           created_by: profile?.[0].id,
+          text: text,
+          color: color,
         })
 
         const {data: postOwner } =  await supabaseAdmin.auth.admin.getUserById(data?.[0].user_id)
@@ -83,8 +88,9 @@ const handler:NextApiHandler =  async (req, res) => {
       if (error) {
         throw new Error(error.message);
       }
+      const {text, color } = structureNotifications(post?.[0].title, profile?.[0].username, "created")
 
-      notifyAdmins(post?.[0].id, user?.user?.id as string, "created")
+      notifyAdmins(post?.[0].id, user?.user?.id as string, "created", text, color)
 
       res.status(200).json({ message: "تم اضافة مقال جديد بنجاح" })
     } catch (error: any) {
@@ -95,17 +101,18 @@ const handler:NextApiHandler =  async (req, res) => {
   }
 }
 
-const notifyAdmins = async  (post_id: any, user_id: string, status: string) => {
+const notifyAdmins = async  (post_id: any, user_id: string, status: string, text: string, color: string) => {
   const {data:admins} = await supabaseAdmin.from('profiles').select('id').eq('is_admin', true)
   if (admins) {
     for (let i in admins ) {
-      console.log(admins)
       await supabaseAdmin.from('notification').insert({
         type: status,
         object_name: "posts",
         object_id: post_id,
         to: admins[i].id,
         created_by: user_id, ///user?.user?.id,
+        text: text,
+        color: color,
       })
     }
   }

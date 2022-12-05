@@ -1,6 +1,6 @@
 import transporter from "@/utils/emailConfig";
+import structureNotifications from "@/utils/notificationHelpers";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { equal } from "assert";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { supabaseAdmin } from "../../../utils/supabaseAdmin";
 
@@ -8,7 +8,7 @@ const handler:NextApiHandler =  async (req: NextApiRequest, res: NextApiResponse
   const supabase = createServerSupabaseClient({ req, res });
 
   const { data:user } = await supabase.auth.getUser()
-  const { data:profile } = await supabaseAdmin.from('profiles').select('id, is_admin').eq("id", user.user?.id)
+  const { data:profile } = await supabaseAdmin.from('profiles').select('id, is_admin, username').eq("id", user.user?.id)
   const id = req.query.id
 
   if (req.body) {
@@ -31,12 +31,18 @@ const handler:NextApiHandler =  async (req: NextApiRequest, res: NextApiResponse
       res.status(500).json({ message: error})
     }
 
+    const {text, color} = structureNotifications(data?.[0].title,
+                                                 profile?.[0].username,
+                                                 req.body.statu === 'draft' ? 'archived':  'published' )
+
     await supabaseAdmin.from('notification').insert({
       type: req.body.statu === 'draft' ? 'archived':  'published',
       object_name: "posts",
       object_id: id,
       to: data?.[0].user_id,
       created_by: profile?.[0].id,
+      text: text,
+      color: color
     })
 
     await sendEmail(
@@ -57,12 +63,16 @@ const handler:NextApiHandler =  async (req: NextApiRequest, res: NextApiResponse
       res.status(500).json({ message: error})
     }
 
+    const {text, color} = structureNotifications(data?.[0].title, profile?.[0].username, "deleted")
+
     await supabaseAdmin.from('notification').insert({
       type: 'deleted',
       object_name: "post",
       object_id: id,
       to: data?.[0].user_id,
       created_by: profile?.[0].id,
+      text: text,
+      color: color
     })
 
     await sendEmail(postOwner?.user?.email ?? "", "deleted", {title: data?.[0].title})
@@ -85,5 +95,6 @@ const sendEmail = async (email: string, statue: string, data:any) => {
 
   }
 }
+
 
 export default handler;

@@ -11,13 +11,12 @@ const Notifications = () => {
       await fetch('/api/notifications/get-notifications')
       .then((res) => res.json())
       .then(data => {
-        if (data.notifications) {
-          console.log(data.notifications)
+        if (data.notifications.length) {
           setNotifications(data.notifications)
         }
       })
     })
-  }, [notification])
+  }, [setNotifications])
 
   return (
     <Box px={8}>
