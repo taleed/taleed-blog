@@ -1,5 +1,6 @@
 import transporter from "@/utils/emailConfig";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { equal } from "assert";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { supabaseAdmin } from "../../../utils/supabaseAdmin";
 
@@ -18,10 +19,6 @@ const handler:NextApiHandler =  async (req: NextApiRequest, res: NextApiResponse
     res.status(401).json({ message: "هذا المستخدم غير مسموح له باجراء هذه العملية" })
   }
 
-  if (req.method === "POST") {
-
-  }
-
   if (req.method ===  "PATCH") {
 
     const { error, data } = await supabaseAdmin.from('posts')
@@ -34,24 +31,25 @@ const handler:NextApiHandler =  async (req: NextApiRequest, res: NextApiResponse
       res.status(500).json({ message: error})
     }
 
-
-
     await supabaseAdmin.from('notification').insert({
-      type:  req.body.statu === 'draft' ? 'archived':  'published',
+      type: req.body.statu === 'draft' ? 'archived':  'published',
       object_name: "posts",
       object_id: id,
       to: data?.[0].user_id,
       created_by: profile?.[0].id,
     })
 
-
-    await sendEmail(postOwner?.user?.email ?? "", "archived", {title: data?.[0].title})
+    await sendEmail(
+      postOwner?.user?.email ?? "",
+      req.body.statu === 'draft' ? 'archived':  'published',
+      {title: data?.[0].title}
+    )
     res.status(200).json({ message: "تم تحديث حالة المقال بنجاح" })
   }
 
   if (req.method === "DELETE") {
     const { error, data } = await supabase.from('posts')
-                                  .delete().eq("id", id).select('user_id(id(id, email)), title') as any
+                                  .delete().eq("id", id).select('user_id, title') as any
 
     const {data: postOwner } =  await supabaseAdmin.auth.admin.getUserById(data?.[0].user_id)
 
@@ -87,4 +85,5 @@ const sendEmail = async (email: string, statue: string, data:any) => {
 
   }
 }
+
 export default handler;

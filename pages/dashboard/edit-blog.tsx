@@ -98,7 +98,6 @@ function makeid(length: number) {
 const AddBlog = () => {
   const toast = useToast();
   const user = useUser();
-  const supabaseClient = useSupabaseClient();
   const [blogBody, setBlogBody] = useState("");
   const [BlogImgUrl, setBlogImgUrl] = useState<string | undefined>(undefined);
   const [uploading, setUploading] = useState<boolean>(false);
@@ -119,31 +118,35 @@ const AddBlog = () => {
     blogImg,
   }) => {
     if (user) {
-      const { error, status} = await supabaseClient.from("posts").update({
-        title: title,
-        body: blogBody,
-        excerpt: excerpt,
-        status: "draft",
-        thumbnail: blogImg || "default.jpg",
-        category_id: category,
-        tags,
-        updated_at: new Date()
-      }).eq("id", String(blogId));
+      try {
+        let data = await fetch('/api/manage-blogs/modify?id='+blogId, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            title: title,
+            body: blogBody,
+            excerpt: excerpt,
+            user_id: user.id,
+            thumbnail: blogImg || "default.jpg",
+            category_id: category,
+            tags,
+          })
+        }).then(res => res.json())
 
-      if (!error) {
-        toast({
-          title: "تم تحديث المقالة",
-          description: "تم تحديث المقالة بنجاح.",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top-right",
-          onCloseComplete:  () => {
-            router.push('/dasboard/manage-blogs')
-          }
-        });
-      } else {
-        console.log("[error - update a post post]: ", error.message);
+        if (data.length > 0) {
+          toast({
+            title: "تم تحديث المقالة",
+            description: "تم تحديث المقالة بنجاح.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top-right",
+            onCloseComplete:  () => {
+              router.push('/dasboard/manage-blogs')
+            }
+          });
+        }
+      } catch (error) {
+        console.log(error)
       }
     }
   };
@@ -157,9 +160,9 @@ const AddBlog = () => {
     setValue("excerpt", excerpt as string ?? "")
     setValue("category", Number(category_id ?? 1))
     setBlogBody(body as string ?? "")
-    setTags(tags as string [] ?? undefined)
+    setTags(tags as string [] ?? [])
     setBlogId(Number(id))
-  }, []);
+  }, [])
 
   const uploadImage = async (event: any) => {
     if (!event.target.files || event.target.files.length === 0) {
@@ -336,7 +339,6 @@ const AddBlog = () => {
                 readOnly={false}
                 style={{ backgroundColor: "white" }}
                 onChange={e => {
-                  console.log(blogBody)
                   setBlogBody(e)}}
               />
             </Box>

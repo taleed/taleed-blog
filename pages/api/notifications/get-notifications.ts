@@ -46,6 +46,7 @@ const structureNotifications = async (data: any) => {
 const structureNotificationType = (type: string) => {
   let res = ""
   let color = ""
+
   switch(type) {
     case "draft": {
       res = "تعليق";
@@ -85,6 +86,11 @@ const structureNotificationType = (type: string) => {
     case "published": {
       res = "نشر";
       color = "#3987c9"
+      break
+    }
+    case "edited": {
+      res = "تعديل"
+      color = "white"
       break
     }
   }

@@ -115,28 +115,33 @@ const AddBlog = () => {
     blogImg,
   }) => {
     if (user) {
-      const { error } = await supabaseClient.from("posts").insert({
-        title: title,
-        body: blogBody,
-        excerpt: excerpt,
-        status: "published",
-        user_id: user.id,
-        thumbnail: blogImg || "default.jpg",
-        category_id: category,
-        tags,
-      });
+      try {
+        let data = await fetch('/api/manage-blogs/modify', {
+          method: 'POST',
+          body: JSON.stringify({
+            title: title,
+            body: blogBody,
+            excerpt: excerpt,
+            user_id: user.id,
+            thumbnail: blogImg || "default.jpg",
+            category_id: category,
+            tags,
+          })
+        }).then(res => res.json())
 
-      if (!error) {
-        toast({
-          title: "تم انشاء المقالة",
-          description: "تم انشاء المقالة بنجاح, يُمكن للجميع رؤيتها الآن.",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top-right",
-        });
-      } else {
-        console.log("[error - add new post]: ", error.message);
+        if (data.length > 0) {
+          toast({
+            title: "تم انشاء المقالة",
+            description: "تم انشاء المقالة بنجاح, يُمكن للجميع رؤيتها الآن.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "top-right",
+          });
+        }
+
+      } catch (error) {
+        console.log(error)
       }
     }
   };
