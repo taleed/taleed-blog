@@ -6,6 +6,7 @@ import SidebarContent from "@/components/dashboard/sidebar";
 
 export default function Layout({ children }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <>
       <Head>

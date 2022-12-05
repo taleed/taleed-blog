@@ -1,15 +1,47 @@
-import { Flex, FlexProps, Icon } from "@chakra-ui/react";
+import { Flex, FlexProps, Icon, Tag, TagLabel } from "@chakra-ui/react";
 
 import { IconType } from "react-icons";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
+
+import io from 'Socket.IO-client'
+import { useEffect } from "react";
+
+
 
 interface NavItemProps extends FlexProps {
   icon: IconType;
   href: string;
+  name: string;
   children: ReactNode;
 }
-const NavItem = ({ href, icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({ href, icon, name, children, ...rest }: NavItemProps) => {
+  const [notification, setNotifications] = useState(0)
+
+  useEffect(() => {
+    if (name == "الاشعارات") {
+      socketInitializer()
+
+    }
+  }, [notification])
+
+  const socketInitializer = async () => {
+
+    let socket = io()
+    fetch('/api/notifications/ws-notifications')
+
+    socket.on('connect', () => {
+      console.log("im connnnectiong")
+    })
+
+    socket.on('notify', (payload: number) => {
+      setNotifications(payload)
+    })
+
+    socket.emit('subscribe')
+  }
+
+
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
       <Flex
@@ -35,6 +67,12 @@ const NavItem = ({ href, icon, children, ...rest }: NavItemProps) => {
           />
         )}
         {children}
+
+        {(notification && name == "الاشعارات") ? (
+          <Tag size='sm' colorScheme='red' borderRadius='full' mr={3}>
+            <TagLabel>{notification}</TagLabel>
+          </Tag>
+        ) : <></>}
       </Flex>
     </Link>
   );

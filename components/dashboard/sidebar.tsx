@@ -77,7 +77,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           return;
         } else {
           return (
-            <NavItem key={link.name} icon={link.icon} href={link.href}>
+            <NavItem name={link.name} key={link.name} icon={link.icon} href={link.href}>
               {link.name}
             </NavItem>
           );

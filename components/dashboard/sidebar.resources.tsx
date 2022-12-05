@@ -1,4 +1,4 @@
-import { FiBarChart, FiFilePlus, FiHome, FiUsers} from "react-icons/fi";
+import { FiBarChart, FiFilePlus, FiHome, FiUsers, FiBell} from "react-icons/fi";
 import { BsCardChecklist } from "react-icons/bs"
 import { IconType } from "react-icons";
 
@@ -33,6 +33,12 @@ export const LinkItems: Array<LinkItemProps> = [
     name: "اضف مقال جديد",
     href: "/dashboard/add-blog",
     icon: FiFilePlus,
+    needAdminPermissions: false,
+  },
+  {
+    name: "الاشعارات",
+    href: "/dashboard/notifications",
+    icon: FiBell,
     needAdminPermissions: false,
   },
 ];
