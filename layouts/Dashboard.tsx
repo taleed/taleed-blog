@@ -3,12 +3,13 @@ import { Box, Drawer, DrawerContent, useDisclosure } from "@chakra-ui/react";
 import Head from "next/head";
 import MobileNav from "@/components/dashboard/mobileNav";
 import SidebarContent from "@/components/dashboard/sidebar";
+import { SocketContext, socket } from "@/components/socketProvider";
 
 export default function Layout({ children }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <>
+    <SocketContext.Provider value={socket}>
       <Head>
         <title>تليد - لوحة التحكم</title>
       </Head>
@@ -43,6 +44,6 @@ export default function Layout({ children }: any) {
           {children}
         </Box>
       </Box>
-    </>
+    </SocketContext.Provider>
   );
 }

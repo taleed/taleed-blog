@@ -2,11 +2,10 @@ import { Flex, FlexProps, Icon, Tag, TagLabel } from "@chakra-ui/react";
 
 import { IconType } from "react-icons";
 import Link from "next/link";
-import { ReactNode, useState } from "react";
+import { ReactNode, useContext, useState } from "react";
 
-import io from 'Socket.IO-client'
 import { useEffect } from "react";
-
+import { SocketContext } from "@/components/socketProvider";
 
 
 interface NavItemProps extends FlexProps {
@@ -17,6 +16,7 @@ interface NavItemProps extends FlexProps {
 }
 const NavItem = ({ href, icon, name, children, ...rest }: NavItemProps) => {
   const [notification, setNotifications] = useState(0)
+  const socket = useContext(SocketContext);
 
   useEffect(() => {
     if (name == "الاشعارات") {
@@ -27,9 +27,6 @@ const NavItem = ({ href, icon, name, children, ...rest }: NavItemProps) => {
 
   const socketInitializer = async () => {
 
-    let socket = io()
-    fetch('/api/notifications/ws-notifications')
-
     socket.on('connect', () => {
       console.log("im connnnectiong")
     })
@@ -37,7 +34,6 @@ const NavItem = ({ href, icon, name, children, ...rest }: NavItemProps) => {
     socket.on('notify', (payload: number) => {
       setNotifications(payload)
     })
-
     socket.emit('subscribe')
   }
 

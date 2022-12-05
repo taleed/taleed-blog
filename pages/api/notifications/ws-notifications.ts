@@ -13,7 +13,7 @@ const handler =  async (req: any, res:any) => {
     const supabase = createServerSupabaseClient({ req, res });
 
     const profile = await getCurrentUser(supabase)
-    const id = profile?.[0].id
+    const id = profile?.id
 
     io.on('connection', async (socket:any) => {
       emitData(socket, id)
@@ -35,16 +35,17 @@ const handler =  async (req: any, res:any) => {
 const getCurrentUser  = async (supabase: SupabaseClient<any, "public", any>) => {
   const { data:user } = await supabase.auth.getUser()
   const { data:profile } = await supabaseAdmin.from('profiles').select("id").eq("id", user.user?.id)
-
-  return profile
+  const _profile = profile?.[0]
+  return _profile
 }
 
 const emitData = async (socket: any, id: string) => {
-      const { count, data } = await supabaseAdmin.from("notification")
-                                      .select("id", { count: "exact" })
-                                      .eq('to', id)
-                                      .eq('read', false)
-      socket.emit("notify", count)
+    const { count } = await supabaseAdmin.from("notification")
+                                        .select("id", { count: "exact" })
+                                        .order("created_at", { ascending: true })
+                                        .eq('to', id)
+                                        .eq('read', false)
+    socket.emit("notify", count)
 }
 
 export default handler
