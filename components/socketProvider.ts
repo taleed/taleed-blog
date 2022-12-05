@@ -1,5 +1,5 @@
 import React from 'react'
-import io from 'Socket.IO-client'
+import io from 'socket.io-client'
 
 fetch('/api/notifications/ws-notifications')
 export const socket = io()

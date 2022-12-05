@@ -1,6 +1,6 @@
 import { supabaseAdmin } from '@/utils/supabaseAdmin';
 import { createServerSupabaseClient, SupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { Server } from 'Socket.IO'
+import { Server } from 'socket.io'
 
 const handler =  async (req: any, res:any) => {
 
