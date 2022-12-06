@@ -13,6 +13,17 @@ const handler:NextApiHandler = async (req, res) => {
     res.status(401).json({ message: "هذا المستخدم غير مسموح له باجراء هذه العملية" })
   }
 
+  const { count } = req.query
+
+  if( count ) {
+    const { count } =  await supabase.from('notification')
+    .select("id", { count: "exact" })
+    .eq("to", user.user?.id)
+    .eq("read", false)
+
+    return res.status(200).json({count})
+  }
+
   await supabase.from('notification')
                 .update({ read: true}).eq("to", user.user?.id)
 

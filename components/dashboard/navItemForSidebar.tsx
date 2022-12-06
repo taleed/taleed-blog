@@ -5,7 +5,8 @@ import Link from "next/link";
 import { ReactNode, useContext, useState } from "react";
 
 import { useEffect } from "react";
-import { SocketContext } from "@/components/socketProvider";
+import { supabase } from "@/utils/supabaseClient";
+import { useUser } from "@supabase/auth-helpers-react";
 
 
 interface NavItemProps extends FlexProps {
@@ -15,28 +16,24 @@ interface NavItemProps extends FlexProps {
   children: ReactNode;
 }
 const NavItem = ({ href, icon, name, children, ...rest }: NavItemProps) => {
+  const user = useUser()
   const [notification, setNotifications] = useState(0)
-  const socket = useContext(SocketContext);
 
   useEffect(() => {
-    if (name == "الاشعارات") {
-      socketInitializer()
+    if (name == "الاشعارات" && user?.id) {
 
+      supabase.channel('*')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notification', filter: 'to=eq.'+user.id },
+      async () => {
+        await fetch('/api/notifications/get-notifications?count=true')
+        .then((res) => res.json())
+        .then(data => {
+          setNotifications(data.count)
+        })
+      })
+      .subscribe()
     }
-  }, [notification])
-
-  const socketInitializer = async () => {
-
-    socket.on('connect', () => {
-      console.log("im connnnectiong")
-    })
-
-    socket.on('notify', (payload: number) => {
-      setNotifications(payload)
-    })
-    socket.emit('subscribe')
-  }
-
+  }, [setNotifications, user?.id])
 
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
