@@ -12,7 +12,7 @@ const handler:NextApiHandler = async (req, res) => {
   const { data:user } = await supabase.auth.getUser()
   const { data:profile } = await supabaseAdmin.from('profiles').select('id, is_admin, username').eq("id", user.user?.id)
 
-  if (!profile?.[0] && (req.method === "POST" || req.method === "PUT" || req.method === "PATCH") ) {
+  if (!profile?.[0].is_admin && (req.method === "POST" || req.method === "PUT" || req.method === "PATCH") ) {
     res.status(401).json({ message: "هذا المستخدم غير مسموح له باجراء هذه العملية" })
   }
 
