@@ -20,6 +20,13 @@ const handler:NextApiHandler =  async (req, res) => {
   }
 
   if (req.method === "PATCH") {
+
+    const profile_id =!profile?.[0].id as unknown as string
+
+    if (!profile?.[0].is_admin &&  profile_id !== id ) {
+      res.status(401).json({ message: "هذا المستخدم غير مسموح له باجراء هذه العملية" })
+    }
+
     try {
       const { error, data } = await supabaseAdmin.from("posts").update({
         title: req.body.title,
@@ -46,7 +53,7 @@ const handler:NextApiHandler =  async (req, res) => {
           object_name: "posts",
           object_id: id,
           to: data?.[0].user_id,
-          created_by: profile?.[0].id,
+          created_by: profile_id,
           text: text,
           color: color,
         })

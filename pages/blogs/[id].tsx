@@ -11,6 +11,9 @@ import {
   Text,
   chakra,
   useColorModeValue,
+  Stack,
+  IconButton,
+  useToast,
 } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
 
@@ -22,6 +25,8 @@ import Logo from "@/components/Logo";
 import { NavbarResourcesType } from "@/types/blog";
 import NextLink from "next/link";
 import { supabase } from "@/utils/supabaseClient";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { useRouter } from "next/router";
 
 interface Props {
   post: any;
@@ -43,7 +48,16 @@ function Blog({ post, similar_posts }: Props) {
 
   const [likes, setLikes] = useState<number | null>(null);
   const [liked, setLiked] = useState<boolean>(false);
+  const router = useRouter()
+  const toast = useToast()
+  const [owner, setOwner] = useState(false)
 
+  const isOwner = async () => {
+    const {data:user} = await supabase.auth.getUser()
+    console.log(user.user)
+    console.log(post.profiles)
+    setOwner(user.user?.id === post.profiles.id)
+  }
   const getLikes = async () => {
     const { data } = await supabase
       .from("posts")
@@ -80,10 +94,35 @@ function Blog({ post, similar_posts }: Props) {
     }
   }
 
+  const handleDelete = async (id: number) => {
+      await fetch('/api/manage-blogs/'+id, {
+        method: 'DELETE',
+      }).then(res => res.json())
+      .then(()=> {
+        toast({
+          title: "تم حذف المقالة",
+          description: "تم حذف المقالة بنجاح.",
+          status: "error",
+          duration: 1000,
+          isClosable: true,
+          position: "top-right",
+          onCloseComplete:  () => {
+            router.push(`/authors/${post.profiles.username}`)
+          }
+        });
+      })
+      .catch((error: any) => {
+        console.log("[error - delete post]: ", e.message);
+      })
+  }
+
   useEffect(() => {
     getLikes();
     addViewer();
-  }, []);
+    new Promise(async () => {
+      await isOwner()
+    })
+  }, [owner]);
 
   const ads_color = useColorModeValue("#F4F5F5", "#2F3133");
 
@@ -95,15 +134,36 @@ function Blog({ post, similar_posts }: Props) {
       <Container my={{ base: 10, md: 20 }} maxW="container.xl">
         <Flex flexDir={{ base: "column", lg: "row" }}>
           <Flex flexDir="column" flex={1}>
-            <chakra.span
-              color="brand.secondary"
-              fontSize={{ base: "xl", md: "1.625rem" }}
-              fontWeight="600"
-              lineHeight={{ base: "36.8px", md: "47.84px" }}
-            >
-              {post.top_menus && post.top_menus.name}
-              {post.sub_menus && post.sub_menus.name}
-            </chakra.span>
+            <Stack align={"center"} justify={"space-between"} flexDirection={"row"}>
+              <chakra.span
+                color="brand.secondary"
+                fontSize={{ base: "xl", md: "1.625rem" }}
+                fontWeight="600"
+                lineHeight={{ base: "36.8px", md: "47.84px" }}
+              >
+                {post.top_menus && post.top_menus.name}
+                {post.sub_menus && post.sub_menus.name}
+              </chakra.span>
+              { owner &&
+                <Box>
+                  <IconButton
+                    onClick={() => router.push({
+                        pathname: "/dashboard/edit-blog",
+                        query: {...post}}, "/dashboard/edit-blog")
+                    }
+                    aria-label="edit blog post"
+                    icon={<FaEdit />}
+                    marginInline={2}
+                  />
+                  <IconButton
+                    onClick={async () => await handleDelete(post.id)}
+                    aria-label="delete blog post"
+                    icon={<FaTrash />}
+                    marginInline={2}
+                  />
+                </Box>
+                }
+            </Stack>
             <Heading
               as="h1"
               color={useColorModeValue("brand.black", "white")}
@@ -232,7 +292,7 @@ function Blog({ post, similar_posts }: Props) {
               </chakra.h2>
               {similar_posts.length === 0 && "لا توجد مواضيع ذات صلة بعد"}
               {similar_posts &&
-                similar_posts.map((post, index: index) => {
+                similar_posts.map((post: any, index: number) => {
                   return (
                     <NextLink key={index} href={`/blogs/${post.id}`} passHref>
                       <Flex
@@ -327,7 +387,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { data: post_top_menu } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(first_name, last_name,username, avatar_url)"
+      "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url)"
     )
     .eq("id", id)
     .single();
@@ -335,7 +395,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { data: post_sub_menu } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, body, tags, sub_menus!inner(name), profiles!inner(first_name, last_name,username, avatar_url)"
+      "id,title,thumbnail,excerpt, created_at, body, tags, sub_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url)"
     )
     .eq("id", id)
     .single();

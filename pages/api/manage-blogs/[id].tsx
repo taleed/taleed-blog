@@ -54,6 +54,13 @@ const handler:NextApiHandler =  async (req: NextApiRequest, res: NextApiResponse
   }
 
   if (req.method === "DELETE") {
+
+    const profile_id =!profile?.[0].id as unknown as string
+
+    if (!profile?.[0].is_admin &&  profile_id !== id ) {
+      res.status(401).json({ message: "هذا المستخدم غير مسموح له باجراء هذه العملية" })
+    }
+    
     const { error, data } = await supabase.from('posts')
                                   .delete().eq("id", id).select('user_id, title') as any
 
