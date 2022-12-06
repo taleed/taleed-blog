@@ -19,11 +19,23 @@ const handler: NextApiHandler = async (req, res) => {
     });
   }
 
-  // Run queries with RLS on the server
-  const { error, data: unApprovedProfiles } = await supabase
-    .from("profiles")
-    .select("id")
-    .eq("approved", false);
+  const { q }= req.query
+
+  let error = undefined
+  let profiles: any[] = []
+  let result: any = undefined
+
+  if (q === "true") {
+    result = await supabase.from("profiles").select("id, approved, type").eq("approved", true)
+  } else if ( q === "false") {
+    result = await supabase.from("profiles").select("id, approved, type").eq("approved", false)
+  } else {
+    result = await supabase.from("profiles").select("id, approved, type")
+  }
+
+  profiles = result.data
+  error = result.error
+
   if (error) {
     return res.status(500).json(error);
   }
@@ -37,9 +49,13 @@ const handler: NextApiHandler = async (req, res) => {
     return res.status(500).json(error);
   }
 
-  const filteredUsers = users.filter((user) =>
-    unApprovedProfiles.map((p) => p.id).includes(user.id)
-  );
+  const filteredUsers = users.map((user) => {
+    let p = profiles.filter((p) => p.id === user.id)[0]
+    if (p) {
+      return {...user,...{approved: p.approved, type: p.type}}
+    }
+    return;
+  }).filter(e => !!e)
 
   res.status(200).json(filteredUsers);
 };

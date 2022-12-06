@@ -28,7 +28,9 @@ import {
   Tr,
   chakra,
   useDisclosure,
+  useColorModeValue,
   useToast,
+  Select,
 } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
 
@@ -36,6 +38,7 @@ import { BsCheck } from "react-icons/bs";
 import { IoIosArrowBack } from "react-icons/io";
 import Layout from "@/layouts/Dashboard";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { supabase } from "@/utils/supabaseClient";
 
 const ManageEditors = () => {
   const supabaseClient = useSupabaseClient();
@@ -43,12 +46,16 @@ const ManageEditors = () => {
   const [data, setData] = useState([]);
   const toast = useToast();
   const profileDetailsModal = useDisclosure();
-  const [isFetching, setIsFetching] = useState<boolean>(false);
   const [profileDetails, setProfileDetails] = useState(null);
+  const [profileTypes, setProfileTypes] = useState<any[]>()
+  const [filter, setFilter] = useState("all")
 
-  const fetchUnApprovedProfiles = async () => {
+  const fetchProfiles = async (filter?: string) => {
     setLoading(true);
-    const r = await fetch("/api/manage-editors/unApproved-editors");
+
+    let url = filter ? "/api/manage-editors?q="+filter : "/api/manage-editors"
+    const r = await fetch(url);
+
     r.json()
       .then((d) => setData(d))
       .catch((e) => console.log("[fetchUnApprovedProfiles - err] ", e))
@@ -56,11 +63,26 @@ const ManageEditors = () => {
   };
 
   useEffect(() => {
-    fetchUnApprovedProfiles();
-  }, []);
+
+    new Promise(async () => {
+      await getProfileTypes()
+      await fetchProfiles();
+      console.log(data)
+    } )
+  }, [setData]);
+
+  const getProfileTypes =  async () => {
+    setLoading(true)
+    const { data }  = await supabase.from("profiles_type").select("*")
+    setProfileTypes(data ?? [])
+    setLoading(false)
+  }
+
+  const handleSelectType = async (type: string, id: string) => {
+    await supabase.from("profiles").update({type: type}).eq("id", id)
+  }
 
   const showProfileDetails = async (id: string) => {
-    setIsFetching(true);
     try {
       const { error, data } = await supabaseClient
         .from("profiles")
@@ -87,7 +109,6 @@ const ManageEditors = () => {
         isClosable: true,
       });
     } finally {
-      setIsFetching(false);
     }
   };
 
@@ -113,7 +134,7 @@ const ManageEditors = () => {
           isClosable: true,
         });
       });
-    await fetchUnApprovedProfiles();
+    await fetchProfiles();
   };
 
   const deleteProfile = async (id: string) => {
@@ -138,7 +159,7 @@ const ManageEditors = () => {
           isClosable: true,
         });
       });
-    await fetchUnApprovedProfiles();
+    await fetchProfiles();
   };
 
   const openModalAndFetchProfileDetails = (id: string) => {
@@ -146,53 +167,93 @@ const ManageEditors = () => {
     showProfileDetails(id);
   };
 
-  if (loading) {
-    return <Spinner />;
-  }
 
   return (
     <Box px={8}>
-      <Heading>محررين قيد الإنتظار</Heading>
-      <TableContainer bg="white" mt={16}>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>ID</Th>
-              <Th>البريد الإلكتروني</Th>
-              <Th>تاريخ الانظمام</Th>
-              <Th>عمليات (Actions)</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data.map((d, i) => (
-              <Tr key={i}>
-                <Td>{d.id}</Td>
-                <Td>{d.email}</Td>
-                <Td>{new Date(d.created_at).toLocaleDateString()}</Td>
-                <Td>
-                  <Stack direction="row">
-                    <IconButton
-                      onClick={() => openModalAndFetchProfileDetails(d.id)}
-                      aria-label="profile details"
-                      icon={<AiOutlineEye />}
-                    />
-                    <IconButton
-                      onClick={() => approveProfile(d.id)}
-                      aria-label="Accept user"
-                      icon={<BsCheck />}
-                    />
-                    <IconButton
-                      onClick={() => deleteProfile(d.id)}
-                      aria-label="delete user"
-                      icon={<AiOutlineDelete />}
-                    />
-                  </Stack>
-                </Td>
+      <Heading>محررين</Heading>
+      <Box mt={16}  width={"40%"}>
+        <chakra.b>انتقي المحررين</chakra.b>
+        <Select
+          border={0}
+          _focus={{ outline: "none", boxShadow: "none" }}
+          onChange={async (event) => {
+            setFilter(event.target.value)
+            await fetchProfiles(event.target.value)
+          }}
+          bg={"blackAlpha.200"}
+          size="lg"
+          defaultValue={"all"}
+        >
+          <option key={0} value={"all"}>{"الكل"}</option>
+          <option key={1} value={"true"}>{"تم قبولهم"}</option>
+          <option key={2} value={"false"}>{"قيد الانتضار"}</option>
+        </Select>
+      </Box>
+      {!loading ?
+        <TableContainer  mt={6} bg="white">
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>ID</Th>
+                <Th>البريد الإلكتروني</Th>
+                <Th>النوع</Th>
+                <Th>تاريخ الانظمام</Th>
+                <Th>عمليات (Actions)</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+            </Thead>
+            <Tbody>
+              { data?.map((d:any, i) => (
+                <Tr key={i}>
+                  <Td>{d.id}</Td>
+                  <Td>{d.type}</Td>
+                  <Td>
+                    <Select
+                      border={0}
+                      _focus={{ outline: "none", boxShadow: "none" }}
+                      onChange={async (event) => await handleSelectType(event.target.value, d.id)}
+                      size="lg"
+                      defaultValue={d.type ? d.type : ""}
+                    >
+                      <option key={"nothing"} value={""}>{"محرر عادي"}</option>
+                      {
+                        profileTypes?.map((pt, i) => (
+                          <option key={i} value={pt.type}>{pt.type}</option>
+                        ))
+
+                      }
+
+                    </Select>
+                  </Td>
+                  <Td>{new Date(d.created_at).toLocaleDateString()}</Td>
+                  <Td>
+                    <Stack direction="row">
+                      <IconButton
+                        onClick={() => openModalAndFetchProfileDetails(d.id)}
+                        aria-label="profile details"
+                        icon={<AiOutlineEye />}
+                      />
+                      {!d.approved &&
+                        <IconButton
+                          onClick={() => approveProfile(d.id)}
+                          aria-label="Accept user"
+                          icon={<BsCheck />}
+                        />
+                      }
+                      <IconButton
+                        onClick={() => deleteProfile(d.id)}
+                        aria-label="delete user"
+                        icon={<AiOutlineDelete />}
+                      />
+                    </Stack>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      : <Spinner/>
+      }
+
       <Modal
         isOpen={profileDetailsModal.isOpen}
         onClose={profileDetailsModal.onClose}
