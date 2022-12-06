@@ -26,7 +26,6 @@ const handler:NextApiHandler =  async (req, res) => {
         body: req.body.body,
         excerpt: req.body.excerpt,
         status: "draft",
-        user_id: user.user?.id,
         thumbnail: req.body.thumbnail || "default.jpg",
         category_id: req.body.category_id,
         tags: req.body.tags,

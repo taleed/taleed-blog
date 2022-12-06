@@ -10,6 +10,7 @@ import {
   Text,
   chakra,
   useColorModeValue,
+  Link as ChakraLink,
 } from "@chakra-ui/react";
 
 import { BsFillFileTextFill } from "react-icons/bs";
@@ -18,6 +19,7 @@ import Layout from "@/layouts/Default";
 import { NavbarResourcesType } from "@/types/blog";
 import { ReactElement } from "react";
 import { supabase } from "@/utils/supabaseClient";
+import NextLink from "next/link";
 
 interface Props {
   profile: any;
@@ -94,14 +96,18 @@ function Author({ profile, posts }: Props) {
                 المقالات
               </Heading>
               {posts &&
-                posts.map((post, index: number) => (
+                posts.map((post:any, index: number) => (
+                  <NextLink  key={post.id} href={`/blogs/${post.id}`} passHref>
+                  <ChakraLink
+                    _hover={{ textDecoration: "none" }}
+                    _focus={{ boxShadow: "none" }}
+                  >
                   <Flex
                     mt={4}
                     pb={8}
                     borderBottom={author_posts_box_border}
                     justify="space-between"
                     align="center"
-                    key={index}
                   >
                     <Box me={4}>
                       <chakra.span
@@ -169,6 +175,8 @@ function Author({ profile, posts }: Props) {
                       alt={`${post.title} thumbnail`}
                     />
                   </Flex>
+                  </ChakraLink>
+                  </NextLink>
                 ))}
             </Box>
           </Box>
