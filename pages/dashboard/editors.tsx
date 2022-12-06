@@ -219,9 +219,7 @@ const ManageEditors = () => {
                         profileTypes?.map((pt, i) => (
                           <option key={i} value={pt.type}>{pt.type}</option>
                         ))
-
                       }
-
                     </Select>
                   </Td>
                   <Td>{new Date(d.created_at).toLocaleDateString()}</Td>

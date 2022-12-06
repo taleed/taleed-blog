@@ -157,7 +157,7 @@ const Footer = () => {
                     <Text fontSize={"lg"}>سياسة الخصوصية</Text>
                   </Button>
                 </NextLink>
-                <NextLink href={"/"} passHref>
+                <NextLink href={"/team"} passHref>
                   <Button
                     as="a"
                     bgColor="transparent"
@@ -174,6 +174,25 @@ const Footer = () => {
                     color="white"
                   >
                     <Text fontSize={"lg"}>فريق الادارة</Text>
+                  </Button>
+                </NextLink>
+                <NextLink href={"/partners"} passHref>
+                  <Button
+                    as="a"
+                    bgColor="transparent"
+                    rounded="0px"
+                    cursor="pointer"
+                    borderBottom="2px solid"
+                    borderColor="transparent"
+                    _active={{ bgColor: "transparent", borderColor: "white" }}
+                    _hover={{ bgColor: "transparent", borderColor: "white" }}
+                    aria-label={"شركاؤنا"}
+                    px="0"
+                    textAlign="center"
+                    fontWeight="500"
+                    color="white"
+                  >
+                    <Text fontSize={"lg"}>شركاؤنا</Text>
                   </Button>
                 </NextLink>
               </Stack>

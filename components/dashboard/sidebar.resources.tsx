@@ -1,6 +1,7 @@
 import { FiBarChart, FiFilePlus, FiHome, FiUsers, FiBell, FiMessageSquare } from "react-icons/fi";
-import { BsCardChecklist } from "react-icons/bs"
+import { BsCardChecklist, BsFillHandbagFill } from "react-icons/bs"
 import { IconType } from "react-icons";
+import { icons } from "react-icons/lib";
 
 interface LinkItemProps {
   name: string;
@@ -47,4 +48,10 @@ export const LinkItems: Array<LinkItemProps> = [
     icon: FiMessageSquare,
     needAdminPermissions: true,
   },
+  {
+    name: "الشركاؤ",
+    href: "/dashboard/partners",
+    icon: BsFillHandbagFill,
+    needAdminPermissions: true,
+  }
 ];
