@@ -1,4 +1,4 @@
-import { FiBarChart, FiFilePlus, FiHome, FiUsers, FiBell} from "react-icons/fi";
+import { FiBarChart, FiFilePlus, FiHome, FiUsers, FiBell, FiMessageSquare } from "react-icons/fi";
 import { BsCardChecklist } from "react-icons/bs"
 import { IconType } from "react-icons";
 
@@ -40,5 +40,11 @@ export const LinkItems: Array<LinkItemProps> = [
     href: "/dashboard/notifications",
     icon: FiBell,
     needAdminPermissions: false,
+  },
+  {
+    name: "الرسائل",
+    href: "/dashboard/messages",
+    icon: FiMessageSquare,
+    needAdminPermissions: true,
   },
 ];

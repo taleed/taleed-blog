@@ -132,10 +132,10 @@ export default function Contact({
                 <Input
                   autoComplete="off"
                   borderRadius={10}
-                  bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
+                  bg={useColorModeValue("blackAlpha.50", "whiteAlpha.150")}
                   border={0}
                   _focus={{
-                    bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
+                    bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
                     outline: "none",
                     boxShadow: "none",
                   }}
@@ -154,7 +154,7 @@ export default function Contact({
                 <Select
                   border={0}
                   _focus={{ outline: "none", boxShadow: "none" }}
-                  bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
+                  bg={useColorModeValue("blackAlpha.50", "whiteAlpha.150")}
                   onChange={handleSelectField}
                   size="lg"
                   value={watch("type")}
@@ -174,10 +174,10 @@ export default function Contact({
               <Input
                 autoComplete="off"
                 borderRadius={10}
-                bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
+                bg={useColorModeValue("blackAlpha.50", "whiteAlpha.150")}
                 border={0}
                 _focus={{
-                  bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
+                  bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
                   outline: "none",
                   boxShadow: "none",
                 }}
@@ -201,15 +201,15 @@ export default function Contact({
                 resize="none"
                 p={4}
                 borderRadius={10}
-                bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
+                bg={useColorModeValue("blackAlpha.50", "whiteAlpha.150")}
                 border={0}
                 _focus={{
-                  bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
+                  bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
                   outline: "none",
                   boxShadow: "none",
                 }}
                 _disabled={{
-                  bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
+                  bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
                 }}
                 size="lg"
                 id="about"

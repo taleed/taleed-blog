@@ -26,8 +26,9 @@ const Notifications = () => {
           <Thead>
             <Tr>
               <Th>ID</Th>
-              <Th>البريد الإلكتروني</Th>
-              <Th>ID</Th>
+              <Th>الاشعار</Th>
+              <Th>التوقيت</Th>
+              <Th>التاريخ</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -35,7 +36,8 @@ const Notifications = () => {
               <Tr bg={d.color} key={i}>
                  <Td>{i}</Td>
                 <Td>{d.text}</Td>
-                <Td>{new Date(d.created_at).toLocaleDateString() + ", " +new Date(d.created_at).toLocaleTimeString()}</Td>
+                <Td>{new Date(d.created_at).toLocaleTimeString()}</Td>
+                <Td>{new Date(d.created_at).toLocaleDateString()}</Td>
               </Tr>
             ))}
           </Tbody>
