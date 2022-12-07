@@ -41,7 +41,8 @@ const TopNavbar: FC<Props> = ({ items }) => {
   const router = useRouter();
   const user = useUser();
   const menuSidebar = useDisclosure();
-
+  const menuColors = useColorModeValue("blackAlpha.200", "whiteAlpha.200")
+  const drawerListColors= useColorModeValue("white", "grey.700")
   const handleClick = () => {
     if (!user) {
       router.push("/be-an-editor");
@@ -134,12 +135,12 @@ const TopNavbar: FC<Props> = ({ items }) => {
               <MenuButton
                 display={{ base: "none", md: "inherit" }}
                 as={Button}
-                bg={useColorModeValue("blackAlpha.200", "whiteAlpha.200")}
+                bg={menuColors}
                 _hover={{
-                  bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
+                  bg: menuColors,
                 }}
                 _focus={{
-                  bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
+                  bg: menuColors,
                 }}
                 rightIcon={<IoIosArrowDropdown />}
               >
@@ -147,7 +148,7 @@ const TopNavbar: FC<Props> = ({ items }) => {
               </MenuButton>
               <MenuList
                 display={{ base: "none", md: "inherit" }}
-                bg={useColorModeValue("white", "grey.700")}
+                bg={drawerListColors}
               >
                 {items.slice(9).map((link) => (
                     <MenuItem onClick={() => router.push(`/category/top/${link.slug}`) } key={link.order}>
@@ -166,7 +167,7 @@ const TopNavbar: FC<Props> = ({ items }) => {
         onClose={menuSidebar.onClose}
       >
         <DrawerOverlay />
-        <DrawerContent bg={useColorModeValue("white", "grey.700")}>
+        <DrawerContent bg={drawerListColors}>
           <DrawerCloseButton />
 
           <DrawerBody>
