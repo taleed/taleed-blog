@@ -80,6 +80,7 @@ type FormValues = {
   title: string;
   excerpt: string;
   blogImg: string;
+  frame: string;
 };
 
 function makeid(length: number) {
@@ -113,6 +114,7 @@ const AddBlog = () => {
     title,
     excerpt,
     blogImg,
+    frame,
   }) => {
     if (user) {
       try {
@@ -122,14 +124,14 @@ const AddBlog = () => {
             title: title,
             body: blogBody,
             excerpt: excerpt,
+            frame: frame,
             user_id: user.id,
             thumbnail: blogImg || "default.jpg",
             category_id: category,
             tags,
           })
         }).then(res => res.json())
-
-        if (data.length > 0) {
+        if (data.message === "تم اضافة مقال جديد بنجاح") {
           toast({
             title: "تم انشاء المقالة",
             description: "تم انشاء المقالة بنجاح, يُمكن للجميع رؤيتها الآن.",
@@ -307,6 +309,15 @@ const AddBlog = () => {
               onChange={setTags}
               name="tags"
               placeHolder="أضف كلمات مفتاحية"
+            />
+          </FormControl>
+          {/* sound cloud frame*/}
+          <FormControl mt={8} mb={6}>
+            <FormLabel htmlFor="frame">sound cloud frame</FormLabel>
+            <Textarea
+              bg="whiteAlpha.700"
+              id="frame"
+              {...register!("frame")}
             />
           </FormControl>
           {/* blog's content */}

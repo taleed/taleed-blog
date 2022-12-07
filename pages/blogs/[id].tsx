@@ -70,8 +70,6 @@ function Blog({ post, similar_posts }: Props) {
     })
   };
 
-  const isSSR = () => typeof window === 'undefined';
-
   const incrementLikes = async () => {
     setLikeLoad(true)
     await fetch("/api/likes", {
@@ -162,6 +160,7 @@ function Blog({ post, similar_posts }: Props) {
   }
 
   useEffect(() => {
+    console.log(post)
     new Promise(async () => {
       await isOwner()
       await addViewer()
@@ -264,6 +263,11 @@ function Blog({ post, similar_posts }: Props) {
               src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/blogs/${post.thumbnail}`}
               alt="Article"
             />
+            <Box
+              className="post-sound-cloud"
+              dangerouslySetInnerHTML={{ __html: post.sound_cloud_frame }}
+            />
+
             <Box
               className="post-content"
               dangerouslySetInnerHTML={{ __html: post.body }}
@@ -435,7 +439,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { data: post_top_menu } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url)"
+      "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url), sound_cloud_frame"
     )
     .eq("id", id)
     .single();
@@ -443,7 +447,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { data: post_sub_menu } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, body, tags, sub_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url)"
+      "id,title,thumbnail,excerpt, created_at, body, tags, sub_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url), sound_cloud_frame"
     )
     .eq("id", id)
     .single();
@@ -452,7 +456,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const { data: similar_posts_top_menus } = await supabase
       .from("posts")
       .select(
-        "id,title, created_at, thumbnail, top_menus!inner(name), profiles!inner(first_name, last_name)"
+        "id,title, created_at, thumbnail, top_menus!inner(name), profiles!inner(first_name, last_name), sound_cloud_frame"
       )
       .filter("top_menus.name", "eq", post_top_menu!.top_menus!.name)
       .filter("id", "not.eq", post_top_menu.id)
@@ -472,7 +476,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const { data: similar_posts_sub_menus } = await supabase
       .from("posts")
       .select(
-        "id,title, created_at, thumbnail, sub_menus!inner(name), profiles!inner(first_name, last_name)"
+        "id,title, created_at, thumbnail, sub_menus!inner(name), profiles!inner(first_name, last_name), sound_cloud_frame"
       )
       .filter("sub_menus.name", "eq", post_sub_menu!.sub_menus!.name)
       .filter("id", "not.eq", post_sub_menu.id)
@@ -519,13 +523,13 @@ export const getStaticPaths = async () => {
   const { data: posts_top_menus, error: posts_top_menus_error } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(first_name, last_name,username, avatar_url)"
+      "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(first_name, last_name,username, avatar_url), sound_cloud_frame"
     );
 
   const { data: posts_sub_menus, error: posts_sub_menus_error } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, body, tags, sub_menus!inner(name), profiles!inner(first_name, last_name,username, avatar_url)"
+      "id,title,thumbnail,excerpt, created_at, body, tags, sub_menus!inner(name), profiles!inner(first_name, last_name,username, avatar_url), sound_cloud_frame"
     );
 
   if (posts_top_menus_error || posts_sub_menus_error) {

@@ -33,6 +33,7 @@ const handler:NextApiHandler =  async (req, res) => {
         body: req.body.body,
         excerpt: req.body.excerpt,
         status: "draft",
+        sound_cloud_frame: req.body.frame,
         thumbnail: req.body.thumbnail || "default.jpg",
         category_id: req.body.category_id,
         tags: req.body.tags,
@@ -83,13 +84,13 @@ const handler:NextApiHandler =  async (req, res) => {
         title: req.body.title,
         body: req.body.body,
         excerpt: req.body.excerpt,
+        sound_cloud_frame: req.body.frame,
         status: "created",
         user_id: user.user?.id,
         thumbnail: req.body.thumbnail || "default.jpg",
         category_id: req.body.category_id,
         tags: req.body.tags,
       }).select()
-
 
       if (error) {
         throw new Error(error.message);

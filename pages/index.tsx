@@ -243,7 +243,7 @@ export const getStaticProps = async () => {
   const { data: newBlogTopMenu } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url)"
+      "id,title,thumbnail,excerpt, created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
     )
     .order("created_at", {
       ascending: false,
@@ -253,7 +253,7 @@ export const getStaticProps = async () => {
   const { data: newBlogSubMenu } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url)"
+      "id,title,thumbnail,excerpt, created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
     )
     .order("created_at", {
       ascending: false,
@@ -265,7 +265,7 @@ export const getStaticProps = async () => {
   const { data: latestBlogsTopMenus } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url)"
+      "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
     ).eq("status", "published")
     .order("created_at", {
       ascending: false,
@@ -275,7 +275,7 @@ export const getStaticProps = async () => {
   const { data: latestBlogsSubMenus } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url)"
+      "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
     ).eq("status", "published")
     .order("created_at", {
       ascending: false,
@@ -289,7 +289,7 @@ export const getStaticProps = async () => {
   let queryTopMenus = supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url)"
+      "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
     ).eq("status", "published")
     .order("created_at", {
       ascending: true,
@@ -299,7 +299,7 @@ export const getStaticProps = async () => {
   let querySubMenus = supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url)"
+      "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url, sound_cloud_frame"
     ).eq("status", "published")
     .order("created_at", {
       ascending: true,
