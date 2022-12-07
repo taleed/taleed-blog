@@ -7,7 +7,9 @@ import {
 import {
   FaFacebookF,
   FaInstagram,
+  FaLinkedin,
   FaTelegramPlane,
+  FaTiktok,
   FaTwitter,
   FaYoutube,
 } from "react-icons/fa";
@@ -15,6 +17,23 @@ import {
 const SocialMediaLinks = (props: ButtonGroupProps) => {
   return (
     <HStack spacing={8}>
+      <Button
+        variant="unstyled"
+        as="a"
+        href="#"
+        target={"_blank"}
+        aria-label="Linkedin"
+        bgColor="white"
+        rounded="full"
+        color={useColorModeValue("brand.primary", "grey.900")}
+        w={10}
+        h={10}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <FaLinkedin size={20} />
+      </Button>
       <Button
         variant="unstyled"
         as="a"
@@ -99,6 +118,23 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
         justifyContent="center"
       >
         <FaTelegramPlane size={20} />
+      </Button>
+      <Button
+        variant="unstyled"
+        as="a"
+        href="#"
+        target={"_blank"}
+        aria-label="TikTok"
+        bgColor="white"
+        rounded="full"
+        color={useColorModeValue("brand.primary", "grey.900")}
+        w={10}
+        h={10}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <FaTiktok size={20} />
       </Button>
     </HStack>
   );
