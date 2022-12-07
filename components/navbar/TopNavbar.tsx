@@ -50,6 +50,10 @@ const TopNavbar: FC<Props> = ({ items }) => {
     }
   };
 
+  if (!items?.length) {
+    return null
+  }
+
   return (
     <Container maxW="container.xl">
       <Flex p={0} h={16} w="full" align="center" justify="space-between">
@@ -71,7 +75,7 @@ const TopNavbar: FC<Props> = ({ items }) => {
           {user && "لوحة التحكم"}
         </Button>
         {/* PART 02 */}
-        <HStack me={{ base: 0, md: 16 }} spacing={1}>
+        <HStack me={{ base: 0, md: 0 }} spacing={1}>
           <LightDarkSwitcher />
           <Flex display={{ base: "flex", md: "none" }}>
             <IconButton
@@ -101,12 +105,13 @@ const TopNavbar: FC<Props> = ({ items }) => {
         {/* PART 03 */}
         <Flex
           display={{ base: "none", md: "flex" }}
-          justify="space-evenly"
-          align="center"
+          justify="space-around"
+          align="end"
           flex={1}
         >
           {items &&
-            items.slice(0, 8).map((link) => (
+            items.slice(0, 9).map((link) => (
+
               <Link key={link.order} href={`/category/top/${link.slug}`}>
                 <chakra.span
                   display="block"
@@ -124,33 +129,34 @@ const TopNavbar: FC<Props> = ({ items }) => {
                 </chakra.span>
               </Link>
             ))}
-          <Menu>
-            <MenuButton
-              display={{ base: "none", md: "inherit" }}
-              as={Button}
-              bg={useColorModeValue("blackAlpha.200", "whiteAlpha.200")}
-              _hover={{
-                bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
-              }}
-              _focus={{
-                bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
-              }}
-              rightIcon={<IoIosArrowDropdown />}
-            >
-              المزيد
-            </MenuButton>
-            <MenuList
-              display={{ base: "none", md: "inherit" }}
-              bg={useColorModeValue("white", "grey.700")}
-            >
-              {items &&
-                items.slice(8).map((link) => (
-                  <MenuItem key={link.order}>
-                    <Link href={`/category/top/${link.slug}`}>{link.name}</Link>
-                  </MenuItem>
-                ))}
-            </MenuList>
-          </Menu>
+          { items.slice(9).length ?
+            <Menu>
+              <MenuButton
+                display={{ base: "none", md: "inherit" }}
+                as={Button}
+                bg={useColorModeValue("blackAlpha.200", "whiteAlpha.200")}
+                _hover={{
+                  bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
+                }}
+                _focus={{
+                  bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
+                }}
+                rightIcon={<IoIosArrowDropdown />}
+              >
+                المزيد
+              </MenuButton>
+              <MenuList
+                display={{ base: "none", md: "inherit" }}
+                bg={useColorModeValue("white", "grey.700")}
+              >
+                {items.slice(9).map((link) => (
+                    <MenuItem onClick={() => router.push(`/category/top/${link.slug}`) } key={link.order}>
+                      {link.name}
+                    </MenuItem>
+                  ))}
+              </MenuList>
+            </Menu>
+            : <></>}
         </Flex>
       </Flex>
       {/* Drawer */}
