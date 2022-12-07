@@ -117,8 +117,6 @@ function Blog({ post, similar_posts }: Props) {
   }
 
   useEffect(() => {
-    getLikes();
-    addViewer();
     new Promise(async () => {
       await isOwner()
     })
@@ -356,6 +354,9 @@ function Blog({ post, similar_posts }: Props) {
             <Box id="ads" className="ads" h="100vh" bg={ads_color} />
           </Box>
         </Flex>
+        <Box mt={12}>
+          <div className="fb-comments" target="_top" data-href={global.window?.location.href} data-width="" data-numposts="2"></div>
+        </Box>
       </Container>
     </>
   );
