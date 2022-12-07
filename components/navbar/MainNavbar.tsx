@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 
 import { BiSearch } from "react-icons/bi";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import Link from "next/link";
 import { NavbarResourcesType } from "@/types/blog";
 import { useRouter } from "next/router";
@@ -25,7 +25,14 @@ type Props = {
 
 const MainNavbar: FC<Props> = ({ items }) => {
   const { colorMode } = useColorMode();
+  const [ links, setLinks ] = useState<any[]>([])
   const router = useRouter()
+
+
+  useEffect(() => {
+    setLinks(items)
+  }, [setLinks])
+
   return (
     <Box bg={useColorModeValue("brand.primary", "grey.900")}>
       <Container h={16} display="flex" alignItems="center" maxW="container.xl">
@@ -50,9 +57,9 @@ const MainNavbar: FC<Props> = ({ items }) => {
           flex={1}
           mx={16}
         >
-          {items &&
-            items.map((link) => (
-              <Link key={link.order} href={`/category/sub/${link.slug}`}>
+          {
+            links?.map((link) => (
+              <Link key={link.slug} href={`/category/sub/${link.slug}`}>
                 <chakra.span
                   display="block"
                   color="white"
@@ -105,3 +112,7 @@ const MainNavbar: FC<Props> = ({ items }) => {
 };
 
 export default MainNavbar;
+function setLinks(items: NavbarResourcesType[]) {
+  throw new Error("Function not implemented.");
+}
+

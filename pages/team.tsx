@@ -12,7 +12,7 @@ function Team() {
       await fetch('/api/team')
       .then((data) => data.json())
       .then((data) => {
-        console.log(data)
+
         setData(data)
       })
     })

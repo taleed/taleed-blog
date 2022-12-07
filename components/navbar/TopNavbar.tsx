@@ -24,7 +24,7 @@ import {
 import { MdMenu, MdOutlineClose } from "react-icons/md";
 
 import { BiEdit } from "react-icons/bi";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { IoIosArrowDropdown } from "react-icons/io";
 import LightDarkSwitcher from "@/components/LightDarkSwitcher";
 import Link from "next/link";
@@ -38,6 +38,7 @@ type Props = {
 
 const TopNavbar: FC<Props> = ({ items }) => {
   const { colorMode } = useColorMode();
+  const [ links, setLinks ] = useState<any[]>([])
   const router = useRouter();
   const user = useUser();
   const menuSidebar = useDisclosure();
@@ -51,9 +52,9 @@ const TopNavbar: FC<Props> = ({ items }) => {
     }
   };
 
-  if (!items?.length) {
-    return null
-  }
+  useEffect(() => {
+    setLinks(items)
+  }, [setLinks])
 
   return (
     <Container maxW="container.xl">
@@ -110,10 +111,9 @@ const TopNavbar: FC<Props> = ({ items }) => {
           align="end"
           flex={1}
         >
-          {items &&
-            items.slice(0, 9).map((link) => (
-
-              <Link key={link.order} href={`/category/top/${link.slug}`}>
+          {
+            links?.slice(0, 9).map((link) => (
+              <Link key={link.slug} href={`/category/top/${link.slug}`}>
                 <chakra.span
                   display="block"
                   _hover={{
@@ -130,7 +130,7 @@ const TopNavbar: FC<Props> = ({ items }) => {
                 </chakra.span>
               </Link>
             ))}
-          { items.slice(9).length ?
+          { links?.slice(9).length ?
             <Menu>
               <MenuButton
                 display={{ base: "none", md: "inherit" }}
@@ -150,8 +150,8 @@ const TopNavbar: FC<Props> = ({ items }) => {
                 display={{ base: "none", md: "inherit" }}
                 bg={drawerListColors}
               >
-                {items.slice(9).map((link) => (
-                    <MenuItem onClick={() => router.push(`/category/top/${link.slug}`) } key={link.order}>
+                {links?.slice(9).map((link) => (
+                    <MenuItem onClick={() => router.push(`/category/top/${link.slug}`) } key={link.slug}>
                       {link.name}
                     </MenuItem>
                   ))}
@@ -172,8 +172,8 @@ const TopNavbar: FC<Props> = ({ items }) => {
 
           <DrawerBody>
             <VStack align="flex-start" mt={16} spacing={2}>
-              {items &&
-                items.map((link, index: number) => (
+              {
+                links?.map((link, index: number) => (
                   <Link
                     passHref
                     href={`/category/top/${link.slug}`}
@@ -184,12 +184,12 @@ const TopNavbar: FC<Props> = ({ items }) => {
                     </Box>
                   </Link>
                 ))}
-              {items &&
-                items.map((link, index: number) => (
+              {
+                links?.map((link, index: number) => (
                   <Link
                     passHref
                     href={`/category/${link.slug}`}
-                    key={`MNR-${index}`}
+                    key={`MNR-${link.slug}`}
                   >
                     <Box w="full" rounded="lg" py={1} px={4}>
                       <Text fontWeight={600}>{link.name}</Text>

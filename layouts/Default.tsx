@@ -17,9 +17,6 @@ export default function Layout({ children }: any) {
 
   const getStaticPaths = async () => {
 
-    let top_menus_paths: any[] = [];
-    let sub_menus_paths: any[] = [];
-
     const { data: top_menus, error: top_menus_error } = await supabase
       .from(`top_menus`)
       .select("slug,id,name");
@@ -45,7 +42,6 @@ export default function Layout({ children }: any) {
     new Promise(async () => {
       if (!children.props.topMenus) {
         const res = await getStaticPaths()
-        console.log(res)
         setPaths(res.paths)
       }
     })
