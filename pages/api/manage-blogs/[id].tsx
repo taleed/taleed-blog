@@ -9,7 +9,7 @@ const handler:NextApiHandler =  async (req: NextApiRequest, res: NextApiResponse
 
   const { data:user } = await supabase.auth.getUser()
   const { data:profile } = await supabaseAdmin.from('profiles').select('id, is_admin, username').eq("id", user.user?.id)
-  const id = req.query.id
+  const { id  } = req.query
 
   if (req.body) {
     req.body = JSON.parse(req.body)
@@ -60,7 +60,7 @@ const handler:NextApiHandler =  async (req: NextApiRequest, res: NextApiResponse
     if (!profile?.[0].is_admin &&  profile_id !== id ) {
       res.status(401).json({ message: "هذا المستخدم غير مسموح له باجراء هذه العملية" })
     }
-    
+
     const { error, data } = await supabase.from('posts')
                                   .delete().eq("id", id).select('user_id, title') as any
 

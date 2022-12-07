@@ -17,6 +17,7 @@ import { BiSearch } from "react-icons/bi";
 import { FC } from "react";
 import Link from "next/link";
 import { NavbarResourcesType } from "@/types/blog";
+import { useRouter } from "next/router";
 
 type Props = {
   items: NavbarResourcesType[];
@@ -24,6 +25,7 @@ type Props = {
 
 const MainNavbar: FC<Props> = ({ items }) => {
   const { colorMode } = useColorMode();
+  const router = useRouter()
   return (
     <Box bg={useColorModeValue("brand.primary", "grey.900")}>
       <Container h={16} display="flex" alignItems="center" maxW="container.xl">
@@ -80,6 +82,14 @@ const MainNavbar: FC<Props> = ({ items }) => {
             placeholder="بحث"
             _placeholder={{
               color: colorMode === "dark" ? "grey.400" : "#A4A8AE",
+            }}
+            onKeyDown={(event:any) => {
+              if(event?.key === "Enter" && event.target.value) {
+                router.push("/?search="+event.target.value)
+              }
+              if (!event.target.value && event?.key === "Enter"){
+                router.push("/")
+              }
             }}
           />
           <InputLeftElement w="48px">
