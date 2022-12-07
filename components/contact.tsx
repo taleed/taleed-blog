@@ -197,6 +197,7 @@ export default function Contact({
             >
               <FormLabel>الرسالة</FormLabel>
               <Textarea
+              maxLength={2000}
                 h={40}
                 resize="none"
                 p={4}

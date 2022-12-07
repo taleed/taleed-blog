@@ -257,6 +257,7 @@ const AddBlog = () => {
           >
             <FormLabel htmlFor="excerpt">وصف مختصر للمقالة</FormLabel>
             <Textarea
+              maxLength={2000}
               h={40}
               resize="none"
               p={4}
@@ -334,6 +335,7 @@ const AddBlog = () => {
            <FormControl mt={8} mb={6}>
             <FormLabel htmlFor="frame">sound cloud frame</FormLabel>
             <Textarea
+              maxLength={2000}
              {...register!("frame")}
               bg="whiteAlpha.700"
               id="frame"

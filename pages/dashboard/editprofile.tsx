@@ -408,6 +408,7 @@ const EditProfile = () => {
           </FormLabel>
           <Flex align={"center"} justify="space-between">
             <Textarea
+              maxLength={2000}
               isDisabled={!isWantUpdateAbout}
               p={4}
               resize="none"

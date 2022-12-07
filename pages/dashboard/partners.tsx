@@ -240,6 +240,7 @@ const ManagePartners = () => {
             <FormControl  mb={2}>
               <FormLabel>وصف موجز حول الشريك</FormLabel>
               <Textarea
+                maxLength={2000}
                 required={true}
                 {...register!("description", {
                   required: "هذا الحقل مطلوب",

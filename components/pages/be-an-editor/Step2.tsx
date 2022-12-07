@@ -64,6 +64,7 @@ const Step2 = ({ register, errors, setValue, watch }: BeAnEditorStepProps) => {
       <FormControl mt={6} isRequired isInvalid={errors.about ? true : false}>
         <FormLabel>نبذة عنك</FormLabel>
         <Textarea
+          maxLength={2000}
           h={40}
           resize="none"
           p={4}
