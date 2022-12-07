@@ -36,6 +36,8 @@ const BlogCard: FC<Props> = ({ data, type }) => {
               base: "column",
               md: type === "new" ? "row" : "column",
             }}
+            _hover={{ opacity: "0.6",
+            transition: "0.3s"}}
           >
             <BlogCardImg type={type} thumbnail={data.thumbnail} />
             <BlogCardContent type={type} blog={data} />

@@ -94,15 +94,17 @@ const Home = ({ newBlog, latestBlogs, authors, mostViewedBlogs }: Props) => {
                   {mostViewedBlogs &&
                     mostViewedBlogs.map((post, index) => {
                       return (
-                        <NextLink key={index} href={`/blogs/${post.id}`} passHref>
+                        <NextLink  key={index} href={`/blogs/${post.id}`} passHref>
                           <Flex
+
                             flexDirection={{ base: "column", md: "row" }}
                             w="full"
                             py={6}
                             borderBottom={seperator_color}
                             mb={10}
                             align="center"
-                            _hover={{ cursor: "pointer" }}
+                            _hover={{ cursor: "pointer",   opacity: "0.6",
+                            transition: "0.3s" }}
                           >
                             <Box flex={1}>
                               <chakra.span
