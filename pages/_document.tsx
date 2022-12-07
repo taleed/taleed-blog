@@ -23,7 +23,7 @@ class MyDocument extends Document {
         </Head>
         <body>
           <div id="fb-root"></div>
-          <script async defer  crossorigin="anonymous"
+          <script async defer  crossOrigin="anonymous"
           src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v15.0&appId=1079583326132167&autoLogAppEvents=1"
           nonce="lNeZIlkB">
           </script>

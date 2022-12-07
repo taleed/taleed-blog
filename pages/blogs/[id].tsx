@@ -47,7 +47,8 @@ function Blog({ post, similar_posts }: Props) {
   );
 
   const [likes, setLikes] = useState<number | null>(null);
-  const [liked, setLiked] = useState<boolean>(false);
+  const [location, setLocation] = useState<any>({})
+  const [likeLoad, setLikeLoad] = useState(false)
   const router = useRouter()
   const toast = useToast()
   const [owner, setOwner] = useState(false)
@@ -59,20 +60,56 @@ function Blog({ post, similar_posts }: Props) {
     setOwner(user.user?.id === post.profiles.id)
   }
   const getLikes = async () => {
-    const { data } = await supabase
-      .from("posts")
-      .select("likes")
-      .eq("id", post.id)
-      .single();
-    setLikes(data?.likes);
+    await fetch("/api/likes?q="+post.id).then(res => res.json())
+    .then(data => {
+      setLikes(data)
+    })
   };
 
   const incrementLikes = async () => {
-    const { data } = await supabase.rpc("increment_likes", {
-      post_id: post.id,
-    });
-    setLikes(data);
-    setLiked(true);
+    setLikeLoad(true)
+    await fetch("/api/likes", {
+      method: "POST",
+      body: JSON.stringify({post: post.id, ip: location.ip})
+    }).then(res => res.json())
+    .then((data) => {
+      if(data.message === "تم اضافة الاعجاب بنجاح") {
+        toast({
+          title: data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+          onCloseComplete() {
+            setLikes((likes ?? 0)+1)
+            setLikeLoad(false)
+          },
+        })
+      } else if( data.message === "تم حذف الاعجاب بنجاح"){
+        toast({
+          title: data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+          onCloseComplete() {
+            setLikes((likes ?? 1 ) - 1)
+            setLikeLoad(false)
+          },
+        })
+      } else {
+        toast({
+          title: "لقد حدث خطؤ, حاول من جديد",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+          onCloseComplete() {
+            setLikeLoad(false)
+          },
+        })
+      }
+    })
   };
 
   const addViewer = async () => {
@@ -81,6 +118,8 @@ function Blog({ post, similar_posts }: Props) {
     if (!location) {
       return
     }
+
+    setLocation(location)
 
     try {
       let {data} = await supabase.auth.getUser()
@@ -119,6 +158,8 @@ function Blog({ post, similar_posts }: Props) {
   useEffect(() => {
     new Promise(async () => {
       await isOwner()
+      await addViewer()
+      await getLikes()
     })
   }, [owner]);
 
@@ -225,13 +266,13 @@ function Blog({ post, similar_posts }: Props) {
             <Box mt={16}>
               <Button
                 onClick={incrementLikes}
-                isDisabled={liked}
                 display="flex"
+                disabled={likeLoad}
                 p={6}
                 rounded="full"
                 border="1px solid"
                 borderColor={useColorModeValue("grey.200", "grey.400")}
-                variant="unstyled"
+                variant="outline"
                 leftIcon={
                   <Logo fill={useColorModeValue("#A5A6A6", "#7C62E5")} />
                 }
