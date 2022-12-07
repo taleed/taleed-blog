@@ -27,6 +27,8 @@ import NextLink from "next/link";
 import { supabase } from "@/utils/supabaseClient";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
+import FacebookCommment from "@/components/facebookComment";
 
 interface Props {
   post: any;
@@ -34,6 +36,10 @@ interface Props {
   topMenus: NavbarResourcesType[];
   subMenus: NavbarResourcesType[];
 }
+
+
+
+const  FbComment = dynamic(() => Promise.resolve(FacebookCommment), { ssr: false })
 
 function Blog({ post, similar_posts }: Props) {
   const similar_posts_date = useColorModeValue("grey.500", "grey.300");
@@ -55,8 +61,6 @@ function Blog({ post, similar_posts }: Props) {
 
   const isOwner = async () => {
     const {data:user} = await supabase.auth.getUser()
-    console.log(user.user)
-    console.log(post.profiles)
     setOwner(user.user?.id === post.profiles.id)
   }
   const getLikes = async () => {
@@ -65,6 +69,8 @@ function Blog({ post, similar_posts }: Props) {
       setLikes(data)
     })
   };
+
+  const isSSR = () => typeof window === 'undefined';
 
   const incrementLikes = async () => {
     setLikeLoad(true)
@@ -396,7 +402,7 @@ function Blog({ post, similar_posts }: Props) {
           </Box>
         </Flex>
         <Box mt={12}>
-          <div className="fb-comments" target="_top" data-href={global.window?.location.href} data-width="" data-numposts="2"></div>
+          <FbComment />
         </Box>
       </Container>
     </>
