@@ -103,8 +103,7 @@ const Home = ({ newBlog, latestBlogs, authors, mostViewedBlogs }: Props) => {
                             borderBottom={seperator_color}
                             mb={10}
                             align="center"
-                            _hover={{ cursor: "pointer",   opacity: "0.6",
-                            transition: "0.3s" }}
+                            _hover={{ cursor: "pointer" }}
                           >
                             <Box flex={1}>
                               <chakra.span
