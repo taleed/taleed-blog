@@ -45,7 +45,7 @@ export default function Layout({ children }: any) {
         setPaths(res.paths)
       }
     })
-  }, [setPaths])
+  }, [children.props.topMenus])
 
 
   return (

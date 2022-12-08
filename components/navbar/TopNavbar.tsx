@@ -70,7 +70,7 @@ const TopNavbar: FC<Props> = ({ items }) => {
       window.removeEventListener('scroll', () => {});
     };
 
-  }, [navPosition])
+  }, [items, navPosition, setLinks])
 
   return (
     <Container position={navPosition} zIndex={3} bg={navColors} maxW="100wh">
