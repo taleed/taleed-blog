@@ -20,7 +20,7 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
       <Button
         variant="unstyled"
         as="a"
-        href="#"
+        href="https://www.linkedin.com/company/taleed-foundation/"
         target={"_blank"}
         aria-label="Linkedin"
         bgColor="white"
@@ -123,7 +123,7 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
       <Button
         variant="unstyled"
         as="a"
-        href="#"
+        href="https://www.tiktok.com/@taleedplus"
         target={"_blank"}
         aria-label="TikTok"
         bgColor="white"
