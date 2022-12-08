@@ -1,19 +1,25 @@
-import { Box, Heading, IconButton, SimpleGrid, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Button, Heading, IconButton, SimpleGrid, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
 
 import Layout from "@/layouts/Dashboard";
 import StatsCard from "@/components/dashboard/Stat";
 import { supabase } from "../../utils/supabaseClient";
+import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
 
 const Statistics = () => {
   const [visitorList, setVisitorsList] = useState<any[]>([])
   const [visitors, setVisitors] = useState(0);
   const [articles, setArticles] = useState(0);
   const [editors, setEditors] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0)
+  const [count, setCount] = useState(0)
 
   const getVisitorsList = async () => {
     try {
-      const { error, data } = await supabase.from('visitors').select()
+      const {from, to} = getPagination(currentPage, ITEMS_IN_PAGE);
+      const { error, data, count } = await supabase.from('visitors').select("*", { count: "exact" })
+        .order("id", {ascending: false})
+        .range(Number(from as unknown as string), Number(to as unknown as string))
       if (error) {
         toast({
           title: "حدث خطأ",
@@ -25,6 +31,7 @@ const Statistics = () => {
         return;
       } else {
         setVisitorsList(data)
+        setCount(count ?? 0)
       }
     } catch (error: any) {
       toast({
@@ -35,6 +42,18 @@ const Statistics = () => {
         isClosable: true,
       });
     }
+  }
+
+  const isLastPage = () => {
+    return (ITEMS_IN_PAGE * (currentPage+1) + ITEMS_IN_PAGE) > count
+  }
+
+  const handleNext = () => {
+    setCurrentPage(currentPage+1)
+  }
+
+  const handleBack = () => {
+    setCurrentPage(currentPage-1)
   }
 
   const getVisitors = async () => {
@@ -75,7 +94,7 @@ const Statistics = () => {
     getArticles();
     getEditors();
     getVisitorsList();
-  }, []);
+  }, [currentPage]);
 
   return (
     <Box px={8}>
@@ -112,6 +131,10 @@ const Statistics = () => {
           </Tbody>
         </Table>
       </TableContainer>
+      <Stack direction="row">
+        {!isLastPage() && <Button onClick={handleNext}>التالي</Button>}
+        {currentPage !== 0 && <Button onClick={handleBack}>السابق</Button>}
+      </Stack>
     </Box>
   );
 };

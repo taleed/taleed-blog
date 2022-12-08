@@ -39,6 +39,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import Layout from "@/layouts/Dashboard";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { supabase } from "@/utils/supabaseClient";
+import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
 
 const ManageEditors = () => {
   const supabaseClient = useSupabaseClient();
@@ -49,27 +50,51 @@ const ManageEditors = () => {
   const [profileDetails, setProfileDetails] = useState(null);
   const [profileTypes, setProfileTypes] = useState<any[]>()
   const [filter, setFilter] = useState("all")
+  const [currentPage, setCurrentPage] = useState(0)
+  const [count, setCount] = useState(0)
 
   const fetchProfiles = async (filter?: string) => {
-    setLoading(true);
+    setLoading(true)
+    let url = ""
+    const {from, to} = getPagination(currentPage, ITEMS_IN_PAGE);
+    if (filter) {
+      url = `/api/manage-editors?q=${filter}&from=${from}&to=${to}`
+    }
+    else {
+      url = `/api/manage-editors?from=${from}&to=${to}`
+    }
 
-    let url = filter ? "/api/manage-editors?q="+filter : "/api/manage-editors"
     const r = await fetch(url);
 
     r.json()
-      .then((d) => setData(d))
+      .then((d) => {
+        console.log(d)
+        setData(d.data)
+        setCount(d.count)
+      })
       .catch((e) => console.log("[fetchUnApprovedProfiles - err] ", e))
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => {
 
+  const isLastPage = () => {
+    return (ITEMS_IN_PAGE * (currentPage+1) + ITEMS_IN_PAGE) > count
+  }
+
+  const handleNext = () => {
+    setCurrentPage(currentPage+1)
+  }
+
+  const handleBack = () => {
+    setCurrentPage(currentPage-1)
+  }
+
+  useEffect(() => {
     new Promise(async () => {
       await getProfileTypes()
       await fetchProfiles();
-      console.log(data)
     } )
-  }, [setData]);
+  }, [setData, currentPage]);
 
   const getProfileTypes =  async () => {
     setLoading(true)
@@ -189,7 +214,7 @@ const ManageEditors = () => {
           <option key={2} value={"false"}>{"قيد الانتضار"}</option>
         </Select>
       </Box>
-      {!loading ?
+      {!loading ?<>
         <TableContainer  mt={6} bg="white">
           <Table variant="simple">
             <Thead>
@@ -249,6 +274,10 @@ const ManageEditors = () => {
             </Tbody>
           </Table>
         </TableContainer>
+        <Stack direction="row">
+             {!isLastPage() && <Button onClick={handleNext}>التالي</Button>}
+             {currentPage !== 0 && <Button onClick={handleBack}>السابق</Button>}
+        </Stack></>
       : <Spinner/>
       }
 

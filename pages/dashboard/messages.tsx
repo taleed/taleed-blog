@@ -1,26 +1,40 @@
 import Layout from '@/layouts/Dashboard';
-import { Box, Heading, IconButton, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from '@chakra-ui/react';
+import { getPagination, ITEMS_IN_PAGE } from '@/utils/paginationConfig';
+import { Box, Button, Heading, IconButton, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from '@chakra-ui/react';
 import { ReactElement, useEffect, useState } from 'react'
 import { AiOutlineEye } from 'react-icons/ai';
 
 
 const Notifications = () => {
   const [messages, setMessages] = useState<any[]>([])
+  const [count, setCount] = useState(0)
   const [message, setMessage] = useState<string>("")
   const messageModal = useDisclosure();
+  const [currentPage, setCurrentPage] = useState(0)
 
   useEffect(() => {
-
     new Promise( async () => {
-      await fetch('/api/contact')
+      const {from, to} = getPagination(currentPage, ITEMS_IN_PAGE);
+      await fetch(`/api/contact?from=${from}&to=${to}`)
       .then((res) => res.json())
       .then(data => {
-        if (data.messages) {
-          setMessages(data.messages)
-        }
+        setMessages(data.data)
+        setCount(data.count)
       })
     })
-  }, [setMessages])
+  }, [currentPage])
+
+  const isLastPage = () => {
+    return (ITEMS_IN_PAGE * (currentPage+1) + ITEMS_IN_PAGE) > count
+  }
+
+  const handleNext = () => {
+    setCurrentPage(currentPage+1)
+  }
+
+  const handleBack = () => {
+    setCurrentPage(currentPage-1)
+  }
 
   const openMessageModal = (message: string) => {
     messageModal.onOpen()
@@ -60,6 +74,10 @@ const Notifications = () => {
           </Tbody>
         </Table>
       </TableContainer>
+      <Stack direction="row">
+        {!isLastPage() && <Button onClick={handleNext}>التالي</Button>}
+        {currentPage !== 0 && <Button onClick={handleBack}>السابق</Button>}
+      </Stack>
       <Modal
         isOpen={messageModal.isOpen}
         onClose={messageModal.onClose}

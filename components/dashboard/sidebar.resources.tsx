@@ -49,7 +49,7 @@ export const LinkItems: Array<LinkItemProps> = [
     needAdminPermissions: true,
   },
   {
-    name: "الشركاؤ",
+    name: "الشركاء",
     href: "/dashboard/partners",
     icon: BsFillHandbagFill,
     needAdminPermissions: true,

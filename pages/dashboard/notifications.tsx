@@ -1,22 +1,37 @@
 import Layout from '@/layouts/Dashboard';
-import { Box, Heading, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { getPagination, ITEMS_IN_PAGE } from '@/utils/paginationConfig';
+import { Box, Button, Heading, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { ReactElement, useEffect, useState } from 'react'
 
 const Notifications = () => {
   const [notification, setNotifications] = useState<any[]>([])
+  const [currentPage, setCurrentPage] = useState(0)
+  const [count, setCount] = useState(0)
 
   useEffect(() => {
-
     new Promise( async () => {
-      await fetch('/api/notifications/get-notifications')
+      const {from, to} = getPagination(currentPage, ITEMS_IN_PAGE);
+      await fetch(`/api/notifications/get-notifications?from=${from}&to=${to}`)
       .then((res) => res.json())
       .then(data => {
-        if (data.notifications.length) {
-          setNotifications(data.notifications)
-        }
+        console.log(data)
+        setNotifications(data.data)
+        setCount(data.count)
       })
     })
-  }, [setNotifications])
+  }, [currentPage])
+
+  const isLastPage = () => {
+    return (ITEMS_IN_PAGE * (currentPage+1) + ITEMS_IN_PAGE) > count
+  }
+
+  const handleNext = () => {
+    setCurrentPage(currentPage+1)
+  }
+
+  const handleBack = () => {
+    setCurrentPage(currentPage-1)
+  }
 
   return (
     <Box px={8}>
@@ -33,8 +48,8 @@ const Notifications = () => {
           </Thead>
           <Tbody>
             {notification?.map((d, i) => (
-              <Tr bg={d.color} key={i}>
-                 <Td>{i}</Td>
+              <Tr bg={d.color} key={d.id}>
+                 <Td>{d.id}</Td>
                 <Td>{d.text}</Td>
                 <Td>{new Date(d.created_at).toLocaleTimeString()}</Td>
                 <Td>{new Date(d.created_at).toLocaleDateString()}</Td>
@@ -43,6 +58,10 @@ const Notifications = () => {
           </Tbody>
         </Table>
       </TableContainer>
+      <Stack direction="row">
+        {!isLastPage() && <Button onClick={handleNext}>التالي</Button>}
+        {currentPage !== 0 && <Button onClick={handleBack}>السابق</Button>}
+      </Stack>
     </Box>
   )
 }

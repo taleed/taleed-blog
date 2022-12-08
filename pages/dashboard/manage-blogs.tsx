@@ -4,17 +4,7 @@ import { FaTrash, FaEdit, FaShare, FaRegSave } from "react-icons/fa";
 import Layout from "@/layouts/Dashboard";
 import { supabase } from "../../utils/supabaseClient";
 import { useRouter } from "next/router";
-
-
-const ITEMS_IN_PAGE = 10
-
-const getPagination = (page: number, size: number) => {
-  const limit = size ? +size : 3;
-  const from = page ? page * limit : 0;
-  const to = page ? from + size : size;
-
-  return { from, to };
-};
+import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
 
 const ManageBlogs =  () => {
   const [data, setData] = useState<any[] | undefined>(undefined)
@@ -72,7 +62,6 @@ const ManageBlogs =  () => {
   }
 
   const handlePublish = async (id: number) => {
-
     try {
       await fetch('/api/manage-blogs/'+id, {
         method: 'PATCH',
