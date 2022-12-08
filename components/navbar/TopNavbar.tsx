@@ -39,11 +39,14 @@ type Props = {
 const TopNavbar: FC<Props> = ({ items }) => {
   const { colorMode } = useColorMode();
   const [ links, setLinks ] = useState<any[]>([])
+  const [navPosition, setPosition] = useState<any>("unset")
   const router = useRouter();
   const user = useUser();
   const menuSidebar = useDisclosure();
   const menuColors = useColorModeValue("blackAlpha.200", "whiteAlpha.200")
   const drawerListColors= useColorModeValue("white", "grey.700")
+  const navColors = useColorModeValue("#FFFFFF", "#2F3133")
+
   const handleClick = () => {
     if (!user) {
       router.push("/be-an-editor");
@@ -54,10 +57,23 @@ const TopNavbar: FC<Props> = ({ items }) => {
 
   useEffect(() => {
     setLinks(items)
-  }, [setLinks])
+
+    window.addEventListener('scroll', () => {
+      if(window.scrollY > 350) {
+        setPosition("fixed")
+      } else {
+        setPosition("unset")
+      }
+    });
+
+    return () => {
+      window.removeEventListener('scroll', () => {});
+    };
+
+  }, [navPosition])
 
   return (
-    <Container maxW="container.xl">
+    <Container position={navPosition} zIndex={3} bg={navColors} maxW="100wh">
       <Flex p={0} h={16} w="full" align="center" justify="space-between">
         {/* PART 01 */}
         <Button
