@@ -1,13 +1,19 @@
-import { Box, Container, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, Text, useColorModeValue } from "@chakra-ui/react";
 
 import Layout from "@/layouts/Default";
 import { ReactElement } from "react";
+import Head from 'next/head';
 
 function About() {
+  const purpleTitles = useColorModeValue("brand.primary","brand.secondary")
   return (
+    <>
+    <Head>
+      <title>تليد - من نحن</title>
+    </Head>
     <Container my="50px" maxW="container.xl">
       <Box>
-        <Heading color="brand.primary" fontSize="3xl">
+        <Heading color={purpleTitles} fontSize="3xl">
           من نحن
         </Heading>
         <Text my="30px" fontSize="xl">
@@ -39,6 +45,7 @@ function About() {
         </Text>
       </Box>
     </Container>
+    </>
   );
 }
 

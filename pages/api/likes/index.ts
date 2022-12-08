@@ -1,5 +1,6 @@
 import { supabaseAdmin } from "@/utils/supabaseAdmin";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { cp } from "fs";
 import { NextApiHandler } from "next";
 
 const handler:NextApiHandler = async (req, res) => {
@@ -12,13 +13,14 @@ const handler:NextApiHandler = async (req, res) => {
     let { q } = req.query
 
     if(q) {
-      const {count, error} = await supabaseAdmin.from('likes').select("id", { count: "exact" }).eq("post", parseInt(q as string))
-
+      const { count, error } = await supabaseAdmin.from('likes').select("*", { count: "exact" }).eq("post", parseInt(q as string))
+      const { count:liked } = await supabaseAdmin.from('likes').select("*", { count: "exact" })
+                                                 .eq("profile", user.user?.id).eq("post", parseInt(q as string))
       if (error) {
         return res.status(500).json(error)
       }
 
-      return res.status(200).json(count)
+      return res.status(200).json({count, liked: (liked ?? 0) > 0})
     }
 
   }
@@ -33,23 +35,24 @@ const handler:NextApiHandler = async (req, res) => {
     // we need to check if this user ip address and empty profile exist in the
     // database if yes then remove the like and prevent him from adding
     // another one if no let himl do it is ok :)
-    const { count } = await supabaseAdmin.from('likes').select("id", { count: "exact" }).eq("ip", ip)
-    .eq("post", post)
-    .is("profile", null)
+    if (!user.user) {
+      const { count } = await supabaseAdmin.from('likes').select("id", { count: "exact" }).eq("ip", ip)
+      .eq("post", post)
+      .is("profile", null)
 
-    if (count && count > 0) {
-        const { error } = await supabaseAdmin.from('likes').delete().eq("ip", ip)
-        .eq("post", post)
-        .is("profile", null)
+      if (count && count > 0) {
+          const { error } = await supabaseAdmin.from('likes').delete().eq("ip", ip)
+          .eq("post", post)
+          .is("profile", null)
 
-        if (error) {
-          return res.status(500).json(error)
-        }
+          if (error) {
+            return res.status(500).json(error)
+          }
 
-        return res.status(200).json({message: "تم حذف الاعجاب بنجاح"})
+          return res.status(200).json({message: "تم حذف الاعجاب بنجاح"})
+      }
+      // end of the usecase
     }
-    // end of the usecase
-
 
     const { error } = await supabaseAdmin.from('likes').insert({
       ip: ip,
@@ -57,21 +60,22 @@ const handler:NextApiHandler = async (req, res) => {
       profile: user.user?.id
     })
 
-
     if (error) {
       if (error.message.includes("duplicate key value violates")) {
-        if(user.user) {
-          const { error } = await supabaseAdmin.from('likes').delete().eq("ip", ip)
-          .eq("post", post)
-          .eq("profile", user.user?.id)
+        const { error } = await supabaseAdmin.from('likes').delete()
+        .eq("post", post)
+        .eq("profile", user.user?.id)
 
-          if (error) {
-            return res.status(500).json(error)
-          }
+        const { data } = await supabaseAdmin.from('likes').select("id", { count: "exact" })
+        .eq("post", post)
 
-          return res.status(200).json({message: "تم حذف الاعجاب بنجاح"})
+        if (error) {
+          return res.status(500).json(error)
         }
+
+        return res.status(200).json({message: "تم حذف الاعجاب بنجاح"})
       }
+
       return res.status(400).json(error)
     }
 

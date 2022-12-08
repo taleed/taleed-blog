@@ -1,10 +1,12 @@
-import { Box, Button, ButtonGroup, Container, Divider, Flex, Heading, Stack, Text, Image, Avatar } from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, Container, Divider, Flex, Heading, Stack, Text, Image, Avatar, useColorModeValue } from "@chakra-ui/react";
 import { CardHeader, CardBody, CardFooter, Card } from '@chakra-ui/card'
 
 import Layout from "@/layouts/Default";
 import { ReactElement, useEffect, useState } from "react";
+import Head from 'next/head';
 
 function Team() {
+  const purpleTitles = useColorModeValue("brand.primary","brand.secondary")
   const [data, setData] = useState<any[]>([])
 
   useEffect(() => {
@@ -18,9 +20,13 @@ function Team() {
     })
   }, [setData])
   return (
+    <>
+    <Head>
+      <title>تليد - فريقنا</title>
+    </Head>
     <Container my="50px" maxW="container.xl">
       <Box>
-        <Heading color="brand.primary" fontSize="3xl">
+        <Heading color={purpleTitles} fontSize="3xl">
           فريق الادارة
         </Heading>
 
@@ -49,6 +55,7 @@ function Team() {
         </Flex>
       </Box>
     </Container>
+    </>
   );
 }
 

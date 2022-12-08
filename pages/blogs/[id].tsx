@@ -47,6 +47,7 @@ function Blog({ post, similar_posts }: Props) {
   const similar_posts_title = useColorModeValue("brand.black", "white");
   const tags_bg_color = useColorModeValue("purple.100", "grey.800");
   const tags_color = useColorModeValue("brand.black", "white");
+  const purpleTitles = useColorModeValue("brand.primary","brand.secondary")
   const seperator_color = useColorModeValue(
     "1px solid #E7E8E8",
     "1px solid #7C62E5"
@@ -55,6 +56,7 @@ function Blog({ post, similar_posts }: Props) {
   const [likes, setLikes] = useState<number | null>(null);
   const [location, setLocation] = useState<any>({})
   const [likeLoad, setLikeLoad] = useState(false)
+  const [liked, setLiked] = useState(false)
   const router = useRouter()
   const toast = useToast()
   const [owner, setOwner] = useState(false)
@@ -64,9 +66,13 @@ function Blog({ post, similar_posts }: Props) {
     setOwner(user.user?.id === post.profiles.id)
   }
   const getLikes = async () => {
+    setLikeLoad(true)
     await fetch("/api/likes?q="+post.id).then(res => res.json())
     .then(data => {
-      setLikes(data)
+      console.log(data)
+      setLikes(data.count)
+      setLiked(data.liked)
+      setLikeLoad(false)
     })
   };
 
@@ -78,29 +84,14 @@ function Blog({ post, similar_posts }: Props) {
     }).then(res => res.json())
     .then((data) => {
       if(data.message === "تم اضافة الاعجاب بنجاح") {
-        toast({
-          title: data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top-right",
-          onCloseComplete() {
-            setLikes((likes ?? 0)+1)
-            setLikeLoad(false)
-          },
-        })
+        setLikeLoad(false)
+        setLikes((likes ?? 0)+1)
+        setLiked(true)
+
       } else if( data.message === "تم حذف الاعجاب بنجاح"){
-        toast({
-          title: data.message,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "top-right",
-          onCloseComplete() {
-            setLikes((likes ?? 1 ) - 1)
-            setLikeLoad(false)
-          },
-        })
+        setLikeLoad(false)
+        setLikes((likes ?? 1 ) - 1)
+        setLiked(false)
       } else {
         toast({
           title: "لقد حدث خطؤ, حاول من جديد",
@@ -160,7 +151,6 @@ function Blog({ post, similar_posts }: Props) {
   }
 
   useEffect(() => {
-    console.log(post)
     new Promise(async () => {
       await isOwner()
       await addViewer()
@@ -275,18 +265,20 @@ function Blog({ post, similar_posts }: Props) {
 
             <Box mt={16}>
               <Button
+
                 onClick={incrementLikes}
                 display="flex"
                 disabled={likeLoad}
                 p={6}
                 rounded="full"
                 border="1px solid"
+                bg={useColorModeValue(liked ? "brand.primary" : "", liked ? "brand.secondary" : "grey")}
                 borderColor={useColorModeValue("grey.200", "grey.400")}
-                variant="outline"
+                variant={ liked ? "solid" : "outline"}
                 leftIcon={
-                  <Logo fill={useColorModeValue("#A5A6A6", "#7C62E5")} />
+                  <Logo fill={useColorModeValue(liked ? "white" : "#A5A6A6", liked ? "white" :"grey.200")} />
                 }
-                color={useColorModeValue("grey.900", "#7C62E5")}
+                color={useColorModeValue(liked ? "white" : "grey.900", liked ? "white" :"grey.200")}
               >
                 {likes} إعجاب
               </Button>
@@ -300,7 +292,7 @@ function Blog({ post, similar_posts }: Props) {
             {!post.tags ? null : (
               <Box mb={6}>
                 <chakra.h2
-                  color="brand.primary"
+                  color={purpleTitles}
                   fontSize="2xl"
                   fontWeight="600"
                   lineHeight="44.16px"
@@ -331,7 +323,7 @@ function Blog({ post, similar_posts }: Props) {
             )}
             <Flex flexDir="column" mb={10}>
               <chakra.h2
-                color="brand.primary"
+                color={purpleTitles}
                 fontSize="2xl"
                 fontWeight="600"
                 lineHeight="44.16px"

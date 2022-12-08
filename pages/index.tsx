@@ -41,6 +41,7 @@ const Home = ({ newBlog, latestBlogs, authors, mostViewedBlogs }: Props) => {
   const router = useRouter()
   const bgColor = useColorModeValue("card.light", "card.dark");
   const [search, setSearch] = useState<any[]>([])
+  const purpleTitles = useColorModeValue("brand.primary","brand.secondary")
 
   useEffect(() => {
     if(router.query.search) {
@@ -80,7 +81,7 @@ const Home = ({ newBlog, latestBlogs, authors, mostViewedBlogs }: Props) => {
           <Container my={{ base: 10, md: 20 }} maxW="container.xl">
             <Box my={8}>
               <chakra.h2
-                color="brand.primary"
+                color={purpleTitles}
                 fontSize={{ base: "2xl", md: "3xl" }}
                 fontWeight={600}
                 lineHeight={{ base: "51.52px", md: "55.2px" }}
@@ -96,7 +97,6 @@ const Home = ({ newBlog, latestBlogs, authors, mostViewedBlogs }: Props) => {
                       return (
                         <NextLink  key={index} href={`/blogs/${post.id}`} passHref>
                           <Flex
-
                             flexDirection={{ base: "column", md: "row" }}
                             w="full"
                             py={6}
