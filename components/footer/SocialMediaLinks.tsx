@@ -16,7 +16,7 @@ import {
 
 const SocialMediaLinks = (props: ButtonGroupProps) => {
   return (
-    <HStack spacing={8}>
+    <HStack spacing={8} flexWrap={"wrap"} justify="center" rowGap={8}>
       <Button
         variant="unstyled"
         as="a"
@@ -31,6 +31,7 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
         display="flex"
         alignItems="center"
         justifyContent="center"
+        flexWrap={"wrap"}
       >
         <FaLinkedin size={20} />
       </Button>

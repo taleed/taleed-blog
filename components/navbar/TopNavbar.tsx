@@ -34,11 +34,13 @@ import { useUser } from "@supabase/auth-helpers-react";
 
 type Props = {
   items: NavbarResourcesType[];
+  subItems: NavbarResourcesType[];
 };
 
-const TopNavbar: FC<Props> = ({ items }) => {
+const TopNavbar: FC<Props> = ({ items, subItems }) => {
   const { colorMode } = useColorMode();
   const [ links, setLinks ] = useState<any[]>([])
+  const [ subLinks, setSubLinks ] = useState<any[]>([])
   const [navPosition, setPosition] = useState<any>("unset")
   const router = useRouter();
   const user = useUser();
@@ -57,7 +59,7 @@ const TopNavbar: FC<Props> = ({ items }) => {
 
   useEffect(() => {
     setLinks(items)
-
+    setSubLinks(subItems)
     window.addEventListener('scroll', () => {
       if(window.scrollY > 350) {
         setPosition("fixed")
@@ -70,7 +72,7 @@ const TopNavbar: FC<Props> = ({ items }) => {
       window.removeEventListener('scroll', () => {});
     };
 
-  }, [items, navPosition, setLinks])
+  }, [items, navPosition, setLinks, subItems])
 
   return (
     <Container position={navPosition} zIndex={3} bg={navColors} maxW="100wh">
@@ -201,7 +203,7 @@ const TopNavbar: FC<Props> = ({ items }) => {
                   </Link>
                 ))}
               {
-                links?.map((link, index: number) => (
+                subLinks?.map((link, index: number) => (
                   <Link
                     passHref
                     href={`/category/${link.slug}`}

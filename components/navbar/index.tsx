@@ -11,7 +11,7 @@ type Props = {
 const Navbar: FC<Props> = ({ topMenus, subMenus }) => {
   return (
     <>
-      <TopNavbar items={topMenus} />
+      <TopNavbar items={topMenus}  subItems={subMenus}/>
       <MainNavbar items={subMenus} />
     </>
   );

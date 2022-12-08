@@ -24,7 +24,7 @@ const Footer = () => {
     <Box
       as="footer"
       role="contentinfo"
-      w="full"
+      width={"100vw"}
       bg={useColorModeValue("brand.primary", "grey.900")}
     >
       <Contact isOpen={contact.isOpen} onClose={contact.onClose} />
