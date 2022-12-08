@@ -203,9 +203,9 @@ const ManageEditors = () => {
             </Thead>
             <Tbody>
               { data?.map((d:any, i) => (
-                <Tr key={i}>
-                  <Td>{d.id}</Td>
-                  <Td>{d.type}</Td>
+                <Tr key={d.email}>
+                  <Td>{i}</Td>
+                  <Td>{d.email}</Td>
                   <Td>
                     <Select
                       border={0}

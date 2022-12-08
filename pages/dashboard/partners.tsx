@@ -8,8 +8,6 @@ import { ReactElement, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { AiFillDelete, AiFillPlusCircle } from "react-icons/ai";
 
-type modalAction  = "POST"
-
 type FormValues = {
   image: string;
   description: string;

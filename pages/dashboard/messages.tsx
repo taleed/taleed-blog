@@ -3,6 +3,7 @@ import { Box, Heading, IconButton, Modal, ModalBody, ModalCloseButton, ModalCont
 import { ReactElement, useEffect, useState } from 'react'
 import { AiOutlineEye } from 'react-icons/ai';
 
+
 const Notifications = () => {
   const [messages, setMessages] = useState<any[]>([])
   const [message, setMessage] = useState<string>("")
@@ -28,7 +29,7 @@ const Notifications = () => {
 
   return (
     <Box px={8}>
-    <Heading>اشعارات</Heading>
+    <Heading>الرسائل</Heading>
     <TableContainer bg="white" mt={16}>
         <Table variant="simple">
           <Thead>
