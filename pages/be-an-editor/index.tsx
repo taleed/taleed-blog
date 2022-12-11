@@ -2,12 +2,13 @@ import {
   Box,
   Button,
   Heading,
+  Spinner,
   Stack,
   Text,
   useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { BeAnEditorFormFields } from "@/types/be-an-editor";
@@ -21,6 +22,9 @@ import { supabase } from "@/utils/supabaseClient";
 import { useRouter } from "next/router";
 
 const BeAnEditor = () => {
+  const [categories, setCategories] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+
   const {
     watch,
     register,
@@ -39,6 +43,22 @@ const BeAnEditor = () => {
 
   const [formStep, setFormStep] = useState(0);
 
+  useEffect(() => {
+    if (!categories.length) {
+      fetchCategories();
+    } else {
+      setLoading(false)
+    }
+  }, [categories])
+
+  const fetchCategories = async () => {
+    setLoading(true);
+    const { data: categories } = await supabase
+    .from(`top_menus`)
+    .select("slug,id,name");
+    setCategories(categories ?? []);
+    setLoading(false);
+  }
   const completeFormStep = () => {
     setFormStep((s) => s + 1);
   };
@@ -93,6 +113,7 @@ const BeAnEditor = () => {
       case 1:
         return (
           <Step2
+            categories={categories}
             register={register}
             errors={errors}
             setValue={setValue}
@@ -102,6 +123,7 @@ const BeAnEditor = () => {
       case 2:
         return (
           <Step3
+
             register={register}
             errors={errors}
             setValue={setValue}
@@ -217,10 +239,11 @@ const BeAnEditor = () => {
         <Text color={useColorModeValue("#4F4F4F", "grey.100")} maxW="xl" mb={6}>
         من هنا تبدأ رحلتك في عالم تليد ، نرافقك لتفيد وتستفيد لكي يعرف العالم أكثر .
         </Text>
+        {(!loading && categories.length > 0) ?
         <form onSubmit={handleSubmit(handleFormCompletion)}>
           {renderFormStep()}
           {renderFormButtons()}
-        </form>
+        </form> : <Spinner/> }
       </Box>
       <Box
         bgColor="brand.primary"

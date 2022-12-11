@@ -12,7 +12,7 @@ import {
 import { BeAnEditorStepProps } from "@/types/be-an-editor";
 import { ChangeEvent } from "react";
 
-const Step2 = ({ register, errors, setValue, watch }: BeAnEditorStepProps) => {
+const Step2 = ({ register, errors, setValue, watch, categories }: BeAnEditorStepProps) => {
   const handleSelectField = (e: ChangeEvent<HTMLSelectElement>) => {
     setValue!("field", e.target.value);
   };
@@ -31,10 +31,13 @@ const Step2 = ({ register, errors, setValue, watch }: BeAnEditorStepProps) => {
             placeholder="اختر مجال مُعين"
             size="lg"
             value={watch!("field")}
+
           >
-            <option value="رياضة">رياضة</option>
-            <option value="تقنية">تقنية</option>
-            <option value="فن">فن</option>
+            {categories?.map((categorie) => (
+              <option key={categorie.id} value={categorie.name}>
+                {categorie.name}
+              </option>
+            ))}
           </Select>
           <FormErrorMessage>{errors.field?.message}</FormErrorMessage>
         </FormControl>

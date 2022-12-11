@@ -237,11 +237,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const { data: posts_top_menus } = await supabase
       .from("posts")
       .select("id,title, excerpt, thumbnail, created_at, top_menus!inner(name)")
+      .eq("status", "published")
       .eq("user_id", profile.id);
 
     const { data: posts_sub_menus } = await supabase
       .from("posts")
       .select("id,title, excerpt, thumbnail, created_at, sub_menus!inner(name)")
+      .eq("status", "published")
       .eq("user_id", profile.id);
 
     return {

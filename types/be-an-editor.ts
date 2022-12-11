@@ -28,4 +28,5 @@ export type BeAnEditorStepProps = {
   control?: Control<BeAnEditorFormFields, object>;
   watch?: UseFormWatch<BeAnEditorFormFields>;
   errors: FieldErrors<BeAnEditorFormFields>;
+  categories?: any[];
 };
