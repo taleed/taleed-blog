@@ -19,11 +19,11 @@ import { useUser } from "@supabase/auth-helpers-react";
 
 import Head from "next/head";
 import Layout from "@/layouts/Dashboard";
-import { Editor } from "@tinymce/tinymce-react";
 import { supabase } from "@/utils/supabaseClient";
 import { TagsInput } from "react-tag-input-component";
 import { useState, useRef, ReactElement } from "react";
 import { useRouter } from "next/router";
+import TinyEditor from "@/components/TinyEditor";
 
 type FormValues = {
   category: number;
@@ -32,39 +32,6 @@ type FormValues = {
   blogImg: string;
   frame: string;
 };
-
-const TINY_EDITOR_API_KEY = "dz941oazvl971gmulquka7xp4dvh4tk130bombn0q3156kus";
-
-const tinyToolbar =
-  "undo redo | casechange blocks | bold italic backcolor forecolor | " +
-  "alignleft aligncenter alignright alignjustify | " +
-  "bullist numlist checklist outdent indent | removeformat | a11ycheck link image media code table help";
-
-const tinyPlugins = [
-  "a11ychecker",
-  "advlist",
-  "advcode",
-  "advtable",
-  "autolink",
-  "checklist",
-  "export",
-  "lists",
-  "link",
-  "image",
-  "charmap",
-  "preview",
-  "anchor",
-  "searchreplace",
-  "visualblocks",
-  "powerpaste",
-  "fullscreen",
-  "formatpainter",
-  "insertdatetime",
-  "media",
-  "table",
-  "help",
-  "wordcount",
-];
 
 function makeid(length: number) {
   var result = "";
@@ -286,18 +253,7 @@ const AddBlog = () => {
           {/* blog's content */}
           <VStack mb={16} mt={8} spacing={8}>
             <Box dir='ltr' width='100%'>
-              <Editor
-                apiKey={TINY_EDITOR_API_KEY}
-                onInit={(_, editor) => (blogBody.current = editor)}
-                initialValue='<p></p>'
-                init={{
-                  height: 500,
-                  menubar: true,
-                  plugins: tinyPlugins,
-                  toolbar: tinyToolbar,
-                  content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-                }}
-              />
+              <TinyEditor blogBody={blogBody} />
             </Box>
             <Button
               w='fit-content'
