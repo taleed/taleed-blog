@@ -48,7 +48,6 @@ const AddBlog = () => {
   const toast = useToast();
   const user = useUser();
   const blogBody = useRef<any>(null);
-  // const [blogBody, setBlogBody] = useState("");
   const [BlogImgUrl, setBlogImgUrl] = useState<string | undefined>(undefined);
   const [uploading, setUploading] = useState<boolean>(false);
   const [tags, setTags] = useState<Array<string>>([]);
@@ -61,6 +60,7 @@ const AddBlog = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ mode: "all" });
+
   const onSubmit: SubmitHandler<FormValues> = async ({
     category,
     title,
@@ -70,11 +70,24 @@ const AddBlog = () => {
   }) => {
     if (user) {
       try {
+        console.log(
+          JSON.stringify({
+            title: title,
+            body: blogBody.current.getContent(),
+            excerpt: excerpt,
+            user_id: user.id,
+            frame: frame,
+            thumbnail: blogImg || "default.jpg",
+            category_id: category,
+            tags,
+          })
+        );
+
         let data = await fetch("/api/manage-blogs/modify?id=" + blogId, {
           method: "PATCH",
           body: JSON.stringify({
             title: title,
-            body: blogBody,
+            body: blogBody.current.getContent(),
             excerpt: excerpt,
             user_id: user.id,
             frame: frame,
@@ -84,6 +97,8 @@ const AddBlog = () => {
           }),
         }).then((res) => res.json());
 
+        console.log("data", data);
+
         if (data.message === "تم تحديث المقال بنجاح") {
           toast({
             title: "تم تحديث المقالة",
@@ -92,10 +107,8 @@ const AddBlog = () => {
             duration: 5000,
             isClosable: true,
             position: "top-right",
-            onCloseComplete: () => {
-              router.push("/dasboard/manage-blogs");
-            },
           });
+          router.push(`/blogs/${data.id}`);
         }
       } catch (error) {
         console.log(error);

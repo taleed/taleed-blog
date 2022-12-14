@@ -73,7 +73,7 @@ const handler: NextApiHandler = async (req, res) => {
         await sendEmail(postOwner?.user?.email ?? "", "edited", { title: data?.[0].title });
       }
 
-      res.status(200).json({ message: "تم تحديث المقال بنجاح" });
+      res.status(200).json({ message: "تم تحديث المقال بنجاح", id: data?.[0].id });
     } catch (error: any) {
       console.log(error);
       res.status(500).json({ message: error });
