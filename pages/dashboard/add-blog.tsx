@@ -15,65 +15,14 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import { useUser } from "@supabase/auth-helpers-react";
 
 import Head from "next/head";
 import Layout from "@/layouts/Dashboard";
-import { ReactElement } from "react";
-import { TagsInput } from "react-tag-input-component";
-import dynamic from "next/dynamic";
+import { Editor } from "@tinymce/tinymce-react";
 import { supabase } from "@/utils/supabaseClient";
-import { useState } from "react";
-
-const QuillNoSSRWrapper = dynamic(import("react-quill"), {
-  ssr: false,
-  loading: () => <p>الرجاء الانتظار ...</p>,
-});
-const modules = {
-  toolbar: [
-    ["bold", "italic", "underline", "strike"], // toggled buttons
-    ["blockquote", "code-block"],
-    [{ header: 1 }, { header: 2 }], // custom button values
-    [{ list: "ordered" }, { list: "bullet" }],
-    [{ script: "sub" }, { script: "super" }], // superscript/subscript
-    [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-    [{ direction: "rtl" }], // text direction
-    [{ size: ["small", false, "large", "huge"] }], // custom dropdown
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-    [{ font: [] }],
-    [{ align: [] }],
-    ["clean"],
-    ["video", "image", "link"],
-  ],
-  clipboard: {
-    matchVisual: false,
-  },
-};
-const formats = [
-  "header",
-  "color",
-  "background",
-  "font",
-  "sub",
-  "super",
-  "blockquote",
-  "code-block",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "list",
-  "bullet",
-  "indent",
-  "link",
-  "image",
-  "video",
-  "direction",
-  "align",
-  "clean",
-];
+import { TagsInput } from "react-tag-input-component";
+import { useState, useRef, ReactElement } from "react";
 
 type FormValues = {
   category: number;
@@ -83,10 +32,42 @@ type FormValues = {
   frame: string;
 };
 
+const TINY_EDITOR_API_KEY = "dz941oazvl971gmulquka7xp4dvh4tk130bombn0q3156kus";
+
+const tinyToolbar =
+  "undo redo | casechange blocks | bold italic backcolor forecolor | " +
+  "alignleft aligncenter alignright alignjustify | " +
+  "bullist numlist checklist outdent indent | removeformat | a11ycheck link image media code table help";
+
+const tinyPlugins = [
+  "a11ychecker",
+  "advlist",
+  "advcode",
+  "advtable",
+  "autolink",
+  "checklist",
+  "export",
+  "lists",
+  "link",
+  "image",
+  "charmap",
+  "preview",
+  "anchor",
+  "searchreplace",
+  "visualblocks",
+  "powerpaste",
+  "fullscreen",
+  "formatpainter",
+  "insertdatetime",
+  "media",
+  "table",
+  "help",
+  "wordcount",
+];
+
 function makeid(length: number) {
   var result = "";
-  var characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -97,8 +78,7 @@ function makeid(length: number) {
 const AddBlog = () => {
   const toast = useToast();
   const user = useUser();
-  const supabaseClient = useSupabaseClient();
-  const [blogBody, setBlogBody] = useState("");
+  const blogBody = useRef<any>(null);
   const [BlogImgUrl, setBlogImgUrl] = useState<string | undefined>(undefined);
   const [uploading, setUploading] = useState<boolean>(false);
   const [tags, setTags] = useState<Array<string>>([]);
@@ -118,19 +98,19 @@ const AddBlog = () => {
   }) => {
     if (user) {
       try {
-        let data = await fetch('/api/manage-blogs/modify', {
-          method: 'POST',
+        let data = await fetch("/api/manage-blogs/modify", {
+          method: "POST",
           body: JSON.stringify({
             title: title,
-            body: blogBody,
+            body: blogBody.current.getContent(),
             excerpt: excerpt,
             frame: frame,
             user_id: user.id,
             thumbnail: blogImg || "default.jpg",
             category_id: category,
             tags,
-          })
-        }).then(res => res.json())
+          }),
+        }).then((res) => res.json());
         if (data.message === "تم اضافة مقال جديد بنجاح") {
           toast({
             title: "تم انشاء المقالة",
@@ -141,9 +121,8 @@ const AddBlog = () => {
             position: "top-right",
           });
         }
-
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   };
@@ -158,9 +137,7 @@ const AddBlog = () => {
     const fileExt = file.name.split(".").pop();
     const filePath = `${user?.id}_${makeid(20)}.${fileExt}`;
 
-    const { error: uploadError } = await supabase.storage
-      .from("blogs")
-      .upload(filePath, file);
+    const { error: uploadError } = await supabase.storage.from("blogs").upload(filePath, file);
 
     if (uploadError) {
       setUploading(false);
@@ -178,19 +155,18 @@ const AddBlog = () => {
         <title>لوحة التحكم - اضافة مقال جديد</title>
       </Head>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box maxW="4xl" mx="auto">
+        <Box maxW='4xl' mx='auto'>
           {/* Categrory Field */}
           <FormControl isRequired isInvalid={errors.category ? true : false}>
             <FormLabel>فئة المقالة</FormLabel>
             <Select
-              bg="whiteAlpha.700"
-              placeholder="اختر الفئة التي تنتمي إليها المقالة"
-              size="lg"
-              id="category"
+              bg='whiteAlpha.700'
+              placeholder='اختر الفئة التي تنتمي إليها المقالة'
+              size='lg'
+              id='category'
               {...register("category", {
                 required: "هذا الحقل اجباري",
-              })}
-            >
+              })}>
               <option value={1}>ثقافة</option>
               <option value={2}>صحة</option>
               <option value={3}>رياضة</option>
@@ -203,23 +179,19 @@ const AddBlog = () => {
             <FormErrorMessage>{errors.category?.message}</FormErrorMessage>
           </FormControl>
           {/* Title Field */}
-          <FormControl
-            my={6}
-            isRequired
-            isInvalid={errors.title ? true : false}
-          >
-            <FormLabel htmlFor="title">عنوان المقالة</FormLabel>
+          <FormControl my={6} isRequired isInvalid={errors.title ? true : false}>
+            <FormLabel htmlFor='title'>عنوان المقالة</FormLabel>
             <Input
               borderRadius={10}
-              bg="whiteAlpha.700"
+              bg='whiteAlpha.700'
               border={0}
               _focus={{
                 bg: "whiteAlpha.900",
               }}
-              type="text"
-              placeholder=""
-              size="lg"
-              id="title"
+              type='text'
+              placeholder=''
+              size='lg'
+              id='title'
               {...register("title", {
                 required: "هذا الحقل اجباري",
                 maxLength: {
@@ -231,19 +203,15 @@ const AddBlog = () => {
             <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
           </FormControl>
           {/* Excerpt Field */}
-          <FormControl
-            mb={6}
-            isRequired
-            isInvalid={errors.excerpt ? true : false}
-          >
-            <FormLabel htmlFor="excerpt">وصف مختصر للمقالة</FormLabel>
+          <FormControl mb={6} isRequired isInvalid={errors.excerpt ? true : false}>
+            <FormLabel htmlFor='excerpt'>وصف مختصر للمقالة</FormLabel>
             <Textarea
               maxLength={2000}
               h={40}
-              resize="none"
+              resize='none'
               p={4}
               borderRadius={10}
-              bg="whiteAlpha.700"
+              bg='whiteAlpha.700'
               border={0}
               _focus={{
                 bg: "whiteAlpha.800",
@@ -251,8 +219,8 @@ const AddBlog = () => {
               _disabled={{
                 bg: "blackAlpha.100",
               }}
-              size="lg"
-              id="excerpt"
+              size='lg'
+              id='excerpt'
               {...register!("excerpt", {
                 required: "هذا الحقل مطلوب",
               })}
@@ -260,43 +228,38 @@ const AddBlog = () => {
             <FormErrorMessage>{errors.excerpt?.message}</FormErrorMessage>
           </FormControl>
           {/* upload thumbnail */}
-          <Box display="inline-block" w="full">
+          <Box display='inline-block' w='full'>
             <Image
-              rounded="lg"
-              alt="blog image"
-              borderRadius="lg"
-              w="full"
-              src={`${
-                process.env.NEXT_PUBLIC_SUPABASE_URL
-              }/storage/v1/object/public/blogs/${
-                watch!("blogImg") === undefined
-                  ? "default.jpg"
-                  : watch!("blogImg")
+              rounded='lg'
+              alt='blog image'
+              borderRadius='lg'
+              w='full'
+              src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/blogs/${
+                watch!("blogImg") === undefined ? "default.jpg" : watch!("blogImg")
               }`}
             />
             <FormControl mt={2}>
               <FormLabel
-                htmlFor="blogImg"
-                w="full"
-                bg="grey.200"
-                rounded="md"
-                textAlign="center"
+                htmlFor='blogImg'
+                w='full'
+                bg='grey.200'
+                rounded='md'
+                textAlign='center'
                 py={2}
                 px={4}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
+                display='flex'
+                alignItems='center'
+                justifyContent='center'
                 _hover={{ bg: "grey.300", cursor: "pointer" }}
-                _focus={{ outline: "none" }}
-              >
-                {uploading ? <Spinner size="md" /> : "قم باختيار صورة للمقالة "}
+                _focus={{ outline: "none" }}>
+                {uploading ? <Spinner size='md' /> : "قم باختيار صورة للمقالة "}
               </FormLabel>
               <Input
-                visibility="hidden"
-                position="absolute"
-                type="file"
-                id="blogImg"
-                accept="image/*"
+                visibility='hidden'
+                position='absolute'
+                type='file'
+                id='blogImg'
+                accept='image/*'
                 onChange={(e) => uploadImage(e)}
                 disabled={uploading || BlogImgUrl !== undefined}
               />
@@ -304,38 +267,38 @@ const AddBlog = () => {
           </Box>
           {/* tags */}
           <FormControl mt={8} mb={6}>
-            <FormLabel htmlFor="tags">كلمات مفتاحية</FormLabel>
+            <FormLabel htmlFor='tags'>كلمات مفتاحية</FormLabel>
             <TagsInput
               value={tags}
               onChange={setTags}
-              name="tags"
-              placeHolder="أضف كلمات مفتاحية"
+              name='tags'
+              placeHolder='أضف كلمات مفتاحية'
             />
           </FormControl>
           {/* sound cloud frame*/}
           <FormControl mt={8} mb={6}>
-            <FormLabel htmlFor="frame">sound cloud frame</FormLabel>
-            <Textarea
-              maxLength={2000}
-              bg="whiteAlpha.700"
-              id="frame"
-              {...register!("frame")}
-            />
+            <FormLabel htmlFor='frame'>sound cloud frame</FormLabel>
+            <Textarea maxLength={2000} bg='whiteAlpha.700' id='frame' {...register!("frame")} />
           </FormControl>
           {/* blog's content */}
           <VStack mb={16} mt={8} spacing={8}>
-            <Box dir="ltr">
-              <QuillNoSSRWrapper
-                modules={modules}
-                formats={formats}
-                theme="snow"
-                style={{ backgroundColor: "white" }}
-                onChange={(e) => setBlogBody(e)}
+            <Box dir='ltr' width='100%'>
+              <Editor
+                apiKey={TINY_EDITOR_API_KEY}
+                onInit={(_, editor) => (blogBody.current = editor)}
+                initialValue='<p></p>'
+                init={{
+                  height: 500,
+                  menubar: true,
+                  plugins: tinyPlugins,
+                  toolbar: tinyToolbar,
+                  content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                }}
               />
             </Box>
             <Button
-              w="fit-content"
-              size="lg"
+              w='fit-content'
+              size='lg'
               p={6}
               bg={"brand.secondary"}
               color={"white"}
@@ -352,10 +315,9 @@ const AddBlog = () => {
                 pointerEvents: "none",
               }}
               borderRadius={10}
-              variant="solid"
+              variant='solid'
               isLoading={isSubmitting}
-              type="submit"
-            >
+              type='submit'>
               اضافة المقالة
             </Button>
           </VStack>
