@@ -9,6 +9,7 @@ specifiers:
   '@supabase/auth-helpers-nextjs': ^0.4.1
   '@supabase/auth-helpers-react': ^0.3.0
   '@supabase/supabase-js': ^2.0.0
+  '@tinymce/tinymce-react': ^4.2.0
   '@types/node': 18.11.0
   '@types/nodemailer': ^6.4.6
   '@types/prop-types': ^15.7.5
@@ -22,6 +23,7 @@ specifiers:
   nodemailer: ^6.8.0
   nprogress-support-rtl: ^0.3.1
   prop-types: ^15.8.1
+  quill-divider: ^0.2.0
   react: 18.2.0
   react-dom: 18.2.0
   react-hook-form: ^7.38.0
@@ -39,12 +41,14 @@ dependencies:
   '@supabase/auth-helpers-nextjs': 0.4.1
   '@supabase/auth-helpers-react': 0.3.0
   '@supabase/supabase-js': 2.0.0
+  '@tinymce/tinymce-react': 4.2.0_biqbaboplfbrettd7655fr4n2y
   framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
   next: 12.3.1_6tziyx3dehkoeijunclpkpolha
   nextjs-google-analytics: 2.2.0_next@12.3.1+react@18.2.0
   nodemailer: 6.8.0
   nprogress-support-rtl: 0.3.1
   prop-types: 15.8.1
+  quill-divider: 0.2.0_quill@1.3.7
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-hook-form: 7.38.0_react@18.2.0
@@ -1821,6 +1825,18 @@ packages:
       tslib: 2.4.0
     dev: false
 
+  /@tinymce/tinymce-react/4.2.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-Oyi/hDvARR29oqUwTgYXDnMV9E/c7C8V+iK+gUj9tndVXsfSJRYVOw3MTK9CCC9f7alN/S4CYaPpIaA3f4VZzw==}
+    peerDependencies:
+      react: ^18.0.0 || ^17.0.1 || ^16.7.0
+      react-dom: ^18.0.0 || ^17.0.1 || ^16.7.0
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      tinymce: 6.3.1
+    dev: false
+
   /@types/json5/0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
@@ -3564,6 +3580,14 @@ packages:
       fast-diff: 1.1.2
     dev: false
 
+  /quill-divider/0.2.0_quill@1.3.7:
+    resolution: {integrity: sha512-B+rY7qtIafHMcpQYl9fe6e9uAnZKPpAAifXPa991MkKTuOZbLGs7AIL3zm8/rz6Ubk77KeH1iFedvOTVHjN+Yw==}
+    peerDependencies:
+      quill: ^1.3.7
+    dependencies:
+      quill: 1.3.7
+    dev: false
+
   /quill/1.3.7:
     resolution: {integrity: sha512-hG/DVzh/TiknWtE6QmWAF/pxoZKYxfe3J/d/+ShUWkDvvkZQVTPeVmUJVu1uE6DDooC4fWTiCLh84ul89oNz5g==}
     dependencies:
@@ -3933,6 +3957,10 @@ packages:
 
   /tiny-invariant/1.3.1:
     resolution: {integrity: sha512-AD5ih2NlSssTCwsMznbvwMZpJ1cbhkGd2uueNxzv2jDlEeZdU04JQfRnggJQ8DrcVBGjAsCKwFBbDlVNtEMlzw==}
+    dev: false
+
+  /tinymce/6.3.1:
+    resolution: {integrity: sha512-+oCwXuTxAdJXVJ0130OxQz0JDNsqg3deuzgeUo8X5Vb27EzCJgXwO5eWvCxvkxpQo4oiHMVlM4tUIpTUHufHGQ==}
     dev: false
 
   /to-fast-properties/2.0.0:
