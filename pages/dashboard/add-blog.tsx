@@ -23,6 +23,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { supabase } from "@/utils/supabaseClient";
 import { TagsInput } from "react-tag-input-component";
 import { useState, useRef, ReactElement } from "react";
+import { useRouter } from "next/router";
 
 type FormValues = {
   category: number;
@@ -78,6 +79,7 @@ function makeid(length: number) {
 const AddBlog = () => {
   const toast = useToast();
   const user = useUser();
+  const router = useRouter();
   const blogBody = useRef<any>(null);
   const [BlogImgUrl, setBlogImgUrl] = useState<string | undefined>(undefined);
   const [uploading, setUploading] = useState<boolean>(false);
@@ -120,6 +122,7 @@ const AddBlog = () => {
             isClosable: true,
             position: "top-right",
           });
+          router.push(`/blogs/${data.id}`);
         }
       } catch (error) {
         console.log(error);
