@@ -14,17 +14,16 @@ const handler: NextApiHandler = async (req, res) => {
   if (!session) {
     return res.status(401).json({
       error: "not_authenticated",
-      description:
-        "The user does not have an active session or is not authenticated",
+      description: "The user does not have an active session or is not authenticated",
     });
   }
 
-  const { q, from, to }= req.query
+  const { q, from, to } = req.query;
 
-  let error = undefined
-  let profiles: any[] = []
-  let result: any = undefined
-  let count = 0
+  let error = undefined;
+  let profiles: any[] = [];
+  let result: any = undefined;
+  let count = 0;
   const {
     error: err_users,
     data: { users },
@@ -33,43 +32,52 @@ const handler: NextApiHandler = async (req, res) => {
   if (err_users) {
     return res.status(500).json(error);
   }
-  const strUsersList = `(${users.map(e => "\""+e.id+"\"")})`
+  const strUsersList = `(${users.map((e) => '"' + e.id + '"')})`;
 
   if (q === "true") {
-    result = await supabase.from("profiles").select("id, approved, type", { count: "exact"}).eq("approved", true)
-      .filter('id', 'in', strUsersList)
-      .order("id", {ascending: false})
-      .range(Number(from as string), Number(to as string))
-  } else if ( q === "false") {
-    result = await supabase.from("profiles").select("id, approved, type", { count: "exact"}).eq("approved", false)
-      .filter('id', 'in', strUsersList)
-      .order("id", {ascending: false})
-      .range(Number(from as string), Number(to as string))
+    result = await supabase
+      .from("profiles")
+      .select("id, approved, type", { count: "exact" })
+      .eq("approved", true)
+      .filter("id", "in", strUsersList)
+      .order("id", { ascending: false })
+      .range(Number(from as string), Number(to as string));
+  } else if (q === "false") {
+    result = await supabase
+      .from("profiles")
+      .select("id, approved, type", { count: "exact" })
+      .eq("approved", false)
+      .filter("id", "in", strUsersList)
+      .order("id", { ascending: false })
+      .range(Number(from as string), Number(to as string));
   } else {
-    result = await supabase.from("profiles").select("id, approved, type", { count: "exact"})
-      .filter('id', 'in', strUsersList)
-      .order("id", {ascending: false})
-      .range(Number(from as string), Number(to as string))
+    result = await supabase
+      .from("profiles")
+      .select("id, approved, type", { count: "exact" })
+      .filter("id", "in", strUsersList)
+      .order("id", { ascending: false })
+      .range(Number(from as string), Number(to as string));
   }
 
-  profiles = result.data
-  error = result.error
-  count = result.count
+  profiles = result.data;
+  error = result.error;
+  count = result.count;
 
   if (error) {
     return res.status(500).json(error);
   }
 
-  const filteredUsers = users.map((user) => {
-    let p = profiles.filter((p) => p.id === user.id)[0]
-    if (p) {
-      return {...user,...{approved: p.approved, type: p.type}}
-    }
-    return;
-  }).filter(e => !!e)
+  const filteredUsers = users
+    .map((user) => {
+      let p = profiles.filter((p) => p.id === user.id)[0];
+      if (p) {
+        return { ...user, ...{ approved: p.approved, type: p.type } };
+      }
+      return;
+    })
+    .filter((e) => !!e);
 
-
-  res.status(200).json({data: filteredUsers, count: count});
+  res.status(200).json({ data: filteredUsers, count: count });
 };
 
 export default handler;

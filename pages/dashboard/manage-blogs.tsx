@@ -21,9 +21,11 @@ import { supabase } from "../../utils/supabaseClient";
 import { useRouter } from "next/router";
 import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
 import { BsPauseCircle } from "react-icons/bs";
+import Loading from "@/components/loading";
 
 const ManageBlogs = () => {
   const [data, setData] = useState<any[] | undefined>(undefined);
+  const [loading, setLoading] = useState(false);
   const [postsNumber, setPostsNumber] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState<string | undefined>(undefined);
@@ -37,9 +39,13 @@ const ManageBlogs = () => {
         const { data: posts, count } = await paginateData(from, to);
         return { posts, count };
       };
+
+      setLoading(true);
       const { posts, count } = await getBlogs(currentPage);
       setData(posts ?? undefined);
       setPostsNumber(count ?? 0);
+
+      setLoading(false);
     });
   }, [currentPage]);
 
@@ -53,21 +59,6 @@ const ManageBlogs = () => {
       )
       .order("created_at", { ascending: true })
       .range(from, to);
-  };
-
-  const handleAfterUpdate = async () => {
-    const { data: posts, count } = await supabase
-      .from("posts")
-      .select(
-        "id,user_id(id, username), title, likes, tags, body," +
-          "category_id(id, name), status, excerpt, thumbnail",
-        { count: "exact" }
-      )
-      .order("created_at", { ascending: true })
-      .range(0, 10);
-
-    setData(posts ?? undefined);
-    setPostsNumber(count ?? 0);
   };
 
   const isLastPage = () => {
@@ -185,67 +176,71 @@ const ManageBlogs = () => {
         />
         <Button onClick={handleSearch}>ابحث</Button>
       </Stack>
-      <TableContainer mt={6} bg='white'>
-        <Table variant='simple'>
-          <Thead>
-            <Tr>
-              <Th>عنوان المقال</Th>
-              <Th>المحرر</Th>
-              <Th>عدد الاعجابات</Th>
-              <Th>عدد الزيارات</Th>
-              <Th>المجال</Th>
-              <Th>عمليات (Actions)</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data?.map((d: any, i: number) => (
-              <Tr key={i}>
-                <Td>{d.title}</Td>
-                <Td>{d.user_id.username}</Td>
-                <Td>{d.likes}</Td>
-                <Td>{d.views}</Td>
-                <Td>{d.category_id.name}</Td>
-                <Td>
-                  <Stack direction='row'>
-                    {d.status !== "published" ? (
-                      <IconButton
-                        onClick={async () => await handlePublish(d.id)}
-                        aria-label='accept and share blog post'
-                        icon={<FaShare />}
-                      />
-                    ) : (
-                      <IconButton
-                        onClick={async () => await handleDraft(d.id)}
-                        aria-label='draft blog post'
-                        icon={<BsPauseCircle />}
-                      />
-                    )}
-
-                    <IconButton
-                      onClick={() =>
-                        router.push(
-                          {
-                            pathname: "/dashboard/edit-blog",
-                            query: { ...d, category_id: d.category_id.id, user_id: d.user_id.id },
-                          },
-                          "/dashboard/edit-blog"
-                        )
-                      }
-                      aria-label='edit blog post'
-                      icon={<FaEdit />}
-                    />
-                    <IconButton
-                      onClick={async () => await handleDelete(d.id)}
-                      aria-label='delete blog post'
-                      icon={<FaTrash />}
-                    />
-                  </Stack>
-                </Td>
+      {loading ? (
+        <Loading />
+      ) : (
+        <TableContainer mt={6} bg='white'>
+          <Table variant='simple'>
+            <Thead>
+              <Tr>
+                <Th>عنوان المقال</Th>
+                <Th>المحرر</Th>
+                <Th>عدد الاعجابات</Th>
+                <Th>عدد الزيارات</Th>
+                <Th>المجال</Th>
+                <Th>عمليات (Actions)</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+            </Thead>
+            <Tbody>
+              {data?.map((d: any, i: number) => (
+                <Tr key={i}>
+                  <Td>{d.title}</Td>
+                  <Td>{d.user_id.username}</Td>
+                  <Td>{d.likes}</Td>
+                  <Td>{d.views}</Td>
+                  <Td>{d.category_id.name}</Td>
+                  <Td>
+                    <Stack direction='row'>
+                      {d.status !== "published" ? (
+                        <IconButton
+                          onClick={async () => await handlePublish(d.id)}
+                          aria-label='accept and share blog post'
+                          icon={<FaShare />}
+                        />
+                      ) : (
+                        <IconButton
+                          onClick={async () => await handleDraft(d.id)}
+                          aria-label='draft blog post'
+                          icon={<BsPauseCircle />}
+                        />
+                      )}
+
+                      <IconButton
+                        onClick={() =>
+                          router.push(
+                            {
+                              pathname: "/dashboard/edit-blog",
+                              query: { ...d, category_id: d.category_id.id, user_id: d.user_id.id },
+                            },
+                            "/dashboard/edit-blog"
+                          )
+                        }
+                        aria-label='edit blog post'
+                        icon={<FaEdit />}
+                      />
+                      <IconButton
+                        onClick={async () => await handleDelete(d.id)}
+                        aria-label='delete blog post'
+                        icon={<FaTrash />}
+                      />
+                    </Stack>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      )}
       <Stack direction='row'>
         {!isLastPage() && <Button onClick={handleNext}>التالي</Button>}
         {currentPage !== 0 && <Button onClick={handleBack}>السابق</Button>}
