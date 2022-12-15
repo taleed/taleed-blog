@@ -26,6 +26,7 @@ const EditProfile = () => {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [about, setAbout] = useState<string>("");
   const [facebookAccount, setFacebookAccount] = useState<string>("");
   const [instaAccount, setInstaAccount] = useState<string>("");
@@ -37,8 +38,7 @@ const EditProfile = () => {
   const [field, setField] = useState<string>("");
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
-  const [email, setEmail] = useState<string>("");
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
 
   const uploadAvatar = async (event: any) => {
     if (!event.target.files || event.target.files.length === 0) {
@@ -89,6 +89,66 @@ const EditProfile = () => {
 
   const updateUserAvatar = async (avatar_url: string) => {
     await supabase.from("profiles").update({ avatar_url }).eq("id", authUser?.id);
+  };
+
+  const emptyFields =
+    !firstName.length ||
+    !lastName.length ||
+    !username.length ||
+    !speciality.length ||
+    !field.length ||
+    !about.length;
+
+  const handleUpdateUserData = async () => {
+    if (emptyFields) {
+      toast({
+        title: "قم بملأ الحقول الفارغة",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
+    }
+
+    try {
+      setSubmitLoading(true);
+      const newUserData = {
+        first_name: firstName,
+        last_name: lastName,
+        facebook_account: facebookAccount,
+        instagram_account: instaAccount,
+        linkedin_account: linkedinAccount,
+        twitter_account: twitterAccount,
+        username,
+        about,
+        speciality,
+        field,
+      };
+
+      const { error } = await supabase.from("profiles").update(newUserData).eq("id", authUser?.id);
+
+      if (error) throw Error(error.message);
+
+      toast({
+        title: "لقد تم تحديث معلوماتك",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+    } catch (error: any) {
+      console.log(error);
+      toast({
+        title: "حدث خطأ!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+    } finally {
+      setSubmitLoading(false);
+    }
   };
 
   const setProfile = (user: any) => {
@@ -455,8 +515,8 @@ const EditProfile = () => {
             w='fit-content'
             size='lg'
             p={6}
-            bg={"brand.secondary"}
-            color={"white"}
+            bg='brand.secondary'
+            color='white'
             _hover={{
               opacity: 0.8,
             }}
@@ -471,7 +531,9 @@ const EditProfile = () => {
             }}
             borderRadius={10}
             variant='solid'
-            isLoading={false}>
+            disabled={submitLoading || emptyFields}
+            isLoading={submitLoading}
+            onClick={handleUpdateUserData}>
             حفظ
           </Button>
         </Flex>
