@@ -110,10 +110,17 @@ const ManageBlogs = () => {
 
   const handleDraft = async (id: number) => {
     try {
-      await fetch("/api/manage-blogs/" + id, {
+      const result = await fetch("/api/manage-blogs/" + id, {
         method: "PATCH",
         body: JSON.stringify({ statu: "draft" }),
       }).then((res) => res.json());
+
+      if (!result.post) return;
+
+      const updatedPost = result.post;
+
+      setData((prev) => prev?.map((post) => (post.id === id ? updatedPost : post)));
+
       toast({
         title: "تم تعليق المقالة",
         description: "تم تعليق المقالة بنجاح.",
@@ -121,11 +128,6 @@ const ManageBlogs = () => {
         duration: 1000,
         isClosable: true,
         position: "top-right",
-        onCloseComplete() {
-          new Promise(async () => {
-            await handleAfterUpdate();
-          });
-        },
       });
     } catch (e: any) {
       console.log("[error - share post]: ", e.message);
@@ -134,9 +136,13 @@ const ManageBlogs = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch("/api/manage-blogs/" + id, {
+      const result = await fetch("/api/manage-blogs/" + id, {
         method: "DELETE",
       }).then((res) => res.json());
+
+      if (!result.deleted) return;
+
+      setData((prev) => prev?.filter((post) => post.id !== id));
 
       toast({
         title: "تم حذف المقالة",
@@ -145,11 +151,6 @@ const ManageBlogs = () => {
         duration: 1000,
         isClosable: true,
         position: "top-right",
-        onCloseComplete() {
-          new Promise(async () => {
-            await handleAfterUpdate();
-          });
-        },
       });
     } catch (e: any) {
       console.log("[error - delete post]: ", e.message);

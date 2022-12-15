@@ -96,7 +96,7 @@ const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse
 
     await sendEmail(postOwner?.user?.email ?? "", "deleted", { title: data?.[0].title });
 
-    res.status(200).json({ message: "تم حذف المقال بنجاح" });
+    res.status(200).json({ message: "تم حذف المقال بنجاح", deleted: true });
   }
 };
 
