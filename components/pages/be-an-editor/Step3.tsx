@@ -17,10 +17,9 @@ import { BeAnEditorStepProps } from "@/types/be-an-editor";
 import { supabase } from "@/utils/supabaseClient";
 import { useState } from "react";
 
-function makeid(length: number) {
+export function makeid(length: number) {
   var result = "";
-  var characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -44,9 +43,7 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
     const fileExt = file.name.split(".").pop();
     const filePath = `${makeid(100)}.${fileExt}`;
 
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(filePath, file);
+    const { error: uploadError } = await supabase.storage.from("avatars").upload(filePath, file);
 
     if (uploadError) {
       setUploading(false);
@@ -64,17 +61,16 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const handleShowPasswordClick = () => setShowPassword(!showPassword);
-  const handleShowConfirmPasswordClick = () =>
-    setShowConfirmPassword(!showConfirmPassword);
+  const handleShowConfirmPasswordClick = () => setShowConfirmPassword(!showConfirmPassword);
 
   return (
     <>
       {/* Avatar Field */}
-      <Box display="inline-block">
+      <Box display='inline-block'>
         <Avatar
-          rounded="lg"
-          borderRadius="lg"
-          size="2xl"
+          rounded='lg'
+          borderRadius='lg'
+          size='2xl'
           name={`${watch!("username")}`}
           src={`https://ythbjwovxnnbckdxlbds.supabase.co/storage/v1/object/public/avatars/${watch!(
             "avatar_url"
@@ -82,30 +78,29 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
         />
         <FormControl mt={2}>
           <FormLabel
-            htmlFor="avatar"
-            w="full"
+            htmlFor='avatar'
+            w='full'
             bg={useColorModeValue("grey.200", "grey.800")}
-            rounded="md"
-            textAlign="center"
+            rounded='md'
+            textAlign='center'
             py={2}
             px={4}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
+            display='flex'
+            alignItems='center'
+            justifyContent='center'
             _hover={{
               bg: useColorModeValue("grey.300", "grey.600"),
               cursor: "pointer",
             }}
-            _focus={{ outline: "none" }}
-          >
-            {uploading ? <Spinner size="md" /> : "قم باختيار صورتك الشخصية"}
+            _focus={{ outline: "none" }}>
+            {uploading ? <Spinner size='md' /> : "قم باختيار صورتك الشخصية"}
           </FormLabel>
           <Input
-            visibility="hidden"
-            position="absolute"
-            type="file"
-            id="avatar"
-            accept="image/*"
+            visibility='hidden'
+            position='absolute'
+            type='file'
+            id='avatar'
+            accept='image/*'
             onChange={(e) => uploadAvatar(e)}
             disabled={uploading || avatarUrl !== undefined}
           />
@@ -117,17 +112,17 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
         <FormControl isRequired isInvalid={errors.email ? true : false}>
           <FormLabel>الإيميل</FormLabel>
           <Input
-            autoComplete="off"
+            autoComplete='off'
             borderRadius={10}
             bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
             border={0}
             _focus={{
               bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
             }}
-            type="email"
-            placeholder=""
-            size="lg"
-            id="email"
+            type='email'
+            placeholder=''
+            size='lg'
+            id='email'
             {...register!("email", {
               required: "الرجاء ادخال الإيميل",
               pattern: {
@@ -143,7 +138,7 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
           <FormLabel>كلمة المرور</FormLabel>
           <InputGroup>
             <Input
-              autoComplete="off"
+              autoComplete='off'
               borderRadius={10}
               bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
               border={0}
@@ -151,9 +146,9 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
                 bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
               }}
               type={showPassword ? "text" : "password"}
-              placeholder=""
-              size="lg"
-              id="password"
+              placeholder=''
+              size='lg'
+              id='password'
               {...register!("password", {
                 required: "الرجاء ادخال كلمة المرور",
                 minLength: {
@@ -165,28 +160,20 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
             <InputRightElement
               onClick={handleShowPasswordClick}
               _hover={{ cursor: "pointer" }}
-              top="50%"
-              transform="translateY(-50%)"
-            >
-              {!showPassword ? (
-                <BsEye color={icons_color} />
-              ) : (
-                <BsEyeSlash color={icons_color} />
-              )}
+              top='50%'
+              transform='translateY(-50%)'>
+              {!showPassword ? <BsEye color={icons_color} /> : <BsEyeSlash color={icons_color} />}
             </InputRightElement>
           </InputGroup>
 
           <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
         </FormControl>
         {/* confirm password field */}
-        <FormControl
-          isRequired
-          isInvalid={errors.confirm_password ? true : false}
-        >
+        <FormControl isRequired isInvalid={errors.confirm_password ? true : false}>
           <FormLabel>تأكيد كلمة المرور</FormLabel>
           <InputGroup>
             <Input
-              autoComplete="off"
+              autoComplete='off'
               borderRadius={10}
               bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
               border={0}
@@ -194,21 +181,19 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
                 bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
               }}
               type={showConfirmPassword ? "text" : "password"}
-              placeholder=""
-              size="lg"
-              id="confirm_password"
+              placeholder=''
+              size='lg'
+              id='confirm_password'
               {...register!("confirm_password", {
                 required: "يجب تأكيد كلمة المرور",
-                validate: (value) =>
-                  value === watch!("password") || "كلمة المرور غير متطابقة",
+                validate: (value) => value === watch!("password") || "كلمة المرور غير متطابقة",
               })}
             />
             <InputRightElement
               onClick={handleShowConfirmPasswordClick}
               _hover={{ cursor: "pointer" }}
-              top="50%"
-              transform="translateY(-50%)"
-            >
+              top='50%'
+              transform='translateY(-50%)'>
               {!showConfirmPassword ? (
                 <BsEye color={icons_color} />
               ) : (
@@ -217,9 +202,7 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
             </InputRightElement>
           </InputGroup>
 
-          <FormErrorMessage>
-            {errors.confirm_password?.message}
-          </FormErrorMessage>
+          <FormErrorMessage>{errors.confirm_password?.message}</FormErrorMessage>
         </FormControl>
       </VStack>
     </>

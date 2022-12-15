@@ -9,6 +9,7 @@ import {
   Select,
   Textarea,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { useState, ReactElement, useEffect } from "react";
 
@@ -16,40 +17,11 @@ import Layout from "@/layouts/Dashboard";
 import { supabase } from "@/utils/supabaseClient";
 import Loading from "@/components/dashboard/Loading";
 import { useUser } from "@supabase/auth-helpers-react";
-
-interface MyBlogsProps {
-  userID: number;
-  firstName: string;
-  lastName: string;
-  username: string;
-  field: string;
-  speciality: string;
-  about: string;
-  authorImg: string;
-  facebookAccount: string;
-  instaAccount: string;
-  linkedInAccount?: string;
-  twitterAccount?: string;
-  email: string;
-  password?: string;
-}
-
-const USERDATA: MyBlogsProps = {
-  userID: 1,
-  firstName: "zakaria",
-  lastName: "rabbah",
-  username: "zakaria112",
-  field: "صانع محتوى و مترجم",
-  speciality: "شاعر",
-  about: "كاتب للعديد من الكتب وفائز في مسابقة افضل كاتب",
-  authorImg: "/authorimg.jpg",
-  facebookAccount: "",
-  instaAccount: "",
-  email: "chaking@test.com",
-};
+import { makeid } from "@/components/pages/be-an-editor/Step3";
 
 const EditProfile = () => {
   const authUser = useUser();
+  const toast = useToast();
 
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -69,27 +41,54 @@ const EditProfile = () => {
   const [email, setEmail] = useState<string>("");
 
   const uploadAvatar = async (event: any) => {
-    // if (!event.target.files || event.target.files.length === 0) {
-    //   throw new Error("عليك اختيار صورة");
-    // }
+    if (!event.target.files || event.target.files.length === 0) {
+      toast({
+        title: "عليك اختيار صورة",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
+    }
 
-    // setUploading(true);
-    // const file = event.target.files[0];
-    // const fileExt = file.name.split(".").pop();
-    // const filePath = `${user?.email}.${fileExt}`;
+    setUploading(true);
 
-    // const { error: uploadError } = await supabase.storage
-    //   .from("avatars")
-    //   .upload(filePath, file);
+    const file = event.target.files[0];
+    const fileExt = file.name.split(".").pop();
+    const filePath = `${makeid(16)}.${fileExt}`;
 
-    // if (uploadError) {
-    //   setUploading(false);
-    //   throw uploadError;
-    // }
+    try {
+      const { error: uploadError } = await supabase.storage.from("avatars").upload(filePath, file);
 
-    // updateAvatarUrl(filePath);
-    // setAvatarUrl(filePath);
-    setUploading(false);
+      if (uploadError) throw uploadError;
+
+      await updateUserAvatar(filePath);
+      setAuthorImg(filePath);
+
+      toast({
+        title: "لقد تم تحديث صورتك الشخصية",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "حدث خطأ!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const updateUserAvatar = async (avatar_url: string) => {
+    await supabase.from("profiles").update({ avatar_url }).eq("id", authUser?.id);
   };
 
   const setProfile = (user: any) => {
@@ -149,30 +148,32 @@ const EditProfile = () => {
         py={8}
         color='white'>
         <Box mb='6'>
-          <Avatar
-            rounded='md'
-            borderRadius='md'
-            size='2xl'
-            src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${authorImg}`}
-            name={`${firstName} ${lastName}`}
-          />
-          <FormControl mt={2}>
-            <FormLabel
-              htmlFor='avatar'
-              w='full'
-              bg='green.500'
+          {authorImg.length && (
+            <Avatar
               rounded='md'
-              textAlign='center'
+              borderRadius='md'
+              size='2xl'
+              src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${authorImg}`}
+              name={`${firstName} ${lastName}`}
+            />
+          )}
+          <FormControl isDisabled={uploading} mt={2}>
+            <FormLabel
               py={2}
+              w='full'
+              rounded='md'
+              bg='green.500'
+              textAlign='center'
               _hover={{ bg: "green.600", cursor: "pointer" }}
-              _focus={{ outline: "none" }}>
+              _focus={{ outline: "none" }}
+              htmlFor='edit-avatar'>
               {uploading ? "Uploading ..." : "Upload"}
             </FormLabel>
             <Input
               visibility='hidden'
               position='absolute'
               type='file'
-              id='avatar'
+              id='edit-avatar'
               accept='image/*'
               onChange={(e) => uploadAvatar(e)}
               disabled={uploading}
