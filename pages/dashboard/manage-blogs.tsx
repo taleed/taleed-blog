@@ -2,27 +2,22 @@ import {
   Box,
   Button,
   Heading,
-  IconButton,
   Input,
   Stack,
   Table,
   TableContainer,
   Tbody,
-  Td,
   Th,
   Thead,
   Tr,
-  useToast,
 } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
-import { FaTrash, FaEdit, FaShare } from "react-icons/fa";
 import Layout from "@/layouts/Dashboard";
 import { supabase } from "../../utils/supabaseClient";
-import { useRouter } from "next/router";
 import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
-import { BsPauseCircle } from "react-icons/bs";
-import Loading from "@/components/loading";
+import Loading from "@/components/Loading";
 import PaginationBar from "@/components/PaginationBar";
+import BlogRow from "@/components/dashboard/BlogRow";
 
 const ManageBlogs = () => {
   const [data, setData] = useState<any[] | undefined>(undefined);
@@ -30,8 +25,6 @@ const ManageBlogs = () => {
   const [postsNumber, setPostsNumber] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState<string | undefined>(undefined);
-  const router = useRouter();
-  const toast = useToast();
 
   useEffect(() => {
     new Promise(async () => {
@@ -60,81 +53,6 @@ const ManageBlogs = () => {
       )
       .order("created_at", { ascending: true })
       .range(from, to);
-  };
-
-  const handlePublish = async (id: number) => {
-    try {
-      const result = await fetch("/api/manage-blogs/" + id, {
-        method: "PATCH",
-        body: JSON.stringify({ statu: "published" }),
-      }).then((res) => res.json());
-
-      if (!result.post) return;
-
-      const updatedPost = result.post;
-
-      setData((prev) => prev?.map((post) => (post.id === id ? updatedPost : post)));
-
-      toast({
-        title: "تم نشر المقالة",
-        description: "تم نشر المقالة بنجاح, يُمكن للجميع رؤيتها الآن.",
-        status: "success",
-        duration: 1000,
-        isClosable: true,
-        position: "top-right",
-      });
-    } catch (e: any) {
-      console.log("[error - share post]: ", e.message);
-    }
-  };
-
-  const handleDraft = async (id: number) => {
-    try {
-      const result = await fetch("/api/manage-blogs/" + id, {
-        method: "PATCH",
-        body: JSON.stringify({ statu: "draft" }),
-      }).then((res) => res.json());
-
-      if (!result.post) return;
-
-      const updatedPost = result.post;
-
-      setData((prev) => prev?.map((post) => (post.id === id ? updatedPost : post)));
-
-      toast({
-        title: "تم تعليق المقالة",
-        description: "تم تعليق المقالة بنجاح.",
-        status: "success",
-        duration: 1000,
-        isClosable: true,
-        position: "top-right",
-      });
-    } catch (e: any) {
-      console.log("[error - share post]: ", e.message);
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      const result = await fetch("/api/manage-blogs/" + id, {
-        method: "DELETE",
-      }).then((res) => res.json());
-
-      if (!result.deleted) return;
-
-      setData((prev) => prev?.filter((post) => post.id !== id));
-
-      toast({
-        title: "تم حذف المقالة",
-        description: "تم حذف المقالة بنجاح.",
-        status: "error",
-        duration: 1000,
-        isClosable: true,
-        position: "top-right",
-      });
-    } catch (e: any) {
-      console.log("[error - delete post]: ", e.message);
-    }
   };
 
   const handleSearch = async () => {
@@ -182,49 +100,7 @@ const ManageBlogs = () => {
             </Thead>
             <Tbody>
               {data?.map((d: any, i: number) => (
-                <Tr key={i}>
-                  <Td>{d.title}</Td>
-                  <Td>{d.user_id.username}</Td>
-                  <Td>{d.likes}</Td>
-                  <Td>{d.views}</Td>
-                  <Td>{d.category_id.name}</Td>
-                  <Td>
-                    <Stack direction='row'>
-                      {d.status !== "published" ? (
-                        <IconButton
-                          onClick={async () => await handlePublish(d.id)}
-                          aria-label='accept and share blog post'
-                          icon={<FaShare />}
-                        />
-                      ) : (
-                        <IconButton
-                          onClick={async () => await handleDraft(d.id)}
-                          aria-label='draft blog post'
-                          icon={<BsPauseCircle />}
-                        />
-                      )}
-
-                      <IconButton
-                        onClick={() =>
-                          router.push(
-                            {
-                              pathname: "/dashboard/edit-blog",
-                              query: { ...d, category_id: d.category_id.id, user_id: d.user_id.id },
-                            },
-                            "/dashboard/edit-blog"
-                          )
-                        }
-                        aria-label='edit blog post'
-                        icon={<FaEdit />}
-                      />
-                      <IconButton
-                        onClick={async () => await handleDelete(d.id)}
-                        aria-label='delete blog post'
-                        icon={<FaTrash />}
-                      />
-                    </Stack>
-                  </Td>
-                </Tr>
+                <BlogRow d={d} setData={setData} key={i} />
               ))}
             </Tbody>
           </Table>
