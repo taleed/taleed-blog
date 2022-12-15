@@ -6,11 +6,16 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Select,
   Textarea,
+  useColorModeValue,
 } from "@chakra-ui/react";
-import { useState, ReactElement } from "react";
+import { useState, ReactElement, useEffect } from "react";
 
 import Layout from "@/layouts/Dashboard";
+import { supabase } from "@/utils/supabaseClient";
+import Loading from "@/components/dashboard/Loading";
+import { useUser } from "@supabase/auth-helpers-react";
 
 interface MyBlogsProps {
   userID: number;
@@ -44,22 +49,24 @@ const USERDATA: MyBlogsProps = {
 };
 
 const EditProfile = () => {
-  // const [firstName, setFirstName] = useState<string | undefined>(undefined);
+  const authUser = useUser();
 
-  // const [lastName, setLastName] = useState<string>("");
-
-  // const [username, setUsername] = useState<string | undefined>(undefined);
-
-  // const [about, setAbout] = useState<string>("");
-
-  // const [facebookAccount, setFacebookAccount] = useState<string | undefined>(undefined);
-
-  // const [instaAccount, setInstaAccount] = useState<string>("");
-
-  // const [authorImg, setAuthorImg] = useState<string | undefined>(undefined);
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [about, setAbout] = useState<string>("");
+  const [facebookAccount, setFacebookAccount] = useState<string>("");
+  const [instaAccount, setInstaAccount] = useState<string>("");
+  const [linkedinAccount, setLinkedinAccount] = useState<string>("");
+  const [twitterAccount, setTwitterAccount] = useState<string>("");
+  const [authorImg, setAuthorImg] = useState<string>("");
+  const [speciality, setSpeciality] = useState<string>("");
   const [uploading, setUploading] = useState<boolean>(false);
+  const [field, setField] = useState<string>("");
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
 
   const uploadAvatar = async (event: any) => {
     // if (!event.target.files || event.target.files.length === 0) {
@@ -84,6 +91,51 @@ const EditProfile = () => {
     // setAvatarUrl(filePath);
     setUploading(false);
   };
+
+  const setProfile = (user: any) => {
+    setFirstName(user.first_name ?? "");
+    setLastName(user.last_name ?? "");
+    setUsername(user.username ?? "");
+    setEmail(authUser?.email ?? "");
+    setAbout(user.about ?? "");
+    setFacebookAccount(user.facebook_account ?? "");
+    setInstaAccount(user.instagram_account ?? "");
+    setLinkedinAccount(user.linkedin_account ?? "");
+    setTwitterAccount(user.twitter_account ?? "");
+    setAuthorImg(user.avatar_url ?? "");
+    setSpeciality(user.speciality ?? "");
+    setField(user.field ?? "");
+  };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoading(true);
+
+      const { data: categories } = await supabase.from(`top_menus`).select("slug,id,name");
+      setCategories(categories ?? []);
+
+      setLoading(false);
+    };
+
+    const getUserData = async () => {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", authUser?.id)
+        .single();
+
+      if (!profile) return;
+
+      console.log("profile", profile);
+
+      setProfile(profile);
+    };
+
+    fetchCategories();
+    getUserData();
+  }, [authUser?.id]);
+
+  if (loading) return <Loading />;
 
   return (
     <>
@@ -140,8 +192,8 @@ const EditProfile = () => {
               id='firstname'
               name='firstname'
               size='lg'
-              // onChange={(e) => setEmail(e.target.value)}
-              value={USERDATA.firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              value={firstName}
             />
           </Box>
           <Box w='full' color='brand.black'>
@@ -164,8 +216,8 @@ const EditProfile = () => {
               id='lastname'
               name='lastname'
               size='lg'
-              // onChange={(e) => setEmail(e.target.value)}
-              value={USERDATA.lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              value={lastName}
             />
           </Box>
         </Flex>
@@ -188,8 +240,8 @@ const EditProfile = () => {
             id='username'
             name='username'
             size='lg'
-            // onChange={(e) => setEmail(e.target.value)}
-            value={USERDATA.username}
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
           />
         </Box>
         <Box mb={6} w='full' color='brand.black'>
@@ -213,8 +265,8 @@ const EditProfile = () => {
             id='about'
             name='about'
             size='lg'
-            // onChange={(e) => setEmail(e.target.value)}
-            value={USERDATA.about}
+            onChange={(e) => setAbout(e.target.value)}
+            value={about}
           />
         </Box>
         <Box mb={6} w='full' color='brand.black'>
@@ -231,68 +283,23 @@ const EditProfile = () => {
             }}
             _disabled={{
               bg: "blackAlpha.100",
+              textColor: "blackAlpha.500",
+              cursor: "not-allowed",
             }}
             autoComplete='off'
             type='email'
             id='email'
             name='email'
             size='lg'
-            // onChange={(e) => setEmail(e.target.value)}
-            value={USERDATA.email}
-          />
-        </Box>
-        <Box mb={6} w='full' color='brand.black'>
-          <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='facebookaccount'>
-            رابط الفيسبوك
-          </FormLabel>
-          <Input
-            p={4}
-            borderRadius={10}
-            bg={"blackAlpha.100"}
-            border={0}
-            _focus={{
-              bg: "blackAlpha.200",
-            }}
-            _disabled={{
-              bg: "blackAlpha.100",
-            }}
-            autoComplete='off'
-            type='text'
-            id='facebookaccount'
-            name='facebookaccount'
-            size='lg'
-            // onChange={(e) => setEmail(e.target.value)}
-            value={USERDATA.facebookAccount}
-          />
-        </Box>
-        <Box mb={6} w='full' color='brand.black'>
-          <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='instaaccount'>
-            رابط الانستغرام
-          </FormLabel>
-          <Input
-            p={4}
-            borderRadius={10}
-            bg={"blackAlpha.100"}
-            border={0}
-            _focus={{
-              bg: "blackAlpha.200",
-            }}
-            _disabled={{
-              bg: "blackAlpha.100",
-            }}
-            autoComplete='off'
-            type='text'
-            id='instaaccount'
-            name='instaaccount'
-            size='lg'
-            // onChange={(e) => setEmail(e.target.value)}
-            value={USERDATA.instaAccount}
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            disabled
           />
         </Box>
         <Flex mb={6} w='full'>
           <Box ml={6} w='full' color='brand.black'>
-            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='field'>
-              المجال
+            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='facebookaccount'>
+              رابط الفيسبوك
             </FormLabel>
             <Input
               p={4}
@@ -307,11 +314,107 @@ const EditProfile = () => {
               }}
               autoComplete='off'
               type='text'
-              id='field'
-              name='field'
+              id='facebookaccount'
+              name='facebookaccount'
               size='lg'
-              value={USERDATA.field}
+              onChange={(e) => setFacebookAccount(e.target.value)}
+              value={facebookAccount}
             />
+          </Box>
+          <Box w='full' color='brand.black'>
+            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='instaaccount'>
+              رابط الانستغرام
+            </FormLabel>
+            <Input
+              p={4}
+              borderRadius={10}
+              bg={"blackAlpha.100"}
+              border={0}
+              _focus={{
+                bg: "blackAlpha.200",
+              }}
+              _disabled={{
+                bg: "blackAlpha.100",
+              }}
+              autoComplete='off'
+              type='text'
+              id='instaaccount'
+              name='instaaccount'
+              size='lg'
+              onChange={(e) => setInstaAccount(e.target.value)}
+              value={instaAccount}
+            />
+          </Box>
+        </Flex>
+        <Flex mb={6} w='full'>
+          <Box ml={6} w='full' color='brand.black'>
+            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='instaaccount'>
+              رابط لينكد ان
+            </FormLabel>
+            <Input
+              p={4}
+              borderRadius={10}
+              bg={"blackAlpha.100"}
+              border={0}
+              _focus={{
+                bg: "blackAlpha.200",
+              }}
+              _disabled={{
+                bg: "blackAlpha.100",
+              }}
+              autoComplete='off'
+              type='text'
+              id='linkedinaccount'
+              name='linkedinaccount'
+              size='lg'
+              onChange={(e) => setLinkedinAccount(e.target.value)}
+              value={linkedinAccount}
+            />
+          </Box>
+          <Box w='full' color='brand.black'>
+            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='instaaccount'>
+              رابط تويتر
+            </FormLabel>
+            <Input
+              p={4}
+              borderRadius={10}
+              bg={"blackAlpha.100"}
+              border={0}
+              _focus={{
+                bg: "blackAlpha.200",
+              }}
+              _disabled={{
+                bg: "blackAlpha.100",
+              }}
+              autoComplete='off'
+              type='text'
+              id='twitteraccount'
+              name='twitteraccount'
+              size='lg'
+              onChange={(e) => setTwitterAccount(e.target.value)}
+              value={twitterAccount}
+            />
+          </Box>
+        </Flex>
+        <Flex mb={6} w='full'>
+          <Box ml={6} w='full' color='brand.black'>
+            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='field'>
+              المجال
+            </FormLabel>
+            <Select
+              bg={useColorModeValue!("blackAlpha.50", "whiteAlpha.50")}
+              border='none'
+              rounded='lg'
+              onChange={(e) => setField(e.target.value)}
+              placeholder='اختر مجال مُعين'
+              size='lg'
+              value={field}>
+              {categories?.map((categorie) => (
+                <option key={categorie.id} value={categorie.name}>
+                  {categorie.name}
+                </option>
+              ))}
+            </Select>
           </Box>
           <Box w='full' color='brand.black'>
             <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='speciality'>
@@ -333,9 +436,35 @@ const EditProfile = () => {
               id='speciality'
               name='speciality'
               size='lg'
-              value={USERDATA.speciality}
+              onChange={(e) => setSpeciality(e.target.value)}
+              value={speciality}
             />
           </Box>
+        </Flex>
+        <Flex my={10} justifyContent='center'>
+          <Button
+            w='fit-content'
+            size='lg'
+            p={6}
+            bg={"brand.secondary"}
+            color={"white"}
+            _hover={{
+              opacity: 0.8,
+            }}
+            _focus={{ opacity: 0.9, color: "white", outline: "none" }}
+            _focusWithin={{
+              opacity: 0.9,
+              bg: "brand.secondary",
+            }}
+            _disabled={{
+              bg: "#81EAFB6B",
+              pointerEvents: "none",
+            }}
+            borderRadius={10}
+            variant='solid'
+            isLoading={false}>
+            حفظ
+          </Button>
         </Flex>
       </Flex>
     </>
