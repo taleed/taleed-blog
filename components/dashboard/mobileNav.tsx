@@ -36,8 +36,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
     avatar_url: null,
   });
 
-  console.log("username", profile.username);
-
   const SignOutHandler = async () => {
     const { error } = await supabaseClient.auth.signOut();
     if (error) {
