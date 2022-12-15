@@ -1,4 +1,18 @@
-import { Box, Button, Heading, IconButton, SimpleGrid, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Heading,
+  IconButton,
+  SimpleGrid,
+  Stack,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
 
 import Layout from "@/layouts/Dashboard";
@@ -7,19 +21,22 @@ import { supabase } from "../../utils/supabaseClient";
 import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
 
 const Statistics = () => {
-  const [visitorList, setVisitorsList] = useState<any[]>([])
+  const [visitorList, setVisitorsList] = useState<any[]>([]);
   const [visitors, setVisitors] = useState(0);
   const [articles, setArticles] = useState(0);
-  const [editors, setEditors] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0)
-  const [count, setCount] = useState(0)
+  const [approvedEditors, setApprovedEditors] = useState(0);
+  const [unapprovedEditors, setUnapprovedEditors] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [count, setCount] = useState(0);
 
   const getVisitorsList = async () => {
     try {
-      const {from, to} = getPagination(currentPage, ITEMS_IN_PAGE);
-      const { error, data, count } = await supabase.from('visitors').select("*", { count: "exact" })
-        .order("id", {ascending: false})
-        .range(Number(from as unknown as string), Number(to as unknown as string))
+      const { from, to } = getPagination(currentPage, ITEMS_IN_PAGE);
+      const { error, data, count } = await supabase
+        .from("visitors")
+        .select("*", { count: "exact" })
+        .order("id", { ascending: false })
+        .range(Number(from as unknown as string), Number(to as unknown as string));
       if (error) {
         toast({
           title: "حدث خطأ",
@@ -30,8 +47,8 @@ const Statistics = () => {
         });
         return;
       } else {
-        setVisitorsList(data)
-        setCount(count ?? 0)
+        setVisitorsList(data);
+        setCount(count ?? 0);
       }
     } catch (error: any) {
       toast({
@@ -42,19 +59,19 @@ const Statistics = () => {
         isClosable: true,
       });
     }
-  }
+  };
 
   const isLastPage = () => {
-    return (ITEMS_IN_PAGE * (currentPage+1) + ITEMS_IN_PAGE) > count
-  }
+    return ITEMS_IN_PAGE * (currentPage + 1) + ITEMS_IN_PAGE > count;
+  };
 
   const handleNext = () => {
-    setCurrentPage(currentPage+1)
-  }
+    setCurrentPage(currentPage + 1);
+  };
 
   const handleBack = () => {
-    setCurrentPage(currentPage-1)
-  }
+    setCurrentPage(currentPage - 1);
+  };
 
   const getVisitors = async () => {
     const { data, error: err_view_count } = await supabase
@@ -69,48 +86,55 @@ const Statistics = () => {
   };
 
   const getArticles = async () => {
-    const { error, count } = await supabase
-      .from("posts")
-      .select("id", { count: "exact" });
+    const { error, count } = await supabase.from("posts").select("id", { count: "exact" });
 
     if (!error) {
       setArticles(count as number);
     }
   };
 
-  const getEditors = async () => {
+  const getApprovedEditors = async () => {
     const { error, count } = await supabase
       .from("profiles")
       .select("id", { count: "exact" })
       .eq("approved", true);
 
     if (!error) {
-      setEditors(count as number);
+      setApprovedEditors(count as number);
+    }
+  };
+
+  const getUnapprovedEditors = async () => {
+    const { error, count } = await supabase
+      .from("profiles")
+      .select("id", { count: "exact" })
+      .eq("approved", false);
+
+    if (!error) {
+      setUnapprovedEditors(count as number);
     }
   };
 
   useEffect(() => {
     getVisitors();
     getArticles();
-    getEditors();
+    getApprovedEditors();
+    getUnapprovedEditors();
     getVisitorsList();
   }, [currentPage]);
 
   return (
     <Box px={8}>
       <Heading>إحصائيات</Heading>
-      <SimpleGrid
-        mt={8}
-        columns={{ base: 1, md: 3 }}
-        spacing={{ base: 5, lg: 8 }}
-      >
+      <SimpleGrid mt={8} columns={{ sm: 2, base: 1, md: 4 }} spacing={{ sm: 5, base: 8, lg: 8 }}>
         <StatsCard title={"عدد الزوار"} stat={visitors} />
         <StatsCard title={"عدد المقالات"} stat={articles} />
-        <StatsCard title={"عدد المحررين"} stat={editors} />
+        <StatsCard title={"عدد المحررين المقبولين"} stat={approvedEditors} />
+        <StatsCard title={"عدد المحررين قيد الإنتظار"} stat={unapprovedEditors} />
       </SimpleGrid>
       <Heading mt={16}>قائمة الزوار</Heading>
-      <TableContainer bg="white" mt={16}>
-        <Table variant="simple">
+      <TableContainer bg='white' mt={16}>
+        <Table variant='simple'>
           <Thead>
             <Tr>
               <Th>البريد الإلكتروني</Th>
@@ -131,7 +155,7 @@ const Statistics = () => {
           </Tbody>
         </Table>
       </TableContainer>
-      <Stack direction="row">
+      <Stack direction='row'>
         {!isLastPage() && <Button onClick={handleNext}>التالي</Button>}
         {currentPage !== 0 && <Button onClick={handleBack}>السابق</Button>}
       </Stack>
@@ -146,7 +170,12 @@ export default Statistics;
 export async function getStaticProps() {
   return { props: { title: "HomePage" } };
 }
-function toast(arg0: { title: string; description: string; status: string; duration: number; isClosable: boolean; }) {
+function toast(arg0: {
+  title: string;
+  description: string;
+  status: string;
+  duration: number;
+  isClosable: boolean;
+}) {
   throw new Error("Function not implemented.");
 }
-
