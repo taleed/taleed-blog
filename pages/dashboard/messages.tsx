@@ -1,4 +1,4 @@
-import Loading from "@/components/loading";
+import Loading from "@/components/Loading";
 import PaginationBar from "@/components/PaginationBar";
 import Layout from "@/layouts/Dashboard";
 import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
