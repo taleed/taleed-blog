@@ -109,15 +109,15 @@ const EditProfile = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      setLoading(true);
+      if (categories.length) return;
 
-      const { data: categories } = await supabase.from(`top_menus`).select("slug,id,name");
-      setCategories(categories ?? []);
-
-      setLoading(false);
+      const { data } = await supabase.from(`top_menus`).select("slug,id,name");
+      setCategories(data ?? []);
     };
 
     const getUserData = async () => {
+      if (!authUser) return;
+
       const { data: profile } = await supabase
         .from("profiles")
         .select("*")
@@ -126,27 +126,35 @@ const EditProfile = () => {
 
       if (!profile) return;
 
-      console.log("profile", profile);
-
       setProfile(profile);
     };
+    setLoading(true);
 
     fetchCategories();
     getUserData();
+
+    setLoading(false);
   }, [authUser?.id]);
 
   if (loading) return <Loading />;
 
   return (
     <>
-      <Flex direction={"column"} alignItems={"center"} py={8} px={44} color='white'>
-        <Box mb='6' display='inline-block'>
+      <Flex
+        direction={"column"}
+        alignItems={"center"}
+        width='100%'
+        maxWidth='650px'
+        mx='auto'
+        py={8}
+        color='white'>
+        <Box mb='6'>
           <Avatar
             rounded='md'
             borderRadius='md'
-            size={"2xl"}
-            name={USERDATA.firstName}
-            src={USERDATA.authorImg}
+            size='2xl'
+            src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${authorImg}`}
+            name={`${firstName} ${lastName}`}
           />
           <FormControl mt={2}>
             <FormLabel
@@ -296,7 +304,7 @@ const EditProfile = () => {
             disabled
           />
         </Box>
-        <Flex mb={6} w='full'>
+        <Flex flexDirection={{ base: "column", md: "row" }} mb={6} w='full'>
           <Box ml={6} w='full' color='brand.black'>
             <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='facebookaccount'>
               رابط الفيسبوك
@@ -346,7 +354,7 @@ const EditProfile = () => {
             />
           </Box>
         </Flex>
-        <Flex mb={6} w='full'>
+        <Flex flexDirection={{ base: "column", md: "row" }} mb={6} w='full'>
           <Box ml={6} w='full' color='brand.black'>
             <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='instaaccount'>
               رابط لينكد ان
