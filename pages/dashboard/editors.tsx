@@ -37,7 +37,7 @@ import Layout from "@/layouts/Dashboard";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { supabase } from "@/utils/supabaseClient";
 import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
-import Loading from "@/components/loading";
+import Loading from "@/components/Loading";
 import PaginationBar from "@/components/PaginationBar";
 
 const ManageEditors = () => {
