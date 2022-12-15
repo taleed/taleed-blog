@@ -23,7 +23,7 @@ const Notifications = () => {
 
   return (
     <Box px={8}>
-      <Heading>اشعارات</Heading>
+      <Heading>اشعارات ({count})</Heading>
       <TableContainer bg='white' mt={16}>
         <Table variant='simple'>
           <Thead>
