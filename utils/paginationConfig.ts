@@ -1,4 +1,4 @@
-const ITEMS_IN_PAGE = 20
+const ITEMS_IN_PAGE = 20;
 
 const getPagination = (page: number, size: number) => {
   const limit = size ? +size : 3;
@@ -8,4 +8,4 @@ const getPagination = (page: number, size: number) => {
   return { from, to };
 };
 
-export { ITEMS_IN_PAGE, getPagination}
+export { ITEMS_IN_PAGE, getPagination };

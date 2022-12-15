@@ -18,17 +18,14 @@ import {
   Spinner,
   Stack,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
-  Tfoot,
   Th,
   Thead,
   Tr,
   chakra,
   useDisclosure,
-  useColorModeValue,
   useToast,
   Select,
 } from "@chakra-ui/react";
@@ -41,6 +38,7 @@ import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { supabase } from "@/utils/supabaseClient";
 import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
 import Loading from "@/components/loading";
+import PaginationBar from "@/components/PaginationBar";
 
 const ManageEditors = () => {
   const supabaseClient = useSupabaseClient();
@@ -58,6 +56,7 @@ const ManageEditors = () => {
     setLoading(true);
     let url = "";
     const { from, to } = getPagination(currentPage, ITEMS_IN_PAGE);
+
     if (filter) {
       url = `/api/manage-editors?q=${filter}&from=${from}&to=${to}`;
     } else {
@@ -77,24 +76,12 @@ const ManageEditors = () => {
       .finally(() => setLoading(false));
   };
 
-  const isLastPage = () => {
-    return ITEMS_IN_PAGE * (currentPage + 1) + ITEMS_IN_PAGE > count;
-  };
-
-  const handleNext = () => {
-    setCurrentPage(currentPage + 1);
-  };
-
-  const handleBack = () => {
-    setCurrentPage(currentPage - 1);
-  };
-
   useEffect(() => {
     new Promise(async () => {
       await getProfileTypes();
-      await fetchProfiles();
+      await fetchProfiles(filter);
     });
-  }, [setData, currentPage]);
+  }, [filter, currentPage]);
 
   const getProfileTypes = async () => {
     setLoading(true);
@@ -193,30 +180,32 @@ const ManageEditors = () => {
 
   return (
     <Box px={8}>
-      <Heading>محررين</Heading>
-      <Box mt={16} width={"40%"}>
+      <Heading>محررين ({count}) </Heading>
+
+      <Box mt={16} width={"30%"}>
         <chakra.b>انتقي المحررين</chakra.b>
         <Select
           border={0}
           _focus={{ outline: "none", boxShadow: "none" }}
           onChange={async (event) => {
+            setCurrentPage(0);
             setFilter(event.target.value);
-            await fetchProfiles(event.target.value);
           }}
           bg={"blackAlpha.200"}
           size='lg'
           defaultValue={"all"}>
-          <option key={0} value={"all"}>
-            {"الكل"}
+          <option key={0} value='all'>
+            الكل
           </option>
-          <option key={1} value={"true"}>
-            {"تم قبولهم"}
+          <option key={1} value='true'>
+            تم قبولهم
           </option>
-          <option key={2} value={"false"}>
-            {"قيد الانتضار"}
+          <option key={2} value='false'>
+            قيد الانتظار
           </option>
         </Select>
       </Box>
+
       {!loading ? (
         <>
           <TableContainer mt={6} bg='white'>
@@ -233,7 +222,7 @@ const ManageEditors = () => {
               <Tbody>
                 {data?.map((d: any, i) => (
                   <Tr key={d.email}>
-                    <Td>{i}</Td>
+                    <Td>{i + 1}</Td>
                     <Td>{d.email}</Td>
                     <Td>
                       <Select
@@ -242,8 +231,8 @@ const ManageEditors = () => {
                         onChange={async (event) => await handleSelectType(event.target.value, d.id)}
                         size='lg'
                         defaultValue={d.type ? d.type : ""}>
-                        <option key={"nothing"} value={""}>
-                          {"محرر عادي"}
+                        <option key='nothing' value=''>
+                          محرر عادي
                         </option>
                         {profileTypes?.map((pt, i) => (
                           <option key={i} value={pt.type}>
@@ -279,10 +268,12 @@ const ManageEditors = () => {
               </Tbody>
             </Table>
           </TableContainer>
-          <Stack direction='row'>
-            {!isLastPage() && <Button onClick={handleNext}>التالي</Button>}
-            {currentPage !== 0 && <Button onClick={handleBack}>السابق</Button>}
-          </Stack>
+          <PaginationBar
+            max={count}
+            itemsPerPage={ITEMS_IN_PAGE}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </>
       ) : (
         <Loading />

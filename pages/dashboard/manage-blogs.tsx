@@ -22,6 +22,7 @@ import { useRouter } from "next/router";
 import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
 import { BsPauseCircle } from "react-icons/bs";
 import Loading from "@/components/loading";
+import PaginationBar from "@/components/PaginationBar";
 
 const ManageBlogs = () => {
   const [data, setData] = useState<any[] | undefined>(undefined);
@@ -59,18 +60,6 @@ const ManageBlogs = () => {
       )
       .order("created_at", { ascending: true })
       .range(from, to);
-  };
-
-  const isLastPage = () => {
-    return ITEMS_IN_PAGE * (currentPage + 1) + ITEMS_IN_PAGE > postsNumber;
-  };
-
-  const handleNext = () => {
-    setCurrentPage(currentPage + 1);
-  };
-
-  const handleBack = () => {
-    setCurrentPage(currentPage - 1);
   };
 
   const handlePublish = async (id: number) => {
@@ -167,7 +156,7 @@ const ManageBlogs = () => {
 
   return (
     <Box px={8}>
-      <Heading>المقالات</Heading>
+      <Heading>المقالات ({postsNumber})</Heading>
       <Stack mt={16} spacing={4} direction='row' width='50%'>
         <Input
           placeholder='اكتب العنوان الذي تريد البحث عنه'
@@ -241,10 +230,12 @@ const ManageBlogs = () => {
           </Table>
         </TableContainer>
       )}
-      <Stack direction='row'>
-        {!isLastPage() && <Button onClick={handleNext}>التالي</Button>}
-        {currentPage !== 0 && <Button onClick={handleBack}>السابق</Button>}
-      </Stack>
+      <PaginationBar
+        max={postsNumber}
+        itemsPerPage={ITEMS_IN_PAGE}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </Box>
   );
 };
