@@ -110,15 +110,13 @@ const ManagePartners = () => {
     })
       .then((data) => data.json())
       .then(() => {
+        setData((prev) => prev.filter((p) => p.id !== id));
         toast({
           title: "تم حذف المقال بنجاح",
           status: "error",
           duration: 5000,
           isClosable: true,
           position: "top-right",
-          onCloseComplete: async () => {
-            await fetchData();
-          },
         });
       })
       .catch((error: any) => {
