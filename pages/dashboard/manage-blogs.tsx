@@ -15,7 +15,7 @@ import { ReactElement, useEffect, useState } from "react";
 import Layout from "@/layouts/Dashboard";
 import { supabase } from "../../utils/supabaseClient";
 import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
-import Loading from "@/components/Loading";
+import Loading from "@/components/dashboard/Loading";
 import PaginationBar from "@/components/PaginationBar";
 import BlogRow from "@/components/dashboard/BlogRow";
 

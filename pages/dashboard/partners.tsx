@@ -1,4 +1,4 @@
-import Loading from "@/components/Loading";
+import Loading from "@/components/dashboard/Loading";
 import Layout from "@/layouts/Dashboard";
 import { supabase } from "@/utils/supabaseClient";
 import {
