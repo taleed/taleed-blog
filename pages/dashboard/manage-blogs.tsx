@@ -15,11 +15,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
-import { FaTrash, FaEdit, FaShare, FaRegSave } from "react-icons/fa";
+import { FaTrash, FaEdit, FaShare } from "react-icons/fa";
 import Layout from "@/layouts/Dashboard";
 import { supabase } from "../../utils/supabaseClient";
 import { useRouter } from "next/router";
 import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
+import { BsPauseCircle } from "react-icons/bs";
 
 const ManageBlogs = () => {
   const [data, setData] = useState<any[] | undefined>(undefined);
@@ -83,10 +84,16 @@ const ManageBlogs = () => {
 
   const handlePublish = async (id: number) => {
     try {
-      await fetch("/api/manage-blogs/" + id, {
+      const result = await fetch("/api/manage-blogs/" + id, {
         method: "PATCH",
         body: JSON.stringify({ statu: "published" }),
       }).then((res) => res.json());
+
+      if (!result.post) return;
+
+      const updatedPost = result.post;
+
+      setData((prev) => prev?.map((post) => (post.id === id ? updatedPost : post)));
 
       toast({
         title: "تم نشر المقالة",
@@ -95,11 +102,6 @@ const ManageBlogs = () => {
         duration: 1000,
         isClosable: true,
         position: "top-right",
-        onCloseComplete() {
-          new Promise(async () => {
-            await handleAfterUpdate();
-          });
-        },
       });
     } catch (e: any) {
       console.log("[error - share post]: ", e.message);
@@ -204,19 +206,17 @@ const ManageBlogs = () => {
                 <Td>{d.category_id.name}</Td>
                 <Td>
                   <Stack direction='row'>
-                    {d.status !== "published" && (
+                    {d.status !== "published" ? (
                       <IconButton
                         onClick={async () => await handlePublish(d.id)}
                         aria-label='accept and share blog post'
                         icon={<FaShare />}
                       />
-                    )}
-
-                    {d.status === "published" && (
+                    ) : (
                       <IconButton
                         onClick={async () => await handleDraft(d.id)}
                         aria-label='draft blog post'
-                        icon={<FaRegSave />}
+                        icon={<BsPauseCircle />}
                       />
                     )}
 
