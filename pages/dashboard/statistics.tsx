@@ -1,10 +1,7 @@
 import {
   Box,
-  Button,
   Heading,
-  IconButton,
   SimpleGrid,
-  Stack,
   Table,
   TableContainer,
   Tbody,
@@ -19,6 +16,7 @@ import Layout from "@/layouts/Dashboard";
 import StatsCard from "@/components/dashboard/Stat";
 import { supabase } from "../../utils/supabaseClient";
 import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
+import PaginationBar from "@/components/PaginationBar";
 
 const Statistics = () => {
   const [visitorList, setVisitorsList] = useState<any[]>([]);
@@ -59,18 +57,6 @@ const Statistics = () => {
         isClosable: true,
       });
     }
-  };
-
-  const isLastPage = () => {
-    return ITEMS_IN_PAGE * (currentPage + 1) + ITEMS_IN_PAGE > count;
-  };
-
-  const handleNext = () => {
-    setCurrentPage(currentPage + 1);
-  };
-
-  const handleBack = () => {
-    setCurrentPage(currentPage - 1);
   };
 
   const getVisitors = async () => {
@@ -155,10 +141,12 @@ const Statistics = () => {
           </Tbody>
         </Table>
       </TableContainer>
-      <Stack direction='row'>
-        {!isLastPage() && <Button onClick={handleNext}>التالي</Button>}
-        {currentPage !== 0 && <Button onClick={handleBack}>السابق</Button>}
-      </Stack>
+      <PaginationBar
+        max={count}
+        itemsPerPage={ITEMS_IN_PAGE}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </Box>
   );
 };
