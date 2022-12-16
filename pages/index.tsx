@@ -265,7 +265,7 @@ export const getStaticProps = async () => {
     .range(1, 3);
 
   // Get Famous Authors
-  const { data: authors } = await supabase.rpc("famous_authors");
+  const { data: authors, error } = await supabase.rpc("get_famous_authors");
 
   // Most Viewed Blogs
   let queryTopMenus = supabase
