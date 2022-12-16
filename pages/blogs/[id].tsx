@@ -37,9 +37,7 @@ interface Props {
   subMenus: NavbarResourcesType[];
 }
 
-
-
-const  FbComment = dynamic(() => Promise.resolve(FacebookCommment), { ssr: false })
+const FbComment = dynamic(() => Promise.resolve(FacebookCommment), { ssr: false });
 
 function Blog({ post, similar_posts }: Props) {
   const similar_posts_date = useColorModeValue("grey.500", "grey.300");
@@ -47,92 +45,90 @@ function Blog({ post, similar_posts }: Props) {
   const similar_posts_title = useColorModeValue("brand.black", "white");
   const tags_bg_color = useColorModeValue("purple.100", "grey.800");
   const tags_color = useColorModeValue("brand.black", "white");
-  const purpleTitles = useColorModeValue("brand.primary","brand.secondary")
-  const seperator_color = useColorModeValue(
-    "1px solid #E7E8E8",
-    "1px solid #7C62E5"
-  );
+  const purpleTitles = useColorModeValue("brand.primary", "brand.secondary");
+  const seperator_color = useColorModeValue("1px solid #E7E8E8", "1px solid #7C62E5");
 
   const [likes, setLikes] = useState<number | null>(null);
-  const [location, setLocation] = useState<any>({})
-  const [likeLoad, setLikeLoad] = useState(false)
-  const [liked, setLiked] = useState(false)
-  const router = useRouter()
-  const toast = useToast()
-  const [owner, setOwner] = useState(false)
+  const [location, setLocation] = useState<any>({});
+  const [likeLoad, setLikeLoad] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const router = useRouter();
+  const toast = useToast();
+  const [owner, setOwner] = useState(false);
 
   const isOwner = async () => {
-    const {data:user} = await supabase.auth.getUser()
-    setOwner(user.user?.id === post.profiles.id)
-  }
+    const { data: user } = await supabase.auth.getUser();
+    setOwner(user.user?.id === post.profiles.id);
+  };
   const getLikes = async () => {
-    setLikeLoad(true)
-    await fetch("/api/likes?q="+post.id).then(res => res.json())
-    .then(data => {
-      console.log(data)
-      setLikes(data.count)
-      setLiked(data.liked)
-      setLikeLoad(false)
-    })
+    setLikeLoad(true);
+    await fetch("/api/likes?q=" + post.id)
+      .then((res) => res.json())
+      .then((data) => {
+        setLikes(data.count);
+        setLiked(data.liked);
+        setLikeLoad(false);
+      });
   };
 
   const incrementLikes = async () => {
-    setLikeLoad(true)
+    setLikeLoad(true);
     await fetch("/api/likes", {
       method: "POST",
-      body: JSON.stringify({post: post.id, ip: location.ip})
-    }).then(res => res.json())
-    .then((data) => {
-      if(data.message === "تم اضافة الاعجاب بنجاح") {
-        setLikeLoad(false)
-        setLikes((likes ?? 0)+1)
-        setLiked(true)
-
-      } else if( data.message === "تم حذف الاعجاب بنجاح"){
-        setLikeLoad(false)
-        setLikes((likes ?? 1 ) - 1)
-        setLiked(false)
-      } else {
-        toast({
-          title: "لقد حدث خطؤ, حاول من جديد",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-          position: "top-right",
-          onCloseComplete() {
-            setLikeLoad(false)
-          },
-        })
-      }
+      body: JSON.stringify({ post: post.id, ip: location.ip }),
     })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.message === "تم اضافة الاعجاب بنجاح") {
+          setLikeLoad(false);
+          setLikes((likes ?? 0) + 1);
+          setLiked(true);
+        } else if (data.message === "تم حذف الاعجاب بنجاح") {
+          setLikeLoad(false);
+          setLikes((likes ?? 1) - 1);
+          setLiked(false);
+        } else {
+          toast({
+            title: "لقد حدث خطؤ, حاول من جديد",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top-right",
+            onCloseComplete() {
+              setLikeLoad(false);
+            },
+          });
+        }
+      });
   };
 
   const addViewer = async () => {
-    const location = JSON.parse(localStorage.getItem('location') ?? "{}")
+    const location = JSON.parse(localStorage.getItem("location") ?? "{}");
 
     if (!location) {
-      return
+      return;
     }
 
-    setLocation(location)
+    setLocation(location);
 
     try {
-      let {data} = await supabase.auth.getUser()
-      await supabase.rpc('add_post_viewer', {
+      let { data } = await supabase.auth.getUser();
+      await supabase.rpc("add_post_viewer", {
         new_id: post.id,
         ip: location.ip,
-        email: data.user?.email ?? "Anonymous"
-      })
+        email: data.user?.email ?? "Anonymous",
+      });
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
-  }
+  };
 
   const handleDelete = async (id: number) => {
-      await fetch('/api/manage-blogs/'+id, {
-        method: 'DELETE',
-      }).then(res => res.json())
-      .then(()=> {
+    await fetch("/api/manage-blogs/" + id, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then(() => {
         toast({
           title: "تم حذف المقالة",
           description: "تم حذف المقالة بنجاح.",
@@ -140,22 +136,22 @@ function Blog({ post, similar_posts }: Props) {
           duration: 1000,
           isClosable: true,
           position: "top-right",
-          onCloseComplete:  () => {
-            router.push(`/authors/${post.profiles.username}`)
-          }
+          onCloseComplete: () => {
+            router.push(`/authors/${post.profiles.username}`);
+          },
         });
       })
       .catch((error: any) => {
         console.log("[error - delete post]: ", e.message);
-      })
-  }
+      });
+  };
 
   useEffect(() => {
     new Promise(async () => {
-      await isOwner()
-      await addViewer()
-      await getLikes()
-    })
+      await isOwner();
+      await addViewer();
+      await getLikes();
+    });
   }, [owner]);
 
   const ads_color = useColorModeValue("#F4F5F5", "#2F3133");
@@ -165,55 +161,53 @@ function Blog({ post, similar_posts }: Props) {
       <Head>
         <title>{post.title}</title>
       </Head>
-      <Container my={{ base: 10, md: 20 }} maxW="container.xl">
+      <Container my={{ base: 10, md: 20 }} maxW='container.xl'>
         <Flex flexDir={{ base: "column", lg: "row" }}>
-          <Flex flexDir="column" flex={1}>
+          <Flex flexDir='column' flex={1}>
             <Stack align={"center"} justify={"space-between"} flexDirection={"row"}>
               <chakra.span
-                color="brand.secondary"
+                color='brand.secondary'
                 fontSize={{ base: "xl", md: "1.625rem" }}
-                fontWeight="600"
-                lineHeight={{ base: "36.8px", md: "47.84px" }}
-              >
+                fontWeight='600'
+                lineHeight={{ base: "36.8px", md: "47.84px" }}>
                 {post.top_menus && post.top_menus.name}
                 {post.sub_menus && post.sub_menus.name}
               </chakra.span>
-              { owner &&
+              {owner && (
                 <Box>
                   <IconButton
-                    onClick={() => router.push({
-                        pathname: "/dashboard/edit-blog",
-                        query: {...post}}, "/dashboard/edit-blog")
+                    onClick={() =>
+                      router.push(
+                        {
+                          pathname: "/dashboard/edit-blog",
+                          query: { ...post },
+                        },
+                        "/dashboard/edit-blog"
+                      )
                     }
-                    aria-label="edit blog post"
+                    aria-label='edit blog post'
                     icon={<FaEdit />}
                     marginInline={2}
                   />
                   <IconButton
                     onClick={async () => await handleDelete(post.id)}
-                    aria-label="delete blog post"
+                    aria-label='delete blog post'
                     icon={<FaTrash />}
                     marginInline={2}
                   />
                 </Box>
-                }
+              )}
             </Stack>
             <Heading
-              as="h1"
+              as='h1'
               color={useColorModeValue("brand.black", "white")}
               fontSize={{ base: "2xl", md: "5xl" }}
-              fontWeight="700"
-              lineHeight={{ base: "47.84px", md: "92px" }}
-            >
+              fontWeight='700'
+              lineHeight={{ base: "47.84px", md: "92px" }}>
               {post.title}
             </Heading>
-            <Flex
-              mb={10}
-              justifyContent="space-between"
-              w="full"
-              alignItems="flex-end"
-            >
-              <Flex align="center">
+            <Flex mb={10} justifyContent='space-between' w='full' alignItems='flex-end'>
+              <Flex align='center'>
                 <Avatar
                   me={3}
                   size={{ base: "md", md: "lg" }}
@@ -223,12 +217,11 @@ function Blog({ post, similar_posts }: Props) {
                 <Box>
                   <Link href={`/authors/${post.profiles.username}`} passHref>
                     <Text
-                      fontWeight="600"
+                      fontWeight='600'
                       fontSize={{ base: "md", md: "xl" }}
-                      cursor="pointer"
+                      cursor='pointer'
                       _hover={{ textDecor: "underline" }}
-                      color={useColorModeValue("brand.black", "white")}
-                    >
+                      color={useColorModeValue("brand.black", "white")}>
                       {`${post.profiles.first_name} ${post.profiles.last_name}`}
                     </Text>
                   </Link>
@@ -236,8 +229,7 @@ function Blog({ post, similar_posts }: Props) {
                     <chakra.span
                       color={useColorModeValue("grey.500", "#9DA2A4")}
                       fontSize={{ base: "sm", md: "lg" }}
-                      fontWeight="400"
-                    >
+                      fontWeight='400'>
                       {post.created_at.slice(0, 10)}
                     </chakra.span>
                   </Flex>
@@ -246,40 +238,46 @@ function Blog({ post, similar_posts }: Props) {
             </Flex>
             <Image
               rounded={{ lg: "lg" }}
-              w="full"
+              w='full'
               my={5}
               h={{ base: 64, lg: 96 }}
-              fit="cover"
+              fit='cover'
               src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/blogs/${post.thumbnail}`}
-              alt="Article"
+              alt='Article'
             />
             <Box
-              className="post-sound-cloud"
+              className='post-sound-cloud'
               dangerouslySetInnerHTML={{ __html: post.sound_cloud_frame }}
             />
 
-            <Box
-              className="post-content"
-              dangerouslySetInnerHTML={{ __html: post.body }}
-            />
+            <Box className='post-content' dangerouslySetInnerHTML={{ __html: post.body }} />
 
             <Box mt={16}>
               <Button
-
                 onClick={incrementLikes}
-                display="flex"
+                display='flex'
                 disabled={likeLoad}
                 p={6}
-                rounded="full"
-                border="1px solid"
-                bg={useColorModeValue(liked ? "brand.primary" : "", liked ? "brand.secondary" : "grey")}
+                rounded='full'
+                border='1px solid'
+                bg={useColorModeValue(
+                  liked ? "brand.primary" : "",
+                  liked ? "brand.secondary" : "grey"
+                )}
                 borderColor={useColorModeValue("grey.200", "grey.400")}
-                variant={ liked ? "solid" : "outline"}
+                variant={liked ? "solid" : "outline"}
                 leftIcon={
-                  <Logo fill={useColorModeValue(liked ? "white" : "#A5A6A6", liked ? "white" :"grey.200")} />
+                  <Logo
+                    fill={useColorModeValue(
+                      liked ? "white" : "#A5A6A6",
+                      liked ? "white" : "grey.200"
+                    )}
+                  />
                 }
-                color={useColorModeValue(liked ? "white" : "grey.900", liked ? "white" :"grey.200")}
-              >
+                color={useColorModeValue(
+                  liked ? "white" : "grey.900",
+                  liked ? "white" : "grey.200"
+                )}>
                 {likes} إعجاب
               </Button>
             </Box>
@@ -287,48 +285,44 @@ function Blog({ post, similar_posts }: Props) {
           <Box
             display={{ base: "none", md: "initial" }}
             ms={{ base: 0, md: 10 }}
-            w={{ base: "full", md: "35%" }}
-          >
+            w={{ base: "full", md: "35%" }}>
             {!post.tags ? null : (
               <Box mb={6}>
                 <chakra.h2
                   color={purpleTitles}
-                  fontSize="2xl"
-                  fontWeight="600"
-                  lineHeight="44.16px"
-                  mb={3}
-                >
+                  fontSize='2xl'
+                  fontWeight='600'
+                  lineHeight='44.16px'
+                  mb={3}>
                   الكلمات المفتاحية
                 </chakra.h2>
-                <Flex flexWrap="wrap">
+                <Flex flexWrap='wrap'>
                   {post.tags.map((tag: string, index: number) => (
                     <Badge
                       key={index}
                       fontWeight={500}
-                      fontSize="lg"
-                      lineHeight="33.12px"
-                      variant="solid"
+                      fontSize='lg'
+                      lineHeight='33.12px'
+                      variant='solid'
                       color={tags_color}
                       bg={tags_bg_color}
-                      rounded="full"
-                      padding="4px 22px"
+                      rounded='full'
+                      padding='4px 22px'
                       mb={2}
-                      me={2}
-                    >
+                      me={2}>
                       {tag}
                     </Badge>
                   ))}
                 </Flex>
               </Box>
             )}
-            <Flex flexDir="column" mb={10}>
+            <Flex flexDir='column' mb={10}>
               <chakra.h2
                 color={purpleTitles}
-                fontSize="2xl"
-                fontWeight="600"
-                lineHeight="44.16px"
-                mb={3}
-              >
+                fontSize='2xl'
+                fontWeight='600'
+                lineHeight='44.16px'
+                mb={3}>
                 مواضيع ذات صلة
               </chakra.h2>
               {similar_posts.length === 0 && "لا توجد مواضيع ذات صلة بعد"}
@@ -340,43 +334,35 @@ function Blog({ post, similar_posts }: Props) {
                         pb={2}
                         borderBottom={seperator_color}
                         mb={10}
-                        align="center"
-                        _hover={{ cursor: "pointer" }}
-                      >
+                        align='center'
+                        _hover={{ cursor: "pointer" }}>
                         <Box flex={1}>
                           <chakra.span
-                            color="brand.secondary"
-                            fontSize="md"
-                            fontWeight="600"
-                            lineHeight="29.44px"
-                          >
+                            color='brand.secondary'
+                            fontSize='md'
+                            fontWeight='600'
+                            lineHeight='29.44px'>
                             {post.top_menus && post.top_menus.name}
                             {post.sub_menus && post.sub_menus.name}
                           </chakra.span>
                           <Heading
-                            as="h3"
+                            as='h3'
                             color={similar_posts_title}
-                            fontSize="md"
-                            fontWeight="700"
-                            lineHeight="29.44px"
-                            my={2}
-                          >
+                            fontSize='md'
+                            fontWeight='700'
+                            lineHeight='29.44px'
+                            my={2}>
                             {post.title}
                           </Heading>
-                          <HStack align="center">
+                          <HStack align='center'>
                             <Text
-                              fontWeight="400"
-                              lineHeight="30px"
-                              fontSize="md"
-                              color={similar_posts_author}
-                            >
+                              fontWeight='400'
+                              lineHeight='30px'
+                              fontSize='md'
+                              color={similar_posts_author}>
                               {`${post.profiles.first_name} ${post.profiles.last_name}`}
                             </Text>
-                            <chakra.span
-                              color={similar_posts_date}
-                              fontSize="sm"
-                              fontWeight="500"
-                            >
+                            <chakra.span color={similar_posts_date} fontSize='sm' fontWeight='500'>
                               {post.created_at.slice(0, 10)}
                             </chakra.span>
                           </HStack>
@@ -385,7 +371,7 @@ function Blog({ post, similar_posts }: Props) {
                           rounded={{ lg: "lg" }}
                           my={5}
                           h={{ base: 20, lg: 20 }}
-                          fit="cover"
+                          fit='cover'
                           src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/blogs/${post.thumbnail}`}
                           alt={`${post.title} thumbnail`}
                         />
@@ -394,7 +380,7 @@ function Blog({ post, similar_posts }: Props) {
                   );
                 })}
             </Flex>
-            <Box id="ads" className="ads" h="100vh" bg={ads_color} />
+            <Box id='ads' className='ads' h='100vh' bg={ads_color} />
           </Box>
         </Flex>
         <Box mt={12}>
@@ -442,6 +428,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       "id,title,thumbnail,excerpt, created_at, body, tags, sub_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url), sound_cloud_frame"
     )
     .eq("id", id)
+    .eq("status", "published")
     .single();
 
   if (post_top_menu) {
@@ -452,6 +439,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       )
       .filter("top_menus.name", "eq", post_top_menu!.top_menus!.name)
       .filter("id", "not.eq", post_top_menu.id)
+      .eq("status", "published")
       .range(0, 5);
 
     return {
@@ -472,6 +460,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       )
       .filter("sub_menus.name", "eq", post_sub_menu!.sub_menus!.name)
       .filter("id", "not.eq", post_sub_menu.id)
+      .eq("status", "published")
       .range(0, 5);
 
     return {
