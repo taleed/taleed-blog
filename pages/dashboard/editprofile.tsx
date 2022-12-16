@@ -18,6 +18,7 @@ import { supabase } from "@/utils/supabaseClient";
 import Loading from "@/components/dashboard/Loading";
 import { useUser } from "@supabase/auth-helpers-react";
 import { makeid } from "@/components/pages/be-an-editor/Step3";
+import { usernameRegex } from "@/components/pages/be-an-editor/Step1";
 
 const EditProfile = () => {
   const authUser = useUser();
@@ -103,6 +104,18 @@ const EditProfile = () => {
     if (emptyFields) {
       toast({
         title: "قم بملأ الحقول الفارغة",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
+    }
+
+    if (!username.match(usernameRegex)) {
+      toast({
+        title: "إسم المستخدم غير صحيح",
+        description: "إحذف المسافات والأحرف الخاصة",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -308,6 +321,7 @@ const EditProfile = () => {
             autoComplete='off'
             id='username'
             name='username'
+            pattern='^(?=.{5,20}$)(?![_.])[a-zA-Z0-9._]+(?<![_.])$'
             size='lg'
             onChange={(e) => setUsername(e.target.value)}
             value={username}

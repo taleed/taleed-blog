@@ -9,6 +9,8 @@ import {
 
 import { BeAnEditorStepProps } from "@/types/be-an-editor";
 
+export const usernameRegex: RegExp = /^(?=.{5,20}$)(?![_.])[a-zA-Z0-9._]+(?<![_.])$/;
+
 const Step1 = ({ register, errors }: BeAnEditorStepProps) => {
   return (
     <>
@@ -17,17 +19,17 @@ const Step1 = ({ register, errors }: BeAnEditorStepProps) => {
         <FormControl isRequired isInvalid={errors.first_name ? true : false}>
           <FormLabel>الإسم</FormLabel>
           <Input
-            autoComplete="off"
+            autoComplete='off'
             borderRadius={10}
             bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
             border={0}
             _focus={{
               bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
             }}
-            type="text"
-            placeholder=""
-            size="lg"
-            id="first_name"
+            type='text'
+            placeholder=''
+            size='lg'
+            id='first_name'
             {...register!("first_name", {
               required: "الرجاء ادخال الإسم",
             })}
@@ -38,17 +40,17 @@ const Step1 = ({ register, errors }: BeAnEditorStepProps) => {
         <FormControl isRequired isInvalid={errors.last_name ? true : false}>
           <FormLabel>اللقب</FormLabel>
           <Input
-            autoComplete="off"
+            autoComplete='off'
             borderRadius={10}
             bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
             border={0}
             _focus={{
               bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
             }}
-            type="text"
-            placeholder=""
-            size="lg"
-            id="last_name"
+            type='text'
+            placeholder=''
+            size='lg'
+            id='last_name'
             {...register!("last_name", {
               required: "الرجاء ادخال اللقب",
             })}
@@ -60,19 +62,20 @@ const Step1 = ({ register, errors }: BeAnEditorStepProps) => {
       <FormControl mt={6} isRequired isInvalid={errors.username ? true : false}>
         <FormLabel>اسم المستخدم</FormLabel>
         <Input
-          autoComplete="off"
+          autoComplete='off'
           borderRadius={10}
           bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
           border={0}
           _focus={{
             bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
           }}
-          type="text"
-          placeholder=""
-          size="lg"
-          id="username"
+          type='text'
+          placeholder=''
+          size='lg'
+          id='username'
           {...register!("username", {
             required: "الرجاء ادخال اسم المستخدم",
+            pattern: usernameRegex,
           })}
         />
         <FormErrorMessage>{errors.username?.message}</FormErrorMessage>
