@@ -1,10 +1,4 @@
-import {
-  Box,
-  Container,
-  Grid,
-  GridItem,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, Container, Grid, GridItem, useColorModeValue } from "@chakra-ui/react";
 
 import BlogCard from "@/components/BlogCard";
 import { BlogWithCategoriesProfiles } from "types/blog";
@@ -18,36 +12,35 @@ const LatestBlogs = ({ newBlog, latestBlogs }: Props) => {
   const bgColor = useColorModeValue("card.light", "card.dark");
 
   return (
-    <Container py={16} maxW="container.xl">
+    <Container py={16} maxW='container.xl'>
       <Grid
         gap={8}
-        templateRows="1fr auto"
+        templateRows='1fr auto'
         templateColumns={{
           base: "repeat(1, 1fr)",
           sm: "repeat(1, 1fr)",
           md: "repeat(6, 1fr)",
-        }}
-      >
+        }}>
         {newBlog && (
           <GridItem
+            className='initial-fade-in'
             colSpan={{ base: 1, sm: 1, md: 6 }}
             bg={bgColor}
-            rounded={"lg"}
-          >
-            <BlogCard type="new" data={newBlog} />
+            rounded='lg'>
+            <BlogCard type='new' data={newBlog} />
           </GridItem>
         )}
         {latestBlogs && latestBlogs.length === 0 ? null : (
           <>
             {latestBlogs &&
-              latestBlogs.map((blog: BlogWithCategoriesProfiles) => (
+              latestBlogs.map((blog: BlogWithCategoriesProfiles, idx) => (
                 <GridItem
+                  className={`initial-fade-in-${idx + 1}`}
                   key={blog.id}
                   colSpan={{ base: 1, sm: 1, md: 2 }}
                   bg={bgColor}
-                  rounded={"lg"}
-                >
-                  <BlogCard type="latest" data={blog} />
+                  rounded='lg'>
+                  <BlogCard type='latest' data={blog} />
                 </GridItem>
               ))}
           </>

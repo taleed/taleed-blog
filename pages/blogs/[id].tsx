@@ -142,7 +142,7 @@ function Blog({ post, similar_posts }: Props) {
         });
       })
       .catch((error: any) => {
-        console.log("[error - delete post]: ", e.message);
+        console.log("[error - delete post]: ", error);
       });
   };
 
@@ -332,11 +332,11 @@ function Blog({ post, similar_posts }: Props) {
                     <NextLink key={index} href={`/blogs/${post.id}`} passHref>
                       <Flex
                         pb={2}
-                        borderBottom={seperator_color}
                         mb={10}
                         align='center'
+                        borderBottom={seperator_color}
                         _hover={{ cursor: "pointer" }}>
-                        <Box flex={1}>
+                        <Box className={`initial-fade-in-${index + 1}`} flex={1}>
                           <chakra.span
                             color='brand.secondary'
                             fontSize='md'

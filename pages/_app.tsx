@@ -1,5 +1,5 @@
 import "@fontsource/changa";
-import "@/styles/quill.css";
+import "@/styles/global.css";
 
 import { ChakraProvider, createLocalStorageManager } from "@chakra-ui/react";
 import { ReactElement, ReactNode, useState } from "react";
@@ -28,13 +28,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <SessionContextProvider
       supabaseClient={supabaseClient}
-      initialSession={pageProps.initialSession}
-    >
+      initialSession={pageProps.initialSession}>
       <ChakraProvider theme={theme} colorModeManager={manager}>
         <GoogleAnalytics trackPageViews={{ ignoreHashChange: true }} />
         <NextNProgress />
-        <LocationProvider/>
-          {getLayout(<Component {...pageProps} />)}
+        <LocationProvider />
+        {getLayout(<Component {...pageProps} />)}
       </ChakraProvider>
     </SessionContextProvider>
   );

@@ -1,0 +1,64 @@
+.ql-container {
+  height: 24rem !important;
+}
+
+.ql-editor {
+  width: 100%;
+  overflow-y: scroll;
+}
+
+.notification__types-badge {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 100px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.initial-fade-in {
+  opacity: 0;
+  animation: fade-in 350ms 50ms ease-out forwards;
+  transition: 400ms ease-out;
+}
+
+.initial-fade-in-1 {
+  opacity: 0;
+  animation: fade-in 350ms 250ms ease-out forwards;
+  transition: 400ms ease-out;
+}
+
+.initial-fade-in-2 {
+  opacity: 0;
+  animation: fade-in 350ms 350ms ease-out forwards;
+  transition: 400ms ease-out;
+}
+
+.initial-fade-in-3 {
+  opacity: 0;
+  animation: fade-in 350ms 450ms ease-out forwards;
+  transition: 400ms ease-out;
+}
+
+.initial-fade-in-4 {
+  opacity: 0;
+  animation: fade-in 350ms 550ms ease-out forwards;
+  transition: 400ms ease-out;
+}
+
+.initial-fade-in-5 {
+  opacity: 0;
+  animation: fade-in 350ms 650ms ease-out forwards;
+  transition: 400ms ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    transform: translateY(-2rem);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
