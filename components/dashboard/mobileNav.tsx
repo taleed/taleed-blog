@@ -112,7 +112,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
             </MenuItem>
             <MenuItem>
               <Link href='/dashboard/editprofile'>
-                <chakra.span display='block'>اعدادات الحساب</chakra.span>
+                <chakra.span display='block'>إعدادات الحساب</chakra.span>
               </Link>
             </MenuItem>
             <MenuDivider />

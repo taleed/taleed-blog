@@ -243,7 +243,7 @@ const EditProfile = () => {
         <Flex mb={6} w='full'>
           <Box ml={6} w='full' color='brand.black'>
             <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='firstname'>
-              الاسم
+              الإسم
             </FormLabel>
             <Input
               p={4}
@@ -292,7 +292,7 @@ const EditProfile = () => {
         </Flex>
         <Box mb={6} w='full' color='brand.black'>
           <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='username'>
-            اسم المستخدم
+            إسم المستخدم
           </FormLabel>
           <Input
             p={4}
@@ -340,7 +340,7 @@ const EditProfile = () => {
         </Box>
         <Box mb={6} w='full' color='brand.black'>
           <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='email'>
-            البريد الالكتروني
+            البريد الإلكتروني
           </FormLabel>
           <Input
             p={4}
@@ -418,7 +418,7 @@ const EditProfile = () => {
         <Flex flexDirection={{ base: "column", md: "row" }} mb={6} w='full'>
           <Box ml={6} w='full' color='brand.black'>
             <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='instaaccount'>
-              رابط لينكد ان
+              رابط لينكد إن
             </FormLabel>
             <Input
               p={4}
