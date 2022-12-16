@@ -277,7 +277,7 @@ const AddBlog = () => {
               variant='solid'
               isLoading={isSubmitting}
               type='submit'>
-              اضافة المقالة
+              إضافة المقالة
             </Button>
           </VStack>
         </Box>

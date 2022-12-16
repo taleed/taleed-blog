@@ -215,7 +215,7 @@ const ManageEditors = () => {
                   <Th>ID</Th>
                   <Th>البريد الإلكتروني</Th>
                   <Th>النوع</Th>
-                  <Th>تاريخ الانظمام</Th>
+                  <Th>تاريخ الانضمام</Th>
                   <Th>عمليات (Actions)</Th>
                 </Tr>
               </Thead>

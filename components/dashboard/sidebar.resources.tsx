@@ -1,5 +1,5 @@
 import { FiBarChart, FiFilePlus, FiHome, FiUsers, FiBell, FiMessageSquare } from "react-icons/fi";
-import { BsCardChecklist, BsFillHandbagFill } from "react-icons/bs"
+import { BsCardChecklist, BsFillHandbagFill } from "react-icons/bs";
 import { IconType } from "react-icons";
 import { icons } from "react-icons/lib";
 
@@ -13,13 +13,13 @@ interface LinkItemProps {
 export const LinkItems: Array<LinkItemProps> = [
   { name: "الرئيسية", href: "/", icon: FiHome, needAdminPermissions: false },
   {
-    name: "احصائيات",
+    name: "إحصائيات",
     href: "/dashboard/statistics",
     icon: FiBarChart,
     needAdminPermissions: true,
   },
   {
-    name: "ادارة المقالات",
+    name: "إدارة المقالات",
     href: "/dashboard/manage-blogs",
     icon: BsCardChecklist,
     needAdminPermissions: true,
@@ -31,13 +31,13 @@ export const LinkItems: Array<LinkItemProps> = [
     needAdminPermissions: true,
   },
   {
-    name: "اضف مقال جديد",
+    name: "أضف مقال جديد",
     href: "/dashboard/add-blog",
     icon: FiFilePlus,
     needAdminPermissions: false,
   },
   {
-    name: "الاشعارات",
+    name: "الإشعارات",
     href: "/dashboard/notifications",
     icon: FiBell,
     needAdminPermissions: false,
@@ -53,5 +53,5 @@ export const LinkItems: Array<LinkItemProps> = [
     href: "/dashboard/partners",
     icon: BsFillHandbagFill,
     needAdminPermissions: true,
-  }
+  },
 ];
