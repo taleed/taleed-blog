@@ -51,7 +51,7 @@ const ManageBlogs = () => {
           "category_id(id, name), status, excerpt, thumbnail, views",
         { count: "exact" }
       )
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
       .range(from, to);
   };
 
@@ -66,7 +66,7 @@ const ManageBlogs = () => {
       .textSearch("title", search ?? "", {
         config: "english",
       })
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: false });
 
     setData(posts ?? undefined);
     setPostsNumber(count ?? 0);

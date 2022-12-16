@@ -68,7 +68,6 @@ const ManageEditors = () => {
     res
       .json()
       .then((d) => {
-        console.log("d", d);
         setData(d.data);
         setCount(d.count);
       })

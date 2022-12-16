@@ -15,26 +15,19 @@ const handler: NextApiHandler = async (req, res) => {
   if (!session) {
     return res.status(401).json({
       error: "not_authenticated",
-      description:
-        "The user does not have an active session or is not authenticated",
+      description: "The user does not have an active session or is not authenticated",
     });
   }
 
   const { id } = req.query;
   // Run queries with RLS on the server
-  const { error } = await supabaseAdmin
-    .from("profiles")
-    .update({ approved: true })
-    .eq("id", id);
+  const { error } = await supabaseAdmin.from("profiles").update({ approved: true }).eq("id", id);
 
-  const { data:user } = await supabase.auth.getUser()
-  if (user.user?.email ) {
-    sendEmail(user.user?.email)
-  }
+  if (error) return res.status(500).json(error);
 
-  if (error) {
-    return res.status(500).json(error);
-  }
+  const { data: user } = await supabaseAdmin.auth.admin.getUserById(id as string);
+
+  if (user.user?.email) sendEmail(user.user?.email);
 
   res.status(200).json({ message: "تم تفعيل عضوية المحرر بنجاح" });
 };
@@ -42,15 +35,15 @@ const handler: NextApiHandler = async (req, res) => {
 const sendEmail = async (email: string) => {
   try {
     await transporter.sendMail({
-      from: 'tall.eed.2022@gmail.com', // sender address
+      from: "tall.eed.2022@gmail.com", // sender address
       to: email, // list of receivers
-      subject: "Your Taleed blog account was approved", // Subject line
-      text: `Your Taleed blog account was approved`, // plain text body
-      html: `Your Taleed blog account was approved`, // html body
+      subject: "تم تفعيل عضويتك كمحرر في موقع talleed.com", // Subject line
+      text: `مبروك لقد تم تفعيل عضويتك كمحرر`, // plain text body
+      html: `مبروك لقد تم تفعيل عضويتك كمحرر`, // html body
     });
-  } catch(_) {
-
+  } catch (error) {
+    console.log("email error => ", error);
   }
-}
+};
 
 export default handler;

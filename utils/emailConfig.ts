@@ -1,4 +1,4 @@
-import {createTransport} from "nodemailer"
+import { createTransport } from "nodemailer";
 
 const transporter = createTransport({
   host: "smtp.gmail.com",
@@ -10,4 +10,4 @@ const transporter = createTransport({
   },
 });
 
-export default transporter
+export default transporter;
