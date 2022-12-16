@@ -22,8 +22,8 @@ import { supabase } from "@/utils/supabaseClient";
 import { useRouter } from "next/router";
 
 const BeAnEditor = () => {
-  const [categories, setCategories] = useState<any[]>([])
-  const [loading, setLoading] = useState(false)
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const {
     watch,
@@ -47,18 +47,16 @@ const BeAnEditor = () => {
     if (!categories.length) {
       fetchCategories();
     } else {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [categories])
+  }, [categories]);
 
   const fetchCategories = async () => {
     setLoading(true);
-    const { data: categories } = await supabase
-    .from(`top_menus`)
-    .select("slug,id,name");
+    const { data: categories } = await supabase.from(`top_menus`).select("slug,id,name");
     setCategories(categories ?? []);
     setLoading(false);
-  }
+  };
   const completeFormStep = () => {
     setFormStep((s) => s + 1);
   };
@@ -67,9 +65,7 @@ const BeAnEditor = () => {
     setFormStep((s) => s - 1);
   };
 
-  const handleFormCompletion: SubmitHandler<BeAnEditorFormFields> = async (
-    values
-  ) => {
+  const handleFormCompletion: SubmitHandler<BeAnEditorFormFields> = async (values) => {
     const {
       data: { user },
     } = await supabase.auth.signUp({
@@ -121,15 +117,7 @@ const BeAnEditor = () => {
           />
         );
       case 2:
-        return (
-          <Step3
-
-            register={register}
-            errors={errors}
-            setValue={setValue}
-            watch={watch}
-          />
-        );
+        return <Step3 register={register} errors={errors} setValue={setValue} watch={watch} />;
       default:
         return undefined;
     }
@@ -178,7 +166,7 @@ const BeAnEditor = () => {
 
   const renderFormButtons = () => {
     return (
-      <Stack align="center" direction={{ base: "row" }} spacing={4} mt={8}>
+      <Stack align='center' direction={{ base: "row" }} spacing={4} mt={8}>
         <Button
           isDisabled={handleDisabledButton(formStep)}
           onClick={formStep === 2 ? () => {} : completeFormStep}
@@ -198,22 +186,15 @@ const BeAnEditor = () => {
             pointerEvents: "none",
           }}
           borderRadius={10}
-          variant="solid"
+          variant='solid'
           type={formStep === 2 ? "submit" : "button"}
-          w="fit-content"
-          size="lg"
-          p={6}
-        >
+          w='fit-content'
+          size='lg'
+          p={6}>
           <span>{formStep === 2 ? BTN_SUBMIT_CONTENT : BTN_NEXT_CONTENT}</span>
         </Button>
         {formStep > 0 && (
-          <Button
-            onClick={backFormStep}
-            variant="unstyled"
-            type="button"
-            w="fit-content"
-            size="lg"
-          >
+          <Button onClick={backFormStep} variant='unstyled' type='button' w='fit-content' size='lg'>
             <span>السابق</span>
           </Button>
         )}
@@ -225,43 +206,33 @@ const BeAnEditor = () => {
     <>
       <Head>
         <title>تليد - كُن محررا</title>
-        <meta name="description" content="be an editor in talleed" />
-        <link rel="icon" href="/favicon.ico" />
+        <meta name='description' content='be an editor in talleed' />
+        <link rel='icon' href='/favicon.ico' />
       </Head>
-      <Box bg={useColorModeValue("white", "grey.900")} p={8} roundedTop="xl">
+      <Box bg={useColorModeValue("white", "grey.900")} p={8} roundedTop='xl'>
         <Heading
-          fontSize="3xl"
+          fontSize='3xl'
           color={useColorModeValue("brand.primary", "brand.secondary")}
-          mb={2}
-        >
+          mb={2}>
           كن محررًا
         </Heading>
-        <Text color={useColorModeValue("#4F4F4F", "grey.100")} maxW="xl" mb={6}>
-        من هنا تبدأ رحلتك في عالم تليد ، نرافقك لتفيد وتستفيد لكي يعرف العالم أكثر .
+        <Text color={useColorModeValue("#4F4F4F", "grey.100")} maxW='xl' mb={6}>
+          من هنا تبدأ رحلتك في عالم تليد ، نرافقك لتفيد وتستفيد لكي يعرف العالم أكثر .
         </Text>
-        {(!loading && categories.length > 0) ?
-        <form onSubmit={handleSubmit(handleFormCompletion)}>
-          {renderFormStep()}
-          {renderFormButtons()}
-        </form> : <Spinner/> }
+        {!loading && categories.length > 0 ? (
+          <form onSubmit={handleSubmit(handleFormCompletion)}>
+            {renderFormStep()}
+            {renderFormButtons()}
+          </form>
+        ) : (
+          <Spinner />
+        )}
       </Box>
-      <Box
-        bgColor="brand.primary"
-        roundedBottom="xl"
-        textAlign="center"
-        py={2.5}
-      >
-        <Text color="white">
+      <Box bgColor='brand.primary' roundedBottom='xl' textAlign='center' py={2.5}>
+        <Text color='white'>
           لديك حساب؟
-          <Link href="/login">
-            <Button
-              ms={2}
-              as="a"
-              cursor="pointer"
-              color="white"
-              variant="link"
-              h="fit-content"
-            >
+          <Link href='/login'>
+            <Button ms={2} as='a' cursor='pointer' color='white' variant='link' h='fit-content'>
               تسجيل الدخول
             </Button>
           </Link>

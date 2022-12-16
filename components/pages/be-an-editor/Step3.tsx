@@ -10,6 +10,7 @@ import {
   Spinner,
   VStack,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
@@ -30,29 +31,47 @@ export function makeid(length: number) {
 const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
+  const toast = useToast();
 
   const icons_color = useColorModeValue("#697689", "whiteAlpha.200");
 
   const uploadAvatar = async (event: any) => {
-    if (!event.target.files || event.target.files.length === 0) {
-      throw new Error("قُم باختيار ملف للصورة");
-    }
+    try {
+      if (!event.target.files || event.target.files.length === 0) {
+        toast({
+          title: "عليك اختيار صورة",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+        return;
+      }
 
-    setUploading(true);
-    const file = event.target.files[0];
-    const fileExt = file.name.split(".").pop();
-    const filePath = `${makeid(100)}.${fileExt}`;
+      setUploading(true);
 
-    const { error: uploadError } = await supabase.storage.from("avatars").upload(filePath, file);
+      const file = event.target.files[0];
+      const fileExt = file.name.split(".").pop();
+      const filePath = `${makeid(16)}.${fileExt}`;
 
-    if (uploadError) {
+      const { error: uploadError } = await supabase.storage.from("avatars").upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      setAvatarUrl(filePath);
+      setValue!("avatar_url", filePath);
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "حدث خطأ!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+    } finally {
       setUploading(false);
-      throw uploadError;
     }
-
-    setAvatarUrl(filePath);
-    setValue!("avatar_url", filePath);
-    setUploading(false);
   };
 
   const emailPattern =
@@ -72,9 +91,7 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
           borderRadius='lg'
           size='2xl'
           name={`${watch!("username")}`}
-          src={`https://ythbjwovxnnbckdxlbds.supabase.co/storage/v1/object/public/avatars/${watch!(
-            "avatar_url"
-          )}`}
+          src={`https://ythbjwovxnnbckdxlbds.supabase.co/storage/v1/object/public/avatars/${avatarUrl}`}
         />
         <FormControl mt={2}>
           <FormLabel
@@ -102,7 +119,7 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
             id='avatar'
             accept='image/*'
             onChange={(e) => uploadAvatar(e)}
-            disabled={uploading || avatarUrl !== undefined}
+            disabled={uploading}
           />
         </FormControl>
       </Box>
