@@ -1,3 +1,4 @@
+import { useColorModeValue } from "@chakra-ui/react";
 import { Editor } from "@tinymce/tinymce-react";
 import { MutableRefObject } from "react";
 
@@ -46,6 +47,8 @@ const TinyEditor: React.FC<TinyEditorProps> = ({ blogBody, initialValue = "<p></
       onInit={(_, editor) => (blogBody.current = editor)}
       initialValue={initialValue}
       init={{
+        skin: useColorModeValue("oxide", "oxide-dark"),
+        content_css: useColorModeValue("default", "dark"),
         height: 500,
         menubar: true,
         plugins: tinyPlugins,
