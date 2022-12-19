@@ -61,7 +61,6 @@ const AddBlog = () => {
   } = useForm<FormValues>({ mode: "all" });
 
   //   Colors
-  const bgColor = useColorModeValue("white", "brand.black");
   const inputBg = useColorModeValue("blackAlpha.50", "whiteAlpha.50");
   const focusBg = useColorModeValue("blackAlpha.100", "whiteAlpha.100");
 

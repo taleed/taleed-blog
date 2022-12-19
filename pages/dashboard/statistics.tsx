@@ -9,6 +9,7 @@ import {
   Th,
   Thead,
   Tr,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
 
@@ -26,6 +27,10 @@ const Statistics = () => {
   const [unapprovedEditors, setUnapprovedEditors] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [count, setCount] = useState(0);
+
+  //   Colors
+  const tableBg = useColorModeValue("white", "whiteAlpha.50");
+  const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
 
   const getVisitorsList = async () => {
     try {
@@ -106,6 +111,9 @@ const Statistics = () => {
     getArticles();
     getApprovedEditors();
     getUnapprovedEditors();
+  }, []);
+
+  useEffect(() => {
     getVisitorsList();
   }, [currentPage]);
 
@@ -113,29 +121,29 @@ const Statistics = () => {
     <Box px={8}>
       <Heading>إحصائيات</Heading>
       <SimpleGrid mt={8} columns={{ sm: 2, base: 1, md: 4 }} spacing={{ sm: 5, base: 8, lg: 8 }}>
-        <StatsCard title={"عدد الزوار"} stat={visitors} />
-        <StatsCard title={"عدد المقالات"} stat={articles} />
-        <StatsCard title={"عدد المحررين المقبولين"} stat={approvedEditors} />
-        <StatsCard title={"عدد المحررين قيد الإنتظار"} stat={unapprovedEditors} />
+        <StatsCard title='عدد الزوار' stat={visitors} />
+        <StatsCard title='عدد المقالات' stat={articles} />
+        <StatsCard title='عدد المحررين المقبولين' stat={approvedEditors} />
+        <StatsCard title='عدد المحررين قيد الإنتظار' stat={unapprovedEditors} />
       </SimpleGrid>
       <Heading mt={16}>قائمة الزوار</Heading>
-      <TableContainer bg='white' mt={16}>
+      <TableContainer bg={tableBg} mt={16}>
         <Table variant='simple'>
           <Thead>
             <Tr>
-              <Th>البريد الإلكتروني</Th>
-              <Th>IP</Th>
-              <Th>الدولة</Th>
-              <Th>وقت الزيارة</Th>
+              <Th borderColor={borderColor}>البريد الإلكتروني</Th>
+              <Th borderColor={borderColor}>IP</Th>
+              <Th borderColor={borderColor}>الدولة</Th>
+              <Th borderColor={borderColor}>وقت الزيارة</Th>
             </Tr>
           </Thead>
           <Tbody>
             {visitorList.map((d: any, i: number) => (
               <Tr key={i}>
-                <Td>{d.email}</Td>
-                <Td>{d.ip}</Td>
-                <Td>{d.country}</Td>
-                <Td>{new Date(d.created_at).toLocaleDateString()}</Td>
+                <Td borderColor={borderColor}>{d.email}</Td>
+                <Td borderColor={borderColor}>{d.ip}</Td>
+                <Td borderColor={borderColor}>{d.country}</Td>
+                <Td borderColor={borderColor}>{new Date(d.created_at).toLocaleDateString()}</Td>
               </Tr>
             ))}
           </Tbody>

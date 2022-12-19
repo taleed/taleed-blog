@@ -7,7 +7,7 @@ import SidebarContent from "@/components/dashboard/sidebar";
 export default function Layout({ children }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const bgColor = useColorModeValue("white", "brand.black");
+  const bgColor = useColorModeValue("blackAlpha.100", "brand.black");
 
   return (
     <>
