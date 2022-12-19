@@ -36,18 +36,14 @@ const handler: NextApiHandler = async (req, res) => {
     const { name, description, image } = JSON.parse(req.body);
     const { error, data: partner } = await supabaseAdmin
       .from("partners")
-      .insert({
-        name: name,
-        description: description,
-        image: image,
-      })
+      .insert({ name, description, image })
       .select("*");
 
     if (error) {
       return res.status(500).json(error);
     }
 
-    return res.status(200).json({ message: "تم اضافة شريك بنجاح", partner });
+    return res.status(200).json({ message: "تم اضافة شريك بنجاح", partner: partner[0] });
   }
 
   if (req.method === "PUT") {

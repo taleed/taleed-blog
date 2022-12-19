@@ -47,7 +47,7 @@ type FormValues = {
 const ManagePartners = () => {
   const [data, setData] = useState<any[]>([]);
   const [uploading, setUploading] = useState<boolean>(false);
-  const [imgUrl, setImgUrl] = useState<string | undefined>(undefined);
+  const [imgUrl, setImgUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const modal = useDisclosure();
   const toast = useToast();
@@ -59,6 +59,14 @@ const ManagePartners = () => {
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
   const inputBg = useColorModeValue("blackAlpha.50", "whiteAlpha.50");
   const focusBg = useColorModeValue("blackAlpha.100", "whiteAlpha.100");
+
+  const {
+    setValue,
+    watch,
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>({ mode: "all" });
 
   function makeid(length: number) {
     var result = "";
@@ -72,7 +80,14 @@ const ManagePartners = () => {
 
   const uploadImage = async (event: any) => {
     if (!event.target.files || event.target.files.length === 0) {
-      throw new Error("قُم باختيار الصورة");
+      toast({
+        title: "قُم باختيار الصورة",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
     }
 
     setUploading(true);
@@ -122,7 +137,7 @@ const ManagePartners = () => {
         toast({
           title: "تم حذف المقال بنجاح",
           status: "error",
-          duration: 5000,
+          duration: 3000,
           isClosable: true,
           position: "top-right",
         });
@@ -132,15 +147,10 @@ const ManagePartners = () => {
       });
   };
 
-  const {
-    setValue,
-    watch,
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<FormValues>({ mode: "all" });
   const onSubmit: SubmitHandler<FormValues> = async ({ description, name, image }) => {
     try {
+      if (!imgUrl.length) throw Error("قُم باختيار الصورة");
+
       let data = await fetch("/api/partners", {
         method: "POST",
         body: JSON.stringify({
@@ -150,7 +160,7 @@ const ManagePartners = () => {
         }),
       }).then((res) => res.json());
 
-      if (data?.message.lenth > 0) {
+      if (data?.message.length > 0) {
         setData((prev) => [data.partner, ...prev]);
         toast({
           title: "تمت العملية بنجاح",
@@ -158,8 +168,8 @@ const ManagePartners = () => {
           duration: 3000,
           isClosable: true,
           position: "top-right",
-          onCloseComplete: () => modal.onClose(),
         });
+        modal.onClose();
       }
     } catch (error: any) {
       console.log(error);
