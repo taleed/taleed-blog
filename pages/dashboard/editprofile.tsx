@@ -41,6 +41,12 @@ const EditProfile = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
 
+  //   Colors
+  const inputBg = useColorModeValue("blackAlpha.50", "whiteAlpha.50");
+  const inputColor = useColorModeValue("black", "white");
+  const disabledInputColor = useColorModeValue("blackAlpha.500", "whiteAlpha.500");
+  const focusBg = useColorModeValue("blackAlpha.100", "whiteAlpha.100");
+
   const uploadAvatar = async (event: any) => {
     if (!event.target.files || event.target.files.length === 0) {
       toast({
@@ -213,8 +219,8 @@ const EditProfile = () => {
   return (
     <>
       <Flex
-        direction={"column"}
-        alignItems={"center"}
+        direction='column'
+        alignItems='center'
         width='100%'
         maxWidth='650px'
         mx='auto'
@@ -254,21 +260,16 @@ const EditProfile = () => {
           </FormControl>
         </Box>
         <Flex mb={6} w='full'>
-          <Box ml={6} w='full' color='brand.black'>
-            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='firstname'>
-              الإسم
-            </FormLabel>
+          <Box ml={6} w='full' color={inputColor}>
+            <FormLabel htmlFor='firstname'>الإسم</FormLabel>
             <Input
+              bg={inputBg}
+              color={inputColor}
+              border={0}
+              _focus={{ bg: focusBg }}
               p={4}
               borderRadius={10}
-              bg={"blackAlpha.100"}
-              border={0}
-              _focus={{
-                bg: "blackAlpha.200",
-              }}
-              _disabled={{
-                bg: "blackAlpha.100",
-              }}
+              _disabled={{ bg: "blackAlpha.100" }}
               autoComplete='off'
               type='text'
               id='firstname'
@@ -278,21 +279,18 @@ const EditProfile = () => {
               value={firstName}
             />
           </Box>
-          <Box w='full' color='brand.black'>
-            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='lastname'>
+          <Box w='full' color={inputColor}>
+            <FormLabel color={inputColor} htmlFor='lastname'>
               اللقب
             </FormLabel>
             <Input
+              bg={inputBg}
+              color={inputColor}
+              border={0}
+              _focus={{ bg: focusBg }}
               p={4}
               borderRadius={10}
-              bg={"blackAlpha.100"}
-              border={0}
-              _focus={{
-                bg: "blackAlpha.200",
-              }}
-              _disabled={{
-                bg: "blackAlpha.100",
-              }}
+              _disabled={{ bg: "blackAlpha.100" }}
               autoComplete='off'
               type='text'
               id='lastname'
@@ -303,21 +301,16 @@ const EditProfile = () => {
             />
           </Box>
         </Flex>
-        <Box mb={6} w='full' color='brand.black'>
-          <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='username'>
-            إسم المستخدم
-          </FormLabel>
+        <Box mb={6} w='full' color={inputColor}>
+          <FormLabel htmlFor='username'>إسم المستخدم</FormLabel>
           <Input
+            bg={inputBg}
+            color={inputColor}
+            border={0}
+            _focus={{ bg: focusBg }}
             p={4}
             borderRadius={10}
-            bg={"blackAlpha.100"}
-            border={0}
-            _focus={{
-              bg: "blackAlpha.200",
-            }}
-            _disabled={{
-              bg: "blackAlpha.100",
-            }}
+            _disabled={{ bg: "blackAlpha.100" }}
             autoComplete='off'
             id='username'
             name='username'
@@ -327,23 +320,18 @@ const EditProfile = () => {
             value={username}
           />
         </Box>
-        <Box mb={6} w='full' color='brand.black'>
-          <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='about'>
-            نبذة عنك
-          </FormLabel>
+        <Box mb={6} w='full' color={inputColor}>
+          <FormLabel htmlFor='about'>نبذة عنك</FormLabel>
           <Textarea
+            bg={inputBg}
+            color={inputColor}
+            border={0}
+            _focus={{ bg: focusBg }}
             maxLength={2000}
             p={4}
             resize='none'
             borderRadius={10}
-            bg={"blackAlpha.100"}
-            border={0}
-            _focus={{
-              bg: "blackAlpha.200",
-            }}
-            _disabled={{
-              bg: "blackAlpha.100",
-            }}
+            _disabled={{ bg: "blackAlpha.100" }}
             autoComplete='off'
             id='about'
             name='about'
@@ -352,21 +340,18 @@ const EditProfile = () => {
             value={about}
           />
         </Box>
-        <Box mb={6} w='full' color='brand.black'>
-          <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='email'>
-            البريد الإلكتروني
-          </FormLabel>
+        <Box mb={6} w='full' color={inputColor}>
+          <FormLabel htmlFor='email'>البريد الإلكتروني</FormLabel>
           <Input
+            bg={inputBg}
+            color={inputColor}
+            border={0}
+            _focus={{ bg: focusBg }}
             p={4}
             borderRadius={10}
-            bg={"blackAlpha.100"}
-            border={0}
-            _focus={{
-              bg: "blackAlpha.200",
-            }}
             _disabled={{
-              bg: "blackAlpha.100",
-              textColor: "blackAlpha.500",
+              bg: inputBg,
+              color: disabledInputColor,
               cursor: "not-allowed",
             }}
             autoComplete='off'
@@ -380,21 +365,16 @@ const EditProfile = () => {
           />
         </Box>
         <Flex flexDirection={{ base: "column", md: "row" }} mb={6} w='full'>
-          <Box ml={6} w='full' color='brand.black'>
-            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='facebookaccount'>
-              رابط الفيسبوك
-            </FormLabel>
+          <Box ml={6} w='full' color={inputColor}>
+            <FormLabel htmlFor='facebookaccount'>رابط الفيسبوك</FormLabel>
             <Input
+              bg={inputBg}
+              color={inputColor}
+              border={0}
+              _focus={{ bg: focusBg }}
               p={4}
               borderRadius={10}
-              bg={"blackAlpha.100"}
-              border={0}
-              _focus={{
-                bg: "blackAlpha.200",
-              }}
-              _disabled={{
-                bg: "blackAlpha.100",
-              }}
+              _disabled={{ bg: "blackAlpha.100" }}
               autoComplete='off'
               type='text'
               id='facebookaccount'
@@ -404,21 +384,16 @@ const EditProfile = () => {
               value={facebookAccount}
             />
           </Box>
-          <Box w='full' color='brand.black'>
-            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='instaaccount'>
-              رابط الانستغرام
-            </FormLabel>
+          <Box w='full' color={inputColor}>
+            <FormLabel htmlFor='instaaccount'>رابط الانستغرام</FormLabel>
             <Input
+              bg={inputBg}
+              color={inputColor}
+              border={0}
+              _focus={{ bg: focusBg }}
               p={4}
               borderRadius={10}
-              bg={"blackAlpha.100"}
-              border={0}
-              _focus={{
-                bg: "blackAlpha.200",
-              }}
-              _disabled={{
-                bg: "blackAlpha.100",
-              }}
+              _disabled={{ bg: "blackAlpha.100" }}
               autoComplete='off'
               type='text'
               id='instaaccount'
@@ -430,21 +405,16 @@ const EditProfile = () => {
           </Box>
         </Flex>
         <Flex flexDirection={{ base: "column", md: "row" }} mb={6} w='full'>
-          <Box ml={6} w='full' color='brand.black'>
-            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='instaaccount'>
-              رابط لينكد إن
-            </FormLabel>
+          <Box ml={6} w='full' color={inputColor}>
+            <FormLabel htmlFor='instaaccount'>رابط لينكد إن</FormLabel>
             <Input
+              bg={inputBg}
+              color={inputColor}
+              border={0}
+              _focus={{ bg: focusBg }}
               p={4}
               borderRadius={10}
-              bg={"blackAlpha.100"}
-              border={0}
-              _focus={{
-                bg: "blackAlpha.200",
-              }}
-              _disabled={{
-                bg: "blackAlpha.100",
-              }}
+              _disabled={{ bg: "blackAlpha.100" }}
               autoComplete='off'
               type='text'
               id='linkedinaccount'
@@ -454,21 +424,16 @@ const EditProfile = () => {
               value={linkedinAccount}
             />
           </Box>
-          <Box w='full' color='brand.black'>
-            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='instaaccount'>
-              رابط تويتر
-            </FormLabel>
+          <Box w='full' color={inputColor}>
+            <FormLabel htmlFor='instaaccount'>رابط تويتر</FormLabel>
             <Input
+              bg={inputBg}
+              color={inputColor}
+              border={0}
+              _focus={{ bg: focusBg }}
               p={4}
               borderRadius={10}
-              bg={"blackAlpha.100"}
-              border={0}
-              _focus={{
-                bg: "blackAlpha.200",
-              }}
-              _disabled={{
-                bg: "blackAlpha.100",
-              }}
+              _disabled={{ bg: "blackAlpha.100" }}
               autoComplete='off'
               type='text'
               id='twitteraccount'
@@ -480,13 +445,15 @@ const EditProfile = () => {
           </Box>
         </Flex>
         <Flex mb={6} w='full'>
-          <Box ml={6} w='full' color='brand.black'>
-            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='field'>
-              المجال
-            </FormLabel>
+          <Box ml={6} w='full' color={inputColor}>
+            <FormLabel htmlFor='field'>المجال</FormLabel>
             <Select
-              bg={useColorModeValue!("blackAlpha.50", "whiteAlpha.50")}
-              border='none'
+              bg={inputBg}
+              color={inputColor}
+              border={0}
+              _focus={{ bg: focusBg }}
+              // bg={useColorModeValue!("blackAlpha.50", "whiteAlpha.50")}
+              // border='none'
               rounded='lg'
               onChange={(e) => setField(e.target.value)}
               placeholder='اختر مجال مُعين'
@@ -499,21 +466,16 @@ const EditProfile = () => {
               ))}
             </Select>
           </Box>
-          <Box w='full' color='brand.black'>
-            <FormLabel fontSize={"lg"} fontWeight={900} htmlFor='speciality'>
-              التخصص
-            </FormLabel>
+          <Box w='full' color={inputColor}>
+            <FormLabel htmlFor='speciality'>التخصص</FormLabel>
             <Input
+              bg={inputBg}
+              color={inputColor}
+              border={0}
+              _focus={{ bg: focusBg }}
               p={4}
               borderRadius={10}
-              bg={"blackAlpha.100"}
-              border={0}
-              _focus={{
-                bg: "blackAlpha.200",
-              }}
-              _disabled={{
-                bg: "blackAlpha.100",
-              }}
+              _disabled={{ bg: "blackAlpha.100" }}
               autoComplete='off'
               type='text'
               id='speciality'
