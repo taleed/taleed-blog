@@ -1,0 +1,103 @@
+.initial-fade-in {
+  opacity: 0;
+  animation: fade-in 350ms 50ms ease-out forwards;
+  transition: 400ms ease-out;
+}
+
+.initial-fade-in-1 {
+  opacity: 0;
+  animation: fade-in 350ms 250ms ease-out forwards;
+  transition: 400ms ease-out;
+}
+
+.initial-fade-in-2 {
+  opacity: 0;
+  animation: fade-in 350ms 350ms ease-out forwards;
+  transition: 400ms ease-out;
+}
+
+.initial-fade-in-3 {
+  opacity: 0;
+  animation: fade-in 350ms 450ms ease-out forwards;
+  transition: 400ms ease-out;
+}
+
+.initial-fade-in-4 {
+  opacity: 0;
+  animation: fade-in 350ms 550ms ease-out forwards;
+  transition: 400ms ease-out;
+}
+
+.initial-fade-in-5 {
+  opacity: 0;
+  animation: fade-in 350ms 650ms ease-out forwards;
+  transition: 400ms ease-out;
+}
+
+.like-icon {
+  position: absolute;
+  left: 40%;
+  bottom: 130%;
+  animation: container-popup 1400ms ease-in forwards;
+  transition: 1400ms ease-in;
+}
+
+#logo-path-1 {
+  opacity: 0;
+  animation: pop-up 1400ms 100ms ease-out forwards;
+  transition: 1400ms ease-out;
+}
+
+#logo-path-2 {
+  opacity: 0;
+  animation: pop-up 1400ms 200ms ease-out forwards;
+  transition: 1400ms ease-out;
+}
+
+#logo-path-3 {
+  opacity: 0;
+  animation: pop-up 1400ms 300ms ease-out forwards;
+  transition: 1400ms ease-out;
+}
+
+#logo-path-4 {
+  opacity: 0;
+  animation: pop-up 1400ms 400ms ease-out forwards;
+  transition: 1400ms ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    transform: translateY(-2rem);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes pop-up {
+  0% {
+    opacity: 0;
+    transform: translateY(3rem) scale(0);
+  }
+  18% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  90% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes container-popup {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}

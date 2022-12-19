@@ -52,9 +52,10 @@ function Blog({ post, similar_posts }: Props) {
   const [location, setLocation] = useState<any>({});
   const [likeLoad, setLikeLoad] = useState(false);
   const [liked, setLiked] = useState(false);
+  const [owner, setOwner] = useState(false);
+  const [showAnimation, setShowAnimation] = useState(false);
   const router = useRouter();
   const toast = useToast();
-  const [owner, setOwner] = useState(false);
 
   const isOwner = async () => {
     const { data: user } = await supabase.auth.getUser();
@@ -71,6 +72,11 @@ function Blog({ post, similar_posts }: Props) {
       });
   };
 
+  const fireAnimation = () => {
+    setShowAnimation(true);
+    setTimeout(() => setShowAnimation(false), 2000);
+  };
+
   const incrementLikes = async () => {
     setLikeLoad(true);
     await fetch("/api/likes", {
@@ -83,10 +89,14 @@ function Blog({ post, similar_posts }: Props) {
           setLikeLoad(false);
           setLikes((likes ?? 0) + 1);
           setLiked(true);
+          // animation
+          fireAnimation();
         } else if (data.message === "تم حذف الاعجاب بنجاح") {
           setLikeLoad(false);
           setLikes((likes ?? 1) - 1);
           setLiked(false);
+          // animation
+          fireAnimation();
         } else {
           toast({
             title: "لقد حدث خطؤ, حاول من جديد",
@@ -94,10 +104,8 @@ function Blog({ post, similar_posts }: Props) {
             duration: 5000,
             isClosable: true,
             position: "top-right",
-            onCloseComplete() {
-              setLikeLoad(false);
-            },
           });
+          setLikeLoad(false);
         }
       });
   };
@@ -252,7 +260,12 @@ function Blog({ post, similar_posts }: Props) {
 
             <Box className='post-content' dangerouslySetInnerHTML={{ __html: post.body }} />
 
-            <Box mt={16}>
+            <Box w='fit-content' mt={16} position='relative'>
+              {showAnimation && (
+                <Box className='like-icon'>
+                  <Logo animated fill={useColorModeValue!("brand.primary", "white")} />
+                </Box>
+              )}
               <Button
                 onClick={incrementLikes}
                 display='flex'
@@ -260,11 +273,17 @@ function Blog({ post, similar_posts }: Props) {
                 p={6}
                 rounded='full'
                 border='1px solid'
+                _hover={{
+                  bg: useColorModeValue(
+                    liked ? "purple.500" : "",
+                    liked ? "brand.secondary" : "grey"
+                  ),
+                }}
                 bg={useColorModeValue(
                   liked ? "brand.primary" : "",
                   liked ? "brand.secondary" : "grey"
                 )}
-                borderColor={useColorModeValue("grey.200", "grey.400")}
+                borderColor={useColorModeValue("grey.200", liked ? "brand.secondary" : "grey.200")}
                 variant={liked ? "solid" : "outline"}
                 leftIcon={
                   <Logo

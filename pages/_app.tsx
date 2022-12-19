@@ -1,5 +1,6 @@
 import "@fontsource/changa";
 import "@/styles/global.css";
+import "@/styles/transitions.css";
 
 import { ChakraProvider, createLocalStorageManager } from "@chakra-ui/react";
 import { ReactElement, ReactNode, useState } from "react";
