@@ -13,7 +13,7 @@ import {
     GridItem,
     Grid,
 } from "@chakra-ui/react";
-import { BlogWithCategoriesProfiles, FamousAuthor, NavbarResourcesType } from "@/types/blog";
+import { FamousAuthor, NavbarResourcesType } from "@/types/blog";
 import { ReactElement, useEffect, useState } from "react";
 
 import FamousEditor from "@/components/FamousEditors";
@@ -25,22 +25,128 @@ import { useRouter } from "next/router";
 import BlogCard from "@/components/BlogCard";
 
 interface Props {
-    latestBlogs: BlogWithCategoriesProfiles[];
-    newBlog: BlogWithCategoriesProfiles;
     authors: FamousAuthor[];
-    mostViewedBlogs: BlogWithCategoriesProfiles[];
     topMenus: NavbarResourcesType[];
     subMenus: NavbarResourcesType[];
 }
 
-const Home = ({ newBlog, latestBlogs, authors, mostViewedBlogs }: Props) => {
+const Home = ({ authors }: Props) => {
     const router = useRouter();
     const bgColor = useColorModeValue("card.light", "card.dark");
     const [search, setSearch] = useState<any[]>([]);
     const purpleTitles = useColorModeValue("brand.primary", "brand.secondary");
 
-    console.log("newBlog, latestBlogs, authors, mostViewedBlogs");
-    console.log(newBlog, latestBlogs, authors, mostViewedBlogs);
+    const [newBlog, setNewBlog] = useState<any>(undefined);
+    const [latestBlogs, setLatestBlogs] = useState<any>(undefined);
+    const [mostViewedBlogs, setMostViewedBlogs] = useState<any>(undefined);
+
+    useEffect(() => {
+        const setupData = async () => {
+            // Get The Newest Blog
+            const { data: newBlogTopMenu } = await supabase
+                .from("posts")
+                .select(
+                    "id,title,thumbnail,excerpt, created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
+                )
+                .order("created_at", {
+                    ascending: false,
+                })
+                .eq("status", "published")
+                .limit(1)
+                .single();
+            const { data: newBlogSubMenu } = await supabase
+                .from("posts")
+                .select(
+                    "id,title,thumbnail,excerpt, created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
+                )
+                .order("created_at", {
+                    ascending: false,
+                })
+                .eq("status", "published")
+                .limit(1)
+                .single();
+
+            // Get The Latest 3 Blogs
+            const { data: latestBlogsTopMenus } = await supabase
+                .from("posts")
+                .select(
+                    "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
+                )
+                .eq("status", "published")
+                .order("created_at", {
+                    ascending: false,
+                })
+                .range(1, 3);
+
+            const { data: latestBlogsSubMenus } = await supabase
+                .from("posts")
+                .select(
+                    "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
+                )
+                .eq("status", "published")
+                .order("created_at", {
+                    ascending: false,
+                })
+                .range(1, 3);
+
+            // Most Viewed Blogs
+            let queryTopMenus = supabase
+                .from("posts")
+                .select(
+                    "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
+                )
+                .eq("status", "published")
+                .order("created_at", {
+                    ascending: true,
+                })
+                .range(0, 10);
+
+            let querySubMenus = supabase
+                .from("posts")
+                .select(
+                    "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url, sound_cloud_frame"
+                )
+                .eq("status", "published")
+                .order("created_at", {
+                    ascending: true,
+                })
+                .range(0, 10);
+
+            if (newBlogTopMenu) {
+                queryTopMenus = queryTopMenus.not("id", "eq", newBlogTopMenu?.id);
+            }
+            if (newBlogSubMenu) {
+                querySubMenus = querySubMenus.not("id", "eq", newBlogSubMenu?.id);
+            }
+            if (latestBlogsTopMenus && latestBlogsTopMenus.length > 0) {
+                if (newBlogTopMenu) {
+                    queryTopMenus = queryTopMenus.not(
+                        "id",
+                        "in",
+                        `(${latestBlogsTopMenus.map((blog) => blog.id)})`
+                    );
+                }
+            }
+            if (latestBlogsSubMenus && latestBlogsSubMenus?.length > 0) {
+                if (newBlogSubMenu) {
+                    querySubMenus = querySubMenus.not(
+                        "id",
+                        "in",
+                        `(${latestBlogsSubMenus.map((blog) => blog.id)})`
+                    );
+                }
+            }
+            const { data: mostViewedBlogs } = newBlogTopMenu
+                ? await queryTopMenus
+                : await querySubMenus;
+
+            setNewBlog(newBlogTopMenu ?? newBlogSubMenu);
+            setLatestBlogs(latestBlogsTopMenus ?? latestBlogsSubMenus);
+            setMostViewedBlogs(mostViewedBlogs);
+        };
+
+        setupData();
+    }, []);
 
     useEffect(() => {
         if (router.query.search) {
@@ -88,7 +194,7 @@ const Home = ({ newBlog, latestBlogs, authors, mostViewedBlogs }: Props) => {
                                 </chakra.h2>
                                 <Flex flexDir={{ base: "column", md: "row" }}>
                                     <VStack flex={1} align='flex-start'>
-                                        {mostViewedBlogs.map((post: any, index) => {
+                                        {mostViewedBlogs.map((post: any, index: number) => {
                                             return (
                                                 <NextLink
                                                     key={index}
@@ -249,111 +355,12 @@ export const getStaticProps = async () => {
             ascending: true,
         });
 
-    // Get The Newest Blog
-    const { data: newBlogTopMenu } = await supabase
-        .from("posts")
-        .select(
-            "id,title,thumbnail,excerpt, created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
-        )
-        .order("created_at", {
-            ascending: false,
-        })
-        .eq("status", "published")
-        .limit(1)
-        .single();
-    const { data: newBlogSubMenu } = await supabase
-        .from("posts")
-        .select(
-            "id,title,thumbnail,excerpt, created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
-        )
-        .order("created_at", {
-            ascending: false,
-        })
-        .eq("status", "published")
-        .limit(1)
-        .single();
-
-    // Get The Latest 3 Blogs
-    const { data: latestBlogsTopMenus } = await supabase
-        .from("posts")
-        .select(
-            "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
-        )
-        .eq("status", "published")
-        .order("created_at", {
-            ascending: false,
-        })
-        .range(1, 3);
-
-    const { data: latestBlogsSubMenus } = await supabase
-        .from("posts")
-        .select(
-            "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
-        )
-        .eq("status", "published")
-        .order("created_at", {
-            ascending: false,
-        })
-        .range(1, 3);
-
     // Get Famous Authors
     const { data: authors, error } = await supabase.rpc("get_famous_authors");
 
-    // Most Viewed Blogs
-    let queryTopMenus = supabase
-        .from("posts")
-        .select(
-            "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!inner(first_name, last_name, avatar_url), sound_cloud_frame"
-        )
-        .eq("status", "published")
-        .order("created_at", {
-            ascending: true,
-        })
-        .range(0, 10);
-
-    let querySubMenus = supabase
-        .from("posts")
-        .select(
-            "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!inner(first_name, last_name, avatar_url, sound_cloud_frame"
-        )
-        .eq("status", "published")
-        .order("created_at", {
-            ascending: true,
-        })
-        .range(0, 10);
-
-    if (newBlogTopMenu) {
-        queryTopMenus = queryTopMenus.not("id", "eq", newBlogTopMenu?.id);
-    }
-    if (newBlogSubMenu) {
-        querySubMenus = querySubMenus.not("id", "eq", newBlogSubMenu?.id);
-    }
-    if (latestBlogsTopMenus && latestBlogsTopMenus.length > 0) {
-        if (newBlogTopMenu) {
-            queryTopMenus = queryTopMenus.not(
-                "id",
-                "in",
-                `(${latestBlogsTopMenus.map((blog) => blog.id)})`
-            );
-        }
-    }
-    if (latestBlogsSubMenus && latestBlogsSubMenus?.length > 0) {
-        if (newBlogSubMenu) {
-            querySubMenus = querySubMenus.not(
-                "id",
-                "in",
-                `(${latestBlogsSubMenus.map((blog) => blog.id)})`
-            );
-        }
-    }
-    const { data: mostViewedBlogs } = newBlogTopMenu ? await queryTopMenus : await querySubMenus;
-
     return {
         props: {
-            newBlog: newBlogTopMenu ?? newBlogSubMenu,
-            latestBlogs: latestBlogsTopMenus ?? latestBlogsSubMenus,
             authors,
-            mostViewedBlogs,
             topMenus,
             subMenus,
         },
