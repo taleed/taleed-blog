@@ -10,6 +10,7 @@ import {
   Th,
   Thead,
   Tr,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
 import Layout from "@/layouts/Dashboard";
@@ -25,6 +26,12 @@ const ManageBlogs = () => {
   const [postsNumber, setPostsNumber] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState<string | undefined>(undefined);
+
+  //   Colors
+  const tableBg = useColorModeValue("white", "whiteAlpha.50");
+  const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
+  const inputBg = useColorModeValue("white", "whiteAlpha.50");
+  const focusBg = useColorModeValue("whiteAlpha.500", "whiteAlpha.200");
 
   useEffect(() => {
     new Promise(async () => {
@@ -77,8 +84,9 @@ const ManageBlogs = () => {
       <Heading>المقالات ({postsNumber})</Heading>
       <Stack mt={16} spacing={4} direction='row' width='50%'>
         <Input
+          bg={inputBg}
+          _focus={{ bg: focusBg }}
           placeholder='اكتب العنوان الذي تريد البحث عنه'
-          background='white'
           onChange={(e) => setSearch(e.target.value)}
         />
         <Button onClick={handleSearch}>ابحث</Button>
@@ -86,16 +94,16 @@ const ManageBlogs = () => {
       {loading ? (
         <Loading />
       ) : (
-        <TableContainer mt={6} bg='white'>
+        <TableContainer bg={tableBg} mt={6}>
           <Table variant='simple'>
             <Thead>
               <Tr>
-                <Th>عنوان المقال</Th>
-                <Th>المحرر</Th>
-                <Th>عدد الإعجابات</Th>
-                <Th>عدد الزيارات</Th>
-                <Th>المجال</Th>
-                <Th>عمليات (Actions)</Th>
+                <Th borderColor={borderColor}>عنوان المقال</Th>
+                <Th borderColor={borderColor}>المحرر</Th>
+                <Th borderColor={borderColor}>عدد الإعجابات</Th>
+                <Th borderColor={borderColor}>عدد الزيارات</Th>
+                <Th borderColor={borderColor}>المجال</Th>
+                <Th borderColor={borderColor}>عمليات (Actions)</Th>
               </Tr>
             </Thead>
             <Tbody>

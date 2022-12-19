@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { BsPauseCircle } from "react-icons/bs";
 import { FaEdit, FaShare, FaTrash } from "react-icons/fa";
 import { useState, Dispatch, SetStateAction } from "react";
-import { IconButton, Spinner, Stack, Td, Tr, useToast } from "@chakra-ui/react";
+import { IconButton, Spinner, Stack, Td, Tr, useColorModeValue, useToast } from "@chakra-ui/react";
 
 interface BlogRowProsp {
   setData: Dispatch<SetStateAction<any[] | undefined>>;
@@ -96,12 +96,12 @@ const BlogRow: React.FC<BlogRowProsp> = ({ d, setData }) => {
   };
   return (
     <Tr>
-      <Td>{d.title}</Td>
-      <Td>{d.user_id.username}</Td>
-      <Td>{d.likes}</Td>
-      <Td>{d.views}</Td>
-      <Td>{d.category_id.name}</Td>
-      <Td>
+      <Td borderColor={useColorModeValue("gray.200", "whiteAlpha.100")}>{d.title}</Td>
+      <Td borderColor={useColorModeValue("gray.200", "whiteAlpha.100")}>{d.user_id.username}</Td>
+      <Td borderColor={useColorModeValue("gray.200", "whiteAlpha.100")}>{d.likes}</Td>
+      <Td borderColor={useColorModeValue("gray.200", "whiteAlpha.100")}>{d.views}</Td>
+      <Td borderColor={useColorModeValue("gray.200", "whiteAlpha.100")}>{d.category_id.name}</Td>
+      <Td borderColor={useColorModeValue("gray.200", "whiteAlpha.100")}>
         <Stack direction='row'>
           {d.status !== "published" ? (
             <IconButton
