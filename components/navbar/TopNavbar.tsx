@@ -42,6 +42,8 @@ const TopNavbar: FC<Props> = ({ items, subItems }) => {
   const [links, setLinks] = useState<any[]>([]);
   const [subLinks, setSubLinks] = useState<any[]>([]);
   const [navPosition, setPosition] = useState<any>("unset");
+  const [containerWidth, setContainerWidth] = useState("container.xl");
+  const [showLinksNumber, setShowLinksNumber] = useState(7);
   const router = useRouter();
   const user = useUser();
   const menuSidebar = useDisclosure();
@@ -63,8 +65,12 @@ const TopNavbar: FC<Props> = ({ items, subItems }) => {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 350) {
         setPosition("fixed");
+        setContainerWidth("100vw");
+        setShowLinksNumber(9);
       } else {
         setPosition("unset");
+        setContainerWidth("container.xl");
+        setShowLinksNumber(7);
       }
     });
 
@@ -75,7 +81,7 @@ const TopNavbar: FC<Props> = ({ items, subItems }) => {
 
   return (
     <Box bg={navColors}>
-      <Container position={navPosition} zIndex={3} bg={navColors} maxW='container.xl'>
+      <Container position={navPosition} zIndex={3} bg={navColors} maxW={containerWidth}>
         <Flex p={0} h={16} w='full' align='center' justify='space-between'>
           {/* PART 01 */}
           <Button
@@ -90,8 +96,7 @@ const TopNavbar: FC<Props> = ({ items, subItems }) => {
             color='white'
             leftIcon={<BiEdit />}
             onClick={handleClick}>
-            {!user && "كن محررًا"}
-            {user && "لوحة التحكم"}
+            {!user ? "كن محررًا" : "لوحة التحكم"}
           </Button>
           {/* PART 02 */}
           <HStack me={{ base: 0, md: 0 }} spacing={1}>
@@ -119,7 +124,7 @@ const TopNavbar: FC<Props> = ({ items, subItems }) => {
           </HStack>
           {/* PART 03 */}
           <Flex display={{ base: "none", md: "flex" }} justify='space-between' align='end' flex={1}>
-            {links?.slice(0, 7).map((link) => (
+            {links?.slice(0, showLinksNumber).map((link) => (
               <Link key={link.slug} href={`/category/top/${link.slug}`}>
                 <chakra.span
                   display='block'
@@ -133,7 +138,7 @@ const TopNavbar: FC<Props> = ({ items, subItems }) => {
                 </chakra.span>
               </Link>
             ))}
-            {links?.slice(7).length ? (
+            {links?.slice(showLinksNumber).length ? (
               <Menu>
                 <MenuButton
                   display={{ base: "none", md: "inherit" }}
@@ -149,7 +154,7 @@ const TopNavbar: FC<Props> = ({ items, subItems }) => {
                   المزيد
                 </MenuButton>
                 <MenuList display={{ base: "none", md: "inherit" }} bg={drawerListColors}>
-                  {links?.slice(7).map((link) => (
+                  {links?.slice(showLinksNumber).map((link) => (
                     <MenuItem
                       bg={colorMode === "dark" ? "brand.dark" : "white"}
                       _hover={{ bg: colorMode === "dark" ? "blackAlpha.200" : "blackAlpha.200" }}
