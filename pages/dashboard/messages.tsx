@@ -19,6 +19,7 @@ import {
   Th,
   Thead,
   Tr,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
@@ -31,6 +32,11 @@ const Notifications = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const messageModal = useDisclosure();
+
+  //   Colors
+  const tableBg = useColorModeValue("white", "whiteAlpha.50");
+  const modalBg = useColorModeValue("white", "brand.black");
+  const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
 
   useEffect(() => {
     new Promise(async () => {
@@ -58,25 +64,25 @@ const Notifications = () => {
       {loading ? (
         <Loading />
       ) : (
-        <TableContainer bg='white' mt={16}>
-          <Table variant='simple'>
+        <TableContainer mt={16}>
+          <Table bg={tableBg} variant='simple'>
             <Thead>
               <Tr>
-                <Th>ID</Th>
-                <Th>الموضوع</Th>
-                <Th>النوع</Th>
-                <Th>بريد المرسل</Th>
-                <Th></Th>
+                <Th borderColor={borderColor}>ID</Th>
+                <Th borderColor={borderColor}>الموضوع</Th>
+                <Th borderColor={borderColor}>النوع</Th>
+                <Th borderColor={borderColor}>بريد المرسل</Th>
+                <Th borderColor={borderColor}></Th>
               </Tr>
             </Thead>
             <Tbody>
               {messages?.map((d) => (
                 <Tr bg={d.color} key={d.id}>
-                  <Td>{d.id}</Td>
-                  <Td>{d.topic}</Td>
-                  <Td>{d.type}</Td>
-                  <Td>{d.email}</Td>
-                  <Th>
+                  <Td borderColor={borderColor}>{d.id}</Td>
+                  <Td borderColor={borderColor}>{d.topic}</Td>
+                  <Td borderColor={borderColor}>{d.type}</Td>
+                  <Td borderColor={borderColor}>{d.email}</Td>
+                  <Th borderColor={borderColor}>
                     <IconButton
                       onClick={() => openMessageModal(d.message)}
                       aria-label='profile details'
@@ -97,10 +103,12 @@ const Notifications = () => {
       />
       <Modal isOpen={messageModal.isOpen} onClose={messageModal.onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent py={4} bg={modalBg}>
           <ModalHeader>نص الرسالة</ModalHeader>
           <ModalCloseButton />
-          <ModalBody textAlign={"center"}>{message}</ModalBody>
+          <ModalBody lineHeight={2} textAlign='center'>
+            {message}
+          </ModalBody>
         </ModalContent>
       </Modal>
     </Box>
