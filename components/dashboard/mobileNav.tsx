@@ -13,6 +13,7 @@ import {
   MenuList,
   Text,
   chakra,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { FiChevronDown, FiMenu } from "react-icons/fi";
 import { useEffect, useState } from "react";
@@ -35,6 +36,11 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
     username: "",
     avatar_url: null,
   });
+
+  //   Colors
+  const bgColor = useColorModeValue("white", "brand.black");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const focusBg = useColorModeValue("whiteAlpha.500", "whiteAlpha.200");
 
   const SignOutHandler = async () => {
     const { error } = await supabaseClient.auth.signOut();
@@ -67,9 +73,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       px={{ base: 4, md: 4 }}
       height='20'
       alignItems='center'
-      bg='white'
+      bg={bgColor}
       borderBottomWidth='1px'
-      borderBottomColor='gray.200'
+      borderBottomColor={borderColor}
       justifyContent={{ base: "space-between", md: "flex-end" }}
       {...rest}>
       <IconButton
@@ -79,22 +85,12 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         aria-label='open menu'
         icon={<FiMenu />}
       />
-
-      <Link href='/' passHref>
-        <HStack spacing={5} cursor='pointer'>
-          <Image src='/logo.svg' alt='talleed_logo' />
-          <chakra.span fontWeight={800} fontSize='2xl' color='white'>
-            تليــد
-          </chakra.span>
-        </HStack>
-      </Link>
-
-      <Flex alignItems={"center"}>
+      <Flex alignItems='center'>
         <Menu>
           <MenuButton py={2} transition='all 0.3s' _focus={{ boxShadow: "none" }}>
             <HStack>
               <Avatar
-                size={"sm"}
+                size='sm'
                 src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${profile.avatar_url}`}
                 name={`${profile.first_name} ${profile.last_name}`}
               />
@@ -104,19 +100,19 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               </Box>
             </HStack>
           </MenuButton>
-          <MenuList bg='white' borderColor='gray.200'>
-            <MenuItem>
+          <MenuList bg={bgColor} borderColor='gray.200'>
+            <MenuItem _hover={{ bg: focusBg }} bg={bgColor}>
               <Link href={`/authors/${profile.username}`}>
                 <chakra.span display='block'>الصفحة الشخصية</chakra.span>
               </Link>
             </MenuItem>
-            <MenuItem>
+            <MenuItem _hover={{ bg: focusBg }} bg={bgColor}>
               <Link href='/dashboard/editprofile'>
                 <chakra.span display='block'>إعدادات الحساب</chakra.span>
               </Link>
             </MenuItem>
             <MenuDivider />
-            <MenuItem>
+            <MenuItem _hover={{ bg: focusBg }} bg={bgColor}>
               <chakra.span onClick={SignOutHandler} display='block'>
                 تسجيل الخروج
               </chakra.span>
