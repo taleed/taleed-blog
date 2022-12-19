@@ -1,8 +1,7 @@
-import { AiOutlineClose, AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
 import {
   Avatar,
   Box,
-  Button,
   Flex,
   Heading,
   IconButton,
@@ -28,6 +27,7 @@ import {
   useDisclosure,
   useToast,
   Select,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
 
@@ -51,6 +51,13 @@ const ManageEditors = () => {
   const [filter, setFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(0);
   const [count, setCount] = useState(0);
+
+  //   Colors
+  const tableBg = useColorModeValue("white", "whiteAlpha.50");
+  const modalBg = useColorModeValue("white", "brand.black");
+  const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
+  const inputBg = useColorModeValue("blackAlpha.50", "whiteAlpha.50");
+  const focusBg = useColorModeValue("blackAlpha.100", "whiteAlpha.100");
 
   const fetchProfiles = async (filter?: string) => {
     setLoading(true);
@@ -184,14 +191,15 @@ const ManageEditors = () => {
       <Box mt={16} width={"30%"}>
         <chakra.b>انتقي المحررين</chakra.b>
         <Select
+          bg={inputBg}
           border={0}
-          _focus={{ outline: "none", boxShadow: "none" }}
+          _focus={{ outline: "none", boxShadow: "none", bg: focusBg }}
           onChange={async (event) => {
             setCurrentPage(0);
             setFilter(event.target.value);
           }}
-          bg={"blackAlpha.200"}
           size='lg'
+          mt={4}
           defaultValue={"all"}>
           <option key={0} value='all'>
             الكل
@@ -207,23 +215,23 @@ const ManageEditors = () => {
 
       {!loading ? (
         <>
-          <TableContainer mt={6} bg='white'>
-            <Table variant='simple'>
+          <TableContainer mt={6}>
+            <Table bg={tableBg} variant='simple'>
               <Thead>
                 <Tr>
-                  <Th>ID</Th>
-                  <Th>البريد الإلكتروني</Th>
-                  <Th>النوع</Th>
-                  <Th>تاريخ الإنضمام</Th>
-                  <Th>عمليات (Actions)</Th>
+                  <Th borderColor={borderColor}>ID</Th>
+                  <Th borderColor={borderColor}>البريد الإلكتروني</Th>
+                  <Th borderColor={borderColor}>النوع</Th>
+                  <Th borderColor={borderColor}>تاريخ الإنضمام</Th>
+                  <Th borderColor={borderColor}>عمليات (Actions)</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {data?.map((d: any, i) => (
                   <Tr key={d.email}>
-                    <Td>{i + 1}</Td>
-                    <Td>{d.email}</Td>
-                    <Td>
+                    <Td borderColor={borderColor}>{i + 1}</Td>
+                    <Td borderColor={borderColor}>{d.email}</Td>
+                    <Td borderColor={borderColor}>
                       <Select
                         border={0}
                         _focus={{ outline: "none", boxShadow: "none" }}
@@ -240,8 +248,8 @@ const ManageEditors = () => {
                         ))}
                       </Select>
                     </Td>
-                    <Td>{new Date(d.created_at).toLocaleDateString()}</Td>
-                    <Td>
+                    <Td borderColor={borderColor}>{new Date(d.created_at).toLocaleDateString()}</Td>
+                    <Td borderColor={borderColor}>
                       <Stack direction='row'>
                         <IconButton
                           onClick={() => openModalAndFetchProfileDetails(d.id)}
@@ -280,7 +288,7 @@ const ManageEditors = () => {
 
       <Modal isOpen={profileDetailsModal.isOpen} onClose={profileDetailsModal.onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent bg={modalBg}>
           <ModalHeader>معلومات المحرر</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
