@@ -2,7 +2,18 @@ import Loading from "@/components/dashboard/Loading";
 import PaginationBar from "@/components/PaginationBar";
 import Layout from "@/layouts/Dashboard";
 import { getPagination, ITEMS_IN_PAGE } from "@/utils/paginationConfig";
-import { Box, Heading, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
 
 const Notifications = () => {
@@ -10,6 +21,10 @@ const Notifications = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  //   Colors
+  const tableBg = useColorModeValue("white", "whiteAlpha.50");
+  const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
 
   useEffect(() => {
     new Promise(async () => {
@@ -33,29 +48,32 @@ const Notifications = () => {
       {loading ? (
         <Loading />
       ) : (
-        <TableContainer bg='white' mt={16}>
-          <Table variant='simple'>
+        <TableContainer mt={16}>
+          <Table bg={tableBg} variant='simple'>
             <Thead>
               <Tr>
-                <Th>ID</Th>
-                <Th>الاشعار</Th>
-                <Th>التوقيت</Th>
-                <Th>التاريخ</Th>
+                <Th borderColor={borderColor}>ID</Th>
+                <Th borderColor={borderColor}>الاشعار</Th>
+                <Th borderColor={borderColor}>التوقيت</Th>
+                <Th borderColor={borderColor}>التاريخ</Th>
               </Tr>
             </Thead>
             <Tbody>
               {notification?.map((d, i) => (
                 <Tr key={d.id}>
-                  <Td>{d.id}</Td>
-                  <Td position='relative' textColor={d.color !== "white" && d.color}>
+                  <Td borderColor={borderColor}>{d.id}</Td>
+                  <Td
+                    borderColor={borderColor}
+                    position='relative'
+                    textColor={d.color !== "white" && d.color}>
                     <span
                       style={{ backgroundColor: d.color !== "white" ? d.color : "black" }}
                       className='notification__types-badge'
                     />
                     {d.text}
                   </Td>
-                  <Td>{new Date(d.created_at).toLocaleTimeString()}</Td>
-                  <Td>{new Date(d.created_at).toLocaleDateString()}</Td>
+                  <Td borderColor={borderColor}>{new Date(d.created_at).toLocaleTimeString()}</Td>
+                  <Td borderColor={borderColor}>{new Date(d.created_at).toLocaleDateString()}</Td>
                 </Tr>
               ))}
             </Tbody>
