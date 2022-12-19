@@ -13,6 +13,7 @@ import {
   Textarea,
   VStack,
   useToast,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useUser } from "@supabase/auth-helpers-react";
@@ -60,6 +61,10 @@ const AddBlog = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ mode: "all" });
+
+  //   Colors
+  const inputBg = useColorModeValue("blackAlpha.50", "whiteAlpha.50");
+  const focusBg = useColorModeValue("blackAlpha.100", "whiteAlpha.100");
 
   const onSubmit: SubmitHandler<FormValues> = async ({
     category,
@@ -162,7 +167,9 @@ const AddBlog = () => {
           <FormControl isRequired isInvalid={errors.category ? true : false}>
             <FormLabel>فئة المقالة</FormLabel>
             <Select
-              bg='whiteAlpha.700'
+              bg={inputBg}
+              border={0}
+              _focus={{ bg: focusBg }}
               placeholder='اختر الفئة التي تنتمي إليها المقالة'
               size='lg'
               id='category'
@@ -184,12 +191,10 @@ const AddBlog = () => {
           <FormControl my={6} isRequired isInvalid={errors.title ? true : false}>
             <FormLabel htmlFor='title'>عنوان المقالة</FormLabel>
             <Input
-              borderRadius={10}
-              bg='whiteAlpha.700'
+              bg={inputBg}
               border={0}
-              _focus={{
-                bg: "whiteAlpha.900",
-              }}
+              _focus={{ bg: focusBg }}
+              borderRadius={10}
               type='text'
               placeholder=''
               size='lg'
@@ -208,16 +213,14 @@ const AddBlog = () => {
           <FormControl mb={6} isRequired isInvalid={errors.excerpt ? true : false}>
             <FormLabel htmlFor='excerpt'>وصف مختصر للمقالة</FormLabel>
             <Textarea
+              bg={inputBg}
+              border={0}
+              _focus={{ bg: focusBg }}
               maxLength={2000}
               h={40}
               resize='none'
               p={4}
               borderRadius={10}
-              bg='whiteAlpha.700'
-              border={0}
-              _focus={{
-                bg: "whiteAlpha.800",
-              }}
               _disabled={{
                 bg: "blackAlpha.100",
               }}
@@ -244,7 +247,9 @@ const AddBlog = () => {
               <FormLabel
                 htmlFor='blogImg'
                 w='full'
-                bg='grey.200'
+                bg={inputBg}
+                border={0}
+                _focus={{ bg: focusBg, outline: "none" }}
                 rounded='md'
                 textAlign='center'
                 py={2}
@@ -252,8 +257,7 @@ const AddBlog = () => {
                 display='flex'
                 alignItems='center'
                 justifyContent='center'
-                _hover={{ bg: "grey.300", cursor: "pointer" }}
-                _focus={{ outline: "none" }}>
+                _hover={{ bg: focusBg, cursor: "pointer" }}>
                 {uploading ? <Spinner size='md' /> : "قم باختيار صورة للمقالة "}
               </FormLabel>
               <Input
@@ -280,7 +284,14 @@ const AddBlog = () => {
           {/* sound cloud frame*/}
           <FormControl mt={8} mb={6}>
             <FormLabel htmlFor='frame'>sound cloud frame</FormLabel>
-            <Textarea maxLength={2000} {...register!("frame")} bg='whiteAlpha.700' id='frame' />
+            <Textarea
+              bg={inputBg}
+              border={0}
+              _focus={{ bg: focusBg }}
+              maxLength={2000}
+              {...register!("frame")}
+              id='frame'
+            />
           </FormControl>
           {/* blog's content */}
           <VStack mb={16} mt={8} spacing={8}>
