@@ -11,27 +11,25 @@ import {
   chakra,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { BlogWithCategoriesProfiles, NavbarResourcesType } from "@/types/blog";
+import { NavbarResourcesType } from "@/types/blog";
 
 import { GetStaticProps } from "next";
 import Head from "next/head";
 import LatestBlogs from "@/components/LatestBlogs";
 import Layout from "@/layouts/Default";
 import NextLink from "next/link";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useRouter } from "next/router";
+import Loading from "@/components/dashboard/Loading";
 
 interface Props {
-  latestBlogs: BlogWithCategoriesProfiles[];
-  newBlog: BlogWithCategoriesProfiles;
-  restBlogs: BlogWithCategoriesProfiles[];
   category: { name: string };
   topMenus: NavbarResourcesType[];
   subMenus: NavbarResourcesType[];
 }
 
-const Category = ({ newBlog, latestBlogs, restBlogs, category }: Props) => {
+const Category = ({ category }: Props) => {
   const seperator_color = useColorModeValue("1px solid #E7E8E8", "1px solid #7C62E5");
   const date_color = useColorModeValue("grey.500", "grey.300");
   const author_color = useColorModeValue("grey.500", "white");
@@ -39,8 +37,76 @@ const Category = ({ newBlog, latestBlogs, restBlogs, category }: Props) => {
   const category_color = useColorModeValue("brand.secondary", "grey.300");
   const excerpt_color = useColorModeValue("#4F4F4F", "#F0F0F0");
 
+  const [newBlog, setNewBlog] = useState<any>();
+  const [latestBlogs, setlatestBlogs] = useState<any>();
+  const [restBlogs, setRestBlogs] = useState<any>();
+
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
-  const { type } = router.query;
+  const { type, slug } = router.query;
+
+  useEffect(() => {
+    const setupData = async () => {
+      setLoading(true);
+      // Get The Newest Blog (by category)
+      const { data: newBlog } = await supabase
+        .from("posts")
+        .select(
+          `id,title,thumbnail,excerpt, created_at, ${type}_menus!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)`
+        )
+        .eq(`${type}_menus.slug`, slug)
+        .eq("status", "published")
+        .order("created_at", {
+          ascending: false,
+        })
+        .limit(1)
+        .single();
+
+      // Get The Latest 3 Blogs (by category)
+      const { data: latestBlogs } = await supabase
+        .from("posts")
+        .select(
+          `id,title,thumbnail,excerpt,created_at, ${type}_menus!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)`
+        )
+        .eq(`${type}_menus.slug`, slug)
+        .eq("status", "published")
+        .order("created_at", {
+          ascending: false,
+        })
+        .range(1, 3);
+
+      // Rest Blogs (by category)
+      let query = supabase
+        .from("posts")
+        .select(
+          `id,title,thumbnail,excerpt,created_at, ${type}_menus!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)`
+        )
+        .eq(`${type}_menus.slug`, slug)
+        .eq("status", "published")
+        .order("created_at", {
+          ascending: true,
+        });
+
+      if (newBlog) {
+        query = query.not("id", "eq", newBlog.id);
+      }
+      if (latestBlogs && latestBlogs?.length > 0) {
+        query = query.not("id", "in", `(${latestBlogs.map((blog: any) => blog.id)})`);
+      }
+      const { data: restBlogs } = await query;
+
+      setNewBlog(newBlog);
+      setlatestBlogs(latestBlogs);
+      setRestBlogs(restBlogs);
+
+      setLoading(false);
+    };
+
+    setupData();
+  }, [slug, type]);
+
+  if (loading) return <Loading />;
 
   return (
     <>
@@ -53,20 +119,20 @@ const Category = ({ newBlog, latestBlogs, restBlogs, category }: Props) => {
           _before={{
             content: '""',
             borderBottom: "2px solid",
-            borderColor: useColorModeValue("grey.200", "whiteAlpha.300"),
+            borderColor: useColorModeValue!("grey.200", "whiteAlpha.300"),
             flexGrow: 1,
           }}
           _after={{
             content: '""',
             borderBottom: "2px solid",
-            borderColor: useColorModeValue("grey.200", "whiteAlpha.300"),
+            borderColor: useColorModeValue!("grey.200", "whiteAlpha.300"),
             flexGrow: 1,
           }}>
           <chakra.span
             mx={4}
             fontWeight={400}
             fontSize='5xl'
-            color={useColorModeValue("brand.primary", "brand.secondary")}>
+            color={useColorModeValue!("brand.primary", "brand.secondary")}>
             {category && category.name}
           </chakra.span>
         </Flex>
@@ -84,7 +150,7 @@ const Category = ({ newBlog, latestBlogs, restBlogs, category }: Props) => {
             </chakra.h2>
             <VStack align='flex-start'>
               {restBlogs &&
-                restBlogs.map((post: any, index) => {
+                restBlogs.map((post: any, index: number) => {
                   return (
                     <NextLink key={index} href={`/blogs/${post.id}`} passHref>
                       <Flex
@@ -175,53 +241,6 @@ export default Category;
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { slug, type } = params!;
 
-  // Get The Newest Blog (by category)
-  const { data: newBlog } = await supabase
-    .from("posts")
-    .select(
-      `id,title,thumbnail,excerpt, created_at, ${type}_menus!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)`
-    )
-    .eq(`${type}_menus.slug`, slug)
-    .eq("status", "published")
-    .order("created_at", {
-      ascending: false,
-    })
-    .limit(1)
-    .single();
-
-  // Get The Latest 3 Blogs (by category)
-  const { data: latestBlogs } = await supabase
-    .from("posts")
-    .select(
-      `id,title,thumbnail,excerpt,created_at, ${type}_menus!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)`
-    )
-    .eq(`${type}_menus.slug`, slug)
-    .eq("status", "published")
-    .order("created_at", {
-      ascending: false,
-    })
-    .range(1, 3);
-
-  // Rest Blogs (by category)
-  let query = supabase
-    .from("posts")
-    .select(
-      `id,title,thumbnail,excerpt,created_at, ${type}_menus!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)`
-    )
-    .eq(`${type}_menus.slug`, slug)
-    .eq("status", "published")
-    .order("created_at", {
-      ascending: true,
-    });
-
-  if (newBlog) {
-    query = query.not("id", "eq", newBlog?.id);
-  }
-  if (latestBlogs && latestBlogs?.length > 0) {
-    query = query.not("id", "in", `(${latestBlogs.map((blog: any) => blog.id)})`);
-  }
-  const { data: restBlogs } = await query;
-
   const { data: category } = await supabase
     .from(`${type}_menus`)
     .select("name")
@@ -245,9 +264,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   return {
     props: {
-      newBlog,
-      latestBlogs,
-      restBlogs,
       category,
       topMenus,
       subMenus,
