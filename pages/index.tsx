@@ -23,6 +23,7 @@ import NextLink from "next/link";
 import { supabase } from "@/utils/supabaseClient";
 import { useRouter } from "next/router";
 import BlogCard from "@/components/BlogCard";
+import Loading from "@/components/dashboard/Loading";
 
 interface Props {
     authors: FamousAuthor[];
@@ -36,12 +37,14 @@ const Home = ({ authors }: Props) => {
     const [search, setSearch] = useState<any[]>([]);
     const purpleTitles = useColorModeValue("brand.primary", "brand.secondary");
 
+    const [loading, setLoading] = useState(false);
     const [newBlog, setNewBlog] = useState<any>(undefined);
     const [latestBlogs, setLatestBlogs] = useState<any>(undefined);
     const [mostViewedBlogs, setMostViewedBlogs] = useState<any>(undefined);
 
     useEffect(() => {
         const setupData = async () => {
+            setLoading(true);
             // Get The Newest Blog
             const { data: newBlogTopMenu } = await supabase
                 .from("posts")
@@ -143,6 +146,8 @@ const Home = ({ authors }: Props) => {
             setNewBlog(newBlogTopMenu ?? newBlogSubMenu);
             setLatestBlogs(latestBlogsTopMenus ?? latestBlogsSubMenus);
             setMostViewedBlogs(mostViewedBlogs);
+
+            setLoading(false);
         };
 
         setupData();
@@ -174,6 +179,9 @@ const Home = ({ authors }: Props) => {
     const category_color = useColorModeValue("brand.secondary", "grey.300");
     const excerpt_color = useColorModeValue("#4F4F4F", "#F0F0F0");
     const ads_color = useColorModeValue("#F4F5F5", "#2F3133");
+
+    if (loading) return <Loading />;
+
     return (
         <Box>
             {!search?.length ? (
