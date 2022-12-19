@@ -31,6 +31,7 @@ import {
   FormErrorMessage,
   Flex,
   chakra,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { ReactElement, useEffect, useState } from "react";
@@ -51,6 +52,13 @@ const ManagePartners = () => {
   const modal = useDisclosure();
   const toast = useToast();
   const user = useUser();
+
+  //   Colors
+  const tableBg = useColorModeValue("white", "whiteAlpha.50");
+  const modalBg = useColorModeValue("white", "brand.black");
+  const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
+  const inputBg = useColorModeValue("blackAlpha.50", "whiteAlpha.50");
+  const focusBg = useColorModeValue("blackAlpha.100", "whiteAlpha.100");
 
   function makeid(length: number) {
     var result = "";
@@ -179,21 +187,21 @@ const ManagePartners = () => {
       {loading ? (
         <Loading />
       ) : data.length ? (
-        <TableContainer mt={6} bg='white'>
-          <Table variant='simple'>
+        <TableContainer mt={6}>
+          <Table bg={tableBg} variant='simple'>
             <Thead>
               <Tr>
-                <Th>اسم الشريك</Th>
-                <Th>نبذة حوله</Th>
-                <Th>العمليات</Th>
+                <Th borderColor={borderColor}>اسم الشريك</Th>
+                <Th borderColor={borderColor}>نبذة حوله</Th>
+                <Th borderColor={borderColor}>العمليات</Th>
               </Tr>
             </Thead>
             <Tbody>
               {data?.map((d: any, i: number) => (
                 <Tr key={d.id}>
-                  <Td>{d.name}</Td>
-                  <Td>{d.description}</Td>
-                  <Td>
+                  <Td borderColor={borderColor}>{d.name}</Td>
+                  <Td borderColor={borderColor}>{d.description}</Td>
+                  <Td borderColor={borderColor}>
                     <IconButton
                       onClick={() => handleDelete(d.id)}
                       aria-label='profile details'
@@ -212,94 +220,106 @@ const ManagePartners = () => {
       )}
       <Modal isOpen={modal.isOpen} onClose={modal.onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader> {"اضف مقالا"}</ModalHeader>
+        <ModalContent maxW='3xl' bg={modalBg}>
+          <ModalHeader> اضف مقالا</ModalHeader>
           <ModalCloseButton />
-          <ModalBody textAlign={"center"}>
+          <ModalBody textAlign='center'>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <Box display='inline-block' w='full'>
-                <Image
-                  mb={2}
-                  rounded='lg'
-                  alt='blog image'
-                  borderRadius='lg'
-                  w='full'
-                  src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${
-                    watch!("image") === undefined ? "default.png" : watch!("image")
-                  }`}></Image>
-                <FormControl mb={4}>
-                  <FormLabel
-                    htmlFor='img'
+              <Flex gap={10}>
+                <Box flexBasis='100%'>
+                  <FormControl mb={4}>
+                    <FormLabel>اسم الشريك</FormLabel>
+                    <Input
+                      bg={inputBg}
+                      border={0}
+                      _focus={{ bg: focusBg }}
+                      required={true}
+                      {...register!("name", {
+                        required: "هذا الحقل مطلوب",
+                      })}></Input>
+                    <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
+                  </FormControl>
+                  <FormControl mb={2}>
+                    <FormLabel>وصف موجز حول الشريك</FormLabel>
+                    <Textarea
+                      bg={inputBg}
+                      border={0}
+                      _focus={{ bg: focusBg }}
+                      maxLength={2000}
+                      required={true}
+                      {...register!("description", {
+                        required: "هذا الحقل مطلوب",
+                      })}></Textarea>
+                    <FormErrorMessage>{errors.description?.message}</FormErrorMessage>
+                  </FormControl>
+                  <Stack mb={2} alignItems={"flex-start"}>
+                    <Button
+                      w='fit-content'
+                      size='lg'
+                      p={6}
+                      bg={"brand.secondary"}
+                      color={"white"}
+                      _hover={{
+                        opacity: 0.8,
+                      }}
+                      _focus={{ opacity: 0.9, color: "white", outline: "none" }}
+                      _focusWithin={{
+                        opacity: 0.9,
+                        bg: "brand.secondary",
+                      }}
+                      _disabled={{
+                        bg: "#81EAFB6B",
+                        pointerEvents: "none",
+                      }}
+                      borderRadius={10}
+                      variant='solid'
+                      isLoading={isSubmitting}
+                      type='submit'>
+                      تاكيد
+                    </Button>
+                  </Stack>
+                </Box>
+                <Box flexBasis='40%' w='full'>
+                  <Image
+                    mb={2}
+                    rounded='lg'
+                    alt='blog image'
+                    borderRadius='lg'
                     w='full'
-                    bg='grey.200'
-                    rounded='md'
-                    textAlign='center'
-                    py={2}
-                    px={4}
-                    display='flex'
-                    alignItems='center'
-                    justifyContent='center'
-                    _hover={{ bg: "grey.300", cursor: "pointer" }}
-                    _focus={{ outline: "none" }}>
-                    {uploading ? <Spinner size='md' /> : "قم باختيار صورة "}
-                  </FormLabel>
-                  <Input
-                    visibility='hidden'
-                    position='absolute'
-                    type='file'
-                    id='img'
-                    accept='image/*'
-                    onChange={(e) => uploadImage(e)}
-                    disabled={uploading}
-                  />
-                </FormControl>
-              </Box>
-
-              <FormControl mb={4}>
-                <FormLabel>اسم الشريك</FormLabel>
-                <Input
-                  required={true}
-                  {...register!("name", {
-                    required: "هذا الحقل مطلوب",
-                  })}></Input>
-                <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
-              </FormControl>
-              <FormControl mb={2}>
-                <FormLabel>وصف موجز حول الشريك</FormLabel>
-                <Textarea
-                  maxLength={2000}
-                  required={true}
-                  {...register!("description", {
-                    required: "هذا الحقل مطلوب",
-                  })}></Textarea>
-                <FormErrorMessage>{errors.description?.message}</FormErrorMessage>
-              </FormControl>
-              <Stack mb={2} alignItems={"flex-start"}>
-                <Button
-                  w='fit-content'
-                  size='lg'
-                  p={6}
-                  bg={"brand.secondary"}
-                  color={"white"}
-                  _hover={{
-                    opacity: 0.8,
-                  }}
-                  _focus={{ opacity: 0.9, color: "white", outline: "none" }}
-                  _focusWithin={{
-                    opacity: 0.9,
-                    bg: "brand.secondary",
-                  }}
-                  _disabled={{
-                    bg: "#81EAFB6B",
-                    pointerEvents: "none",
-                  }}
-                  borderRadius={10}
-                  variant='solid'
-                  isLoading={isSubmitting}
-                  type='submit'>
-                  تاكيد
-                </Button>
-              </Stack>
+                    src={`${
+                      process.env.NEXT_PUBLIC_SUPABASE_URL
+                    }/storage/v1/object/public/avatars/${
+                      watch!("image") === undefined ? "default.png" : watch!("image")
+                    }`}></Image>
+                  <FormControl mb={4}>
+                    <FormLabel
+                      htmlFor='img'
+                      w='full'
+                      rounded='md'
+                      textAlign='center'
+                      py={2}
+                      px={4}
+                      display='flex'
+                      alignItems='center'
+                      justifyContent='center'
+                      _hover={{ bg: focusBg, cursor: "pointer" }}
+                      bg={inputBg}
+                      border={0}
+                      _focus={{ bg: focusBg, outline: "none" }}>
+                      {uploading ? <Spinner size='md' /> : "قم باختيار صورة "}
+                    </FormLabel>
+                    <Input
+                      visibility='hidden'
+                      position='absolute'
+                      type='file'
+                      id='img'
+                      accept='image/*'
+                      onChange={(e) => uploadImage(e)}
+                      disabled={uploading}
+                    />
+                  </FormControl>
+                </Box>
+              </Flex>
             </form>
           </ModalBody>
         </ModalContent>
