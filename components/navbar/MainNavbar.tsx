@@ -25,85 +25,68 @@ type Props = {
 
 const MainNavbar: FC<Props> = ({ items }) => {
   const { colorMode } = useColorMode();
-  const [ links, setLinks ] = useState<any[]>([])
-  const router = useRouter()
-
+  const [links, setLinks] = useState<any[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
-    setLinks(items)
-  }, [setLinks])
+    setLinks(items);
+  }, [setLinks]);
 
   return (
     <Box bg={useColorModeValue("brand.primary", "grey.900")}>
-      <Container h={16} display="flex" alignItems="center" maxW="container.xl">
+      <Container h={16} display='flex' alignItems='center' maxW='container.xl'>
         {/* PART 01 - LOGO */}
-        <Link href="/" passHref>
-          <HStack
-            _hover={{ cursor: "pointer" }}
-            mx={{ base: "auto", md: 0 }}
-            spacing={5}
-            px={6}
-          >
-            <Image src="/logo.svg" alt="talleed_logo" />
-            <chakra.span color="white" fontWeight={800} fontSize="2xl">
+        <Link href='/' passHref>
+          <HStack _hover={{ cursor: "pointer" }} mx={{ base: "auto", md: 0 }} spacing={3} px={6}>
+            <Image src='/logo.svg' alt='talleed_logo' />
+            <chakra.span color='white' fontWeight={800} fontSize='2xl'>
               تليــد
             </chakra.span>
           </HStack>
         </Link>
         {/* PART 02 - LINKS */}
-        <Flex
-          display={{ base: "none", md: "flex" }}
-          justify="space-evenly"
-          flex={1}
-          mx={16}
-        >
-          {
-            links?.map((link) => (
-              <Link key={link.slug} href={`/category/sub/${link.slug}`}>
-                <chakra.span
-                  display="block"
-                  color="white"
-                  _hover={{
-                    cursor: "pointer",
-                    color: "brand.secondary",
-                  }}
-                  fontWeight={500}
-                  fontSize="xl"
-                >
-                  {link.name}
-                </chakra.span>
-              </Link>
-            ))}
+        <Flex display={{ base: "none", md: "flex" }} justify='space-evenly' flex={1} mx={16}>
+          {links?.map((link) => (
+            <Link key={link.slug} href={`/category/sub/${link.slug}`}>
+              <chakra.span
+                display='block'
+                color='white'
+                _hover={{
+                  cursor: "pointer",
+                  color: "brand.secondary",
+                }}
+                fontWeight={500}
+                fontSize='xl'>
+                {link.name}
+              </chakra.span>
+            </Link>
+          ))}
         </Flex>
         {/* PART 03 - SEARCH INPUT */}
         <InputGroup
           display={{ base: "none", md: "initial" }}
           w={{ base: "full", md: "48", lg: "64" }}
-          rounded="xl"
-        >
+          rounded='xl'>
           <Input
             _focus={{ outline: "none", boxShadow: "none", border: 0 }}
             border={0}
             color={colorMode === "dark" ? "white" : "brand.black"}
             bgColor={colorMode === "dark" ? "grey.800" : "white"}
-            placeholder="بحث"
+            placeholder='بحث'
             _placeholder={{
               color: colorMode === "dark" ? "grey.400" : "#A4A8AE",
             }}
-            onKeyDown={(event:any) => {
-              if(event?.key === "Enter" && event.target.value) {
-                router.push("/?search="+event.target.value)
+            onKeyDown={(event: any) => {
+              if (event?.key === "Enter" && event.target.value) {
+                router.push("/?search=" + event.target.value);
               }
-              if (!event.target.value && event?.key === "Enter"){
-                router.push("/")
+              if (!event.target.value && event?.key === "Enter") {
+                router.push("/");
               }
             }}
           />
-          <InputLeftElement w="48px">
-            <Icon
-              as={BiSearch}
-              color={colorMode === "dark" ? "white" : "#9DA2A4"}
-            />
+          <InputLeftElement w='48px'>
+            <Icon as={BiSearch} color={colorMode === "dark" ? "white" : "#9DA2A4"} />
           </InputLeftElement>
         </InputGroup>
       </Container>
@@ -115,4 +98,3 @@ export default MainNavbar;
 function setLinks(items: NavbarResourcesType[]) {
   throw new Error("Function not implemented.");
 }
-
