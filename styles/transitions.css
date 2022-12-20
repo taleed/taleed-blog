@@ -1,37 +1,37 @@
 .initial-fade-in {
   opacity: 0;
-  animation: fade-in 350ms 50ms ease-out forwards;
-  transition: 400ms ease-out;
+  animation: fade-in 500ms 50ms ease-out forwards;
+  transition: 550ms ease-out;
 }
 
 .initial-fade-in-1 {
   opacity: 0;
-  animation: fade-in 350ms 250ms ease-out forwards;
-  transition: 400ms ease-out;
+  animation: fade-in 500ms 250ms ease-out forwards;
+  transition: 550ms ease-out;
 }
 
 .initial-fade-in-2 {
   opacity: 0;
-  animation: fade-in 350ms 350ms ease-out forwards;
-  transition: 400ms ease-out;
+  animation: fade-in 500ms 350ms ease-out forwards;
+  transition: 550ms ease-out;
 }
 
 .initial-fade-in-3 {
   opacity: 0;
-  animation: fade-in 350ms 450ms ease-out forwards;
-  transition: 400ms ease-out;
+  animation: fade-in 500ms 450ms ease-out forwards;
+  transition: 550ms ease-out;
 }
 
 .initial-fade-in-4 {
   opacity: 0;
-  animation: fade-in 350ms 550ms ease-out forwards;
-  transition: 400ms ease-out;
+  animation: fade-in 500ms 550ms ease-out forwards;
+  transition: 550ms ease-out;
 }
 
 .initial-fade-in-5 {
   opacity: 0;
-  animation: fade-in 350ms 650ms ease-out forwards;
-  transition: 400ms ease-out;
+  animation: fade-in 500ms 650ms ease-out forwards;
+  transition: 550ms ease-out;
 }
 
 .like-icon {
