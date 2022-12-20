@@ -40,7 +40,7 @@ const handler: NextApiHandler = async (req, res) => {
       .select("id, approved, type", { count: "exact" })
       .eq("approved", true)
       .filter("id", "in", strUsersList)
-      .order("id", { ascending: false })
+      .order("created_at", { ascending: false })
       .range(Number(from as string), Number(to as string));
   } else if (q === "false") {
     result = await supabase
@@ -48,14 +48,14 @@ const handler: NextApiHandler = async (req, res) => {
       .select("id, approved, type", { count: "exact" })
       .eq("approved", false)
       .filter("id", "in", strUsersList)
-      .order("id", { ascending: false })
+      .order("created_at", { ascending: false })
       .range(Number(from as string), Number(to as string));
   } else {
     result = await supabase
       .from("profiles")
       .select("id, approved, type", { count: "exact" })
       .filter("id", "in", strUsersList)
-      .order("id", { ascending: false })
+      .order("created_at", { ascending: false })
       .range(Number(from as string), Number(to as string));
   }
 

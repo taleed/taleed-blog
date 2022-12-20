@@ -161,7 +161,6 @@ const ManageEditors = () => {
       .then((d) => {
         toast({
           title: "عملية ناجحة",
-          description: d.message,
           status: "success",
           duration: 9000,
           isClosable: true,
