@@ -53,7 +53,9 @@ const TinyEditor: React.FC<TinyEditorProps> = ({ blogBody, initialValue = "<p></
         menubar: true,
         plugins: tinyPlugins,
         toolbar: tinyToolbar,
-        content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+        content_style: "body { font-family:Comic Sans MS,Arial,sans-serif; font-size:18px }",
+        language: "ar",
+        directionality: "rtl",
       }}
     />
   );
