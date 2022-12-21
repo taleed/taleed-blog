@@ -130,7 +130,8 @@ const AddBlog = () => {
     setValue("excerpt", (excerpt as string) ?? "");
     setValue("category", Number(category_id ?? 1));
     if (blogBody) blogBody.current = (body as string) ?? "";
-    setTags((tags as string[]) ?? []);
+    const formattedTags = typeof tags === "string" ? [tags] : tags;
+    setTags(formattedTags ?? []);
     setBlogId(Number(id));
   }, [router.query, blogBody]);
 
