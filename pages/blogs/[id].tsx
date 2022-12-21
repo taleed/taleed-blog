@@ -253,12 +253,12 @@ function Blog({ post, similar_posts }: Props) {
               src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/blogs/${post.thumbnail}`}
               alt='Article'
             />
-            <Box
+            <div
               className='post-sound-cloud'
               dangerouslySetInnerHTML={{ __html: post.sound_cloud_frame }}
             />
 
-            <Box className='post-content' dangerouslySetInnerHTML={{ __html: post.body }} />
+            <div className='post-content' dangerouslySetInnerHTML={{ __html: post.body }} />
 
             <Box w='fit-content' mt={16} position='relative'>
               {showAnimation && (
