@@ -441,14 +441,15 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     .eq("id", id)
     .single();
 
-  const { data: post_sub_menu } = await supabase
-    .from("posts")
-    .select(
-      "id,title,thumbnail,excerpt, created_at, body, tags, sub_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url), sound_cloud_frame"
-    )
-    .eq("id", id)
-    .eq("status", "published")
-    .single();
+  // const { data: post_sub_menu, error } = await supabase
+  //   .from("posts")
+  //   .select(
+  //     "id,title,thumbnail,excerpt, created_at, body, tags, sub_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url), sound_cloud_frame"
+  //   )
+  //   .eq("id", id)
+  //   .single();
+
+  // console.log("post_sub_menu", error);
 
   if (post_top_menu) {
     const { data: similar_posts_top_menus } = await supabase
@@ -471,26 +472,26 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     };
   }
 
-  if (post_sub_menu) {
-    const { data: similar_posts_sub_menus } = await supabase
-      .from("posts")
-      .select(
-        "id,title, created_at, thumbnail, sub_menus!inner(name), profiles!inner(first_name, last_name), sound_cloud_frame"
-      )
-      .filter("sub_menus.name", "eq", post_sub_menu!.sub_menus!.name)
-      .filter("id", "not.eq", post_sub_menu.id)
-      .eq("status", "published")
-      .range(0, 5);
+  // if (post_sub_menu) {
+  //   const { data: similar_posts_sub_menus } = await supabase
+  //     .from("posts")
+  //     .select(
+  //       "id,title, created_at, thumbnail, sub_menus!inner(name), profiles!inner(first_name, last_name), sound_cloud_frame"
+  //     )
+  //     .filter("sub_menus.name", "eq", post_sub_menu!.sub_menus!.name)
+  //     .filter("id", "not.eq", post_sub_menu.id)
+  //     // .eq("status", "published")
+  //     .range(0, 5);
 
-    return {
-      props: {
-        post: post_sub_menu,
-        similar_posts: similar_posts_sub_menus,
-        topMenus,
-        subMenus,
-      },
-    };
-  }
+  //   return {
+  //     props: {
+  //       post: post_sub_menu,
+  //       similar_posts: similar_posts_sub_menus,
+  //       topMenus,
+  //       subMenus,
+  //     },
+  //   };
+  // }
 
   return {
     props: {
