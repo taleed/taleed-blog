@@ -245,6 +245,7 @@ function Blog({ post, similar_posts }: Props) {
               </Flex>
             </Flex>
             <Image
+              overflow='hidden'
               rounded={{ lg: "lg" }}
               w='full'
               my={5}
@@ -253,6 +254,7 @@ function Blog({ post, similar_posts }: Props) {
               src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/blogs/${post.thumbnail}`}
               alt='Article'
             />
+
             <div
               className='post-sound-cloud'
               dangerouslySetInnerHTML={{ __html: post.sound_cloud_frame }}
