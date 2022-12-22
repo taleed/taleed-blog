@@ -5,7 +5,7 @@ import {
   Flex,
   HStack,
   Heading,
-  Image,
+  Image as ChakraImage,
   Text,
   VStack,
   chakra,
@@ -24,6 +24,8 @@ import { supabase } from "@/utils/supabaseClient";
 import { useRouter } from "next/router";
 import BlogCard from "@/components/BlogCard";
 import Loading from "@/components/dashboard/Loading";
+import Watermark from "public/watermark.png";
+import Image from "next/image";
 
 interface Props {
   authors: FamousAuthor[];
@@ -215,7 +217,7 @@ const Home = ({ authors }: Props) => {
                             mb={10}
                             align='center'
                             _hover={{ cursor: "pointer" }}>
-                            <Box flex={1}>
+                            <Box flexBasis='100%'>
                               <chakra.span
                                 color={category_color}
                                 display='block'
@@ -274,19 +276,28 @@ const Home = ({ authors }: Props) => {
                                 </Box>
                               </HStack>
                             </Box>
-                            <Image
-                              ms={{ base: 0, md: 6 }}
-                              rounded={{ base: "lg" }}
-                              my={5}
-                              w={{
-                                base: "full",
-                                md: "45%",
-                              }}
-                              h={72}
-                              fit='cover'
-                              src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/blogs/${post.thumbnail}`}
-                              alt={`${post.title} thumbnail`}
-                            />
+                            <Box
+                              flexBasis='100%'
+                              overflow='hidden'
+                              position='relative'
+                              className='home-blog-image-container'>
+                              <ChakraImage
+                                className='home-blog-image'
+                                rounded={{ base: "lg" }}
+                                mt={{ base: 0, sm: 4 }}
+                                w='full'
+                                h={72}
+                                fit='cover'
+                                src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/blogs/${post.thumbnail}`}
+                                alt={`${post.title} thumbnail`}
+                              />
+                              <Box className='img-watermark img-watermark-top'>
+                                <Image src={Watermark} alt='watermark' width='100%' height='70%' />
+                              </Box>
+                              <Box className='img-watermark img-watermark-bottom'>
+                                <Image src={Watermark} alt='watermark' width='100%' height='70%' />
+                              </Box>
+                            </Box>
                           </Flex>
                         </NextLink>
                       );
