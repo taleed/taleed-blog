@@ -13,6 +13,8 @@ import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import theme from "theme";
 import LocationProvider from "@/components/LocationProvider";
+import Head from "next/head";
+import favicon from "public/favicon.ico";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -31,6 +33,10 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       supabaseClient={supabaseClient}
       initialSession={pageProps.initialSession}>
       <ChakraProvider theme={theme} colorModeManager={manager}>
+        <Head>
+          <link rel='shortcut icon' href={favicon.src} />
+        </Head>
+
         <GoogleAnalytics trackPageViews={{ ignoreHashChange: true }} />
         <NextNProgress />
         <LocationProvider />
