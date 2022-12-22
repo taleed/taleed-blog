@@ -40,7 +40,7 @@ const tinyPlugins = [
   "wordcount",
 ];
 
-const TinyEditor: React.FC<TinyEditorProps> = ({ blogBody, initialValue = "<p></p>" }) => {
+const TinyEditor: React.FC<TinyEditorProps> = ({ blogBody, initialValue = "<div></div>" }) => {
   return (
     <Editor
       apiKey={TINY_EDITOR_API_KEY}
@@ -53,7 +53,7 @@ const TinyEditor: React.FC<TinyEditorProps> = ({ blogBody, initialValue = "<p></
         menubar: true,
         plugins: tinyPlugins,
         toolbar: tinyToolbar,
-        content_style: "body { font-family:Comic Sans MS,Arial,sans-serif; font-size:18px }",
+        content_style: "body { font-family:Comic Sans MS,Arial,sans-serif }",
         language: "ar",
         directionality: "rtl",
       }}
