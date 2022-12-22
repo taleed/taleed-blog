@@ -49,9 +49,11 @@ const BlogCardImg = ({ thumbnail, type }: { thumbnail: string; type: string }) =
       borderRadius='lg'
       overflow='hidden'
       position='relative'
+      className='home-blog-image-container'
       w={{ base: "full", md: type === "new" ? "45%" : "full" }}>
       <Image
         src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/blogs/${thumbnail}`}
+        className='home-blog-image'
         alt='blog thumbnail'
         layout='responsive'
         width='100%'

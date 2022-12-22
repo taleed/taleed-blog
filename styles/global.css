@@ -20,6 +20,7 @@
 .img-watermark {
   position: absolute;
   opacity: 0.8;
+  transition: 300ms ease-out;
 }
 
 .img-watermark-bottom {
@@ -30,4 +31,13 @@
   top: 1rem;
   left: -3rem;
   transform: rotate(180deg);
+}
+
+img.home-blog-image {
+  transition: 300ms ease-out;
+}
+
+.home-blog-image-container:hover img.home-blog-image {
+  transform: scale(1.1) rotate(1deg);
+  transition: 300ms ease-out;
 }
