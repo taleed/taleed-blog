@@ -14,7 +14,7 @@ import { BlogWithCategoriesProfiles } from "@/types/blog";
 import { FC } from "react";
 import Image from "next/image";
 import NextLink from "next/link";
-import Logo from "./Logo";
+import Watermark from "public/watermark.png";
 
 type Props = {
   data: BlogWithCategoriesProfiles;
@@ -57,8 +57,11 @@ const BlogCardImg = ({ thumbnail, type }: { thumbnail: string; type: string }) =
         width='100%'
         height='70%'
       />
-      <Box className='img-watermark'>
-        <Logo fill='white' />
+      <Box className='img-watermark img-watermark-top'>
+        <Image src={Watermark} alt='watermark' width='100%' height='70%' />
+      </Box>
+      <Box className='img-watermark img-watermark-bottom'>
+        <Image src={Watermark} alt='watermark' width='100%' height='70%' />
       </Box>
     </Box>
   );

@@ -19,18 +19,15 @@
 
 .img-watermark {
   position: absolute;
-  top: 0.9rem;
-  left: -1.5rem;
-  width: 6rem;
-  height: 1.5rem;
   opacity: 0.8;
-  background: #4c31bc;
-  transform: rotate(-45deg);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-.img-watermark > svg {
-  width: 0.7rem;
+.img-watermark-bottom {
+  bottom: 1rem;
+  right: -3rem;
+}
+.img-watermark-top {
+  top: 1rem;
+  left: -3rem;
+  transform: rotate(180deg);
 }
