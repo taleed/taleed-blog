@@ -86,7 +86,7 @@ const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse
 
     await supabaseAdmin.from("notification").insert({
       type: "deleted",
-      object_name: "post",
+      object_name: "posts",
       object_id: id,
       to: data?.[0].user_id,
       created_by: profile?.[0].id,

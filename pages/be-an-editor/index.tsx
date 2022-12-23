@@ -20,6 +20,7 @@ import Step2 from "@/components/pages/be-an-editor/Step2";
 import Step3 from "@/components/pages/be-an-editor/Step3";
 import { supabase } from "@/utils/supabaseClient";
 import { useRouter } from "next/router";
+import { supabaseAdmin } from "@/utils/supabaseAdmin";
 
 const BeAnEditor = () => {
   const [categories, setCategories] = useState<any[]>([]);
@@ -65,6 +66,18 @@ const BeAnEditor = () => {
     setFormStep((s) => s - 1);
   };
 
+  const sendNotification = async (id: string, fullName: string) => {
+    await supabaseAdmin.from("notification").insert({
+      type: "joined",
+      object_name: "editors",
+      object_id: id,
+      to: "5e7cc802-5cb5-4563-866a-1ca5366240d7", // Talled TM's id
+      created_by: id,
+      text: ` ${fullName} طلب الإنضمام إلى تليد`,
+      color: "orange",
+    });
+  };
+
   const handleFormCompletion: SubmitHandler<BeAnEditorFormFields> = async (values) => {
     const {
       data: { user },
@@ -87,6 +100,10 @@ const BeAnEditor = () => {
         twitter_account: values.twitter_account,
         avatar_url: values.avatar_url,
       });
+
+      // send notification
+      const fullName = `${values.first_name} ${values.last_name}`;
+      await sendNotification(user.id, fullName);
 
       if (!error) {
         toast({
