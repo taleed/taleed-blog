@@ -10,7 +10,7 @@ interface TinyEditorProps {
 const TINY_EDITOR_API_KEY = "dz941oazvl971gmulquka7xp4dvh4tk130bombn0q3156kus";
 
 const tinyToolbar =
-  "undo redo | casechange blocks | bold italic backcolor forecolor | " +
+  "undo redo | casechange blocks | lineheight | bold italic backcolor forecolor | " +
   "alignleft aligncenter alignright alignjustify | " +
   "bullist numlist checklist outdent indent | removeformat | a11ycheck link image media code table help";
 
@@ -53,8 +53,10 @@ const TinyEditor: React.FC<TinyEditorProps> = ({ blogBody, initialValue = "<div>
         menubar: true,
         plugins: tinyPlugins,
         toolbar: tinyToolbar,
-        content_style: "body { font-family:Comic Sans MS,Arial,sans-serif }",
+        content_style:
+          "body { font-family:Comic Sans MS,Arial,sans-serif; font-size: 18pt; line-height: 1.6 }",
         language: "ar",
+        line_height_formats: "1 1.2 1.4 1.6 1.8 2",
         directionality: "rtl",
       }}
     />
