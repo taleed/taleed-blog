@@ -46,26 +46,19 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
   return (
     <Box
-      transition="3s ease"
+      transition='3s ease'
       bg={sidebar_bg}
-      borderLeft="1px"
+      borderLeft='1px'
       borderLeftColor={sidebar_border_color}
       w={{ base: "full", md: 60 }}
-      pos="fixed"
-      h="full"
-      {...rest}
-    >
-      <Flex
-        h="20"
-        alignItems="center"
-        px="8"
-        justifyContent="space-between"
-        bg="brand.primary"
-      >
-        <Link href="/" passHref>
-          <HStack spacing={5} cursor="pointer">
-            <Image src="/logo.svg" alt="talleed_logo" />
-            <chakra.span fontWeight={800} fontSize="2xl" color="white">
+      pos='fixed'
+      h='full'
+      {...rest}>
+      <Flex h='20' alignItems='center' px='8' justifyContent='space-between' bg='brand.primary'>
+        <Link href='/' passHref>
+          <HStack spacing={5} cursor='pointer'>
+            <Image src='/logo.svg' alt='talleed_logo' />
+            <chakra.span fontWeight={800} fontSize='2xl' color='white'>
               تليــد
             </chakra.span>
           </HStack>
@@ -77,7 +70,12 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           return;
         } else {
           return (
-            <NavItem name={link.name} key={link.name} icon={link.icon} href={link.href}>
+            <NavItem
+              objectName={link.objectName}
+              name={link.name}
+              key={link.name}
+              icon={link.icon}
+              href={link.href}>
               {link.name}
             </NavItem>
           );

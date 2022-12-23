@@ -41,3 +41,10 @@ img.home-blog-image {
   transform: scale(1.1) rotate(1deg);
   transition: 300ms ease-out;
 }
+
+.sidebar-unseen-notification {
+  width: 8px;
+  height: 8px;
+  background: red;
+  border-radius: 100%;
+}

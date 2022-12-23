@@ -8,6 +8,7 @@ interface LinkItemProps {
   href: string;
   icon: IconType;
   needAdminPermissions: boolean;
+  objectName?: string;
 }
 
 export const LinkItems: Array<LinkItemProps> = [
@@ -23,12 +24,14 @@ export const LinkItems: Array<LinkItemProps> = [
     href: "/dashboard/manage-blogs",
     icon: BsCardChecklist,
     needAdminPermissions: true,
+    objectName: "posts",
   },
   {
     name: "إدارة المحررين",
     href: "/dashboard/editors",
     icon: FiUsers,
     needAdminPermissions: true,
+    objectName: "editors",
   },
   {
     name: "أضف مقال جديد",
