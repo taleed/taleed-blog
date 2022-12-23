@@ -20,7 +20,6 @@ import Step2 from "@/components/pages/be-an-editor/Step2";
 import Step3 from "@/components/pages/be-an-editor/Step3";
 import { supabase } from "@/utils/supabaseClient";
 import { useRouter } from "next/router";
-import { supabaseAdmin } from "@/utils/supabaseAdmin";
 
 const BeAnEditor = () => {
   const [categories, setCategories] = useState<any[]>([]);
@@ -67,14 +66,9 @@ const BeAnEditor = () => {
   };
 
   const sendNotification = async (id: string, fullName: string) => {
-    await supabaseAdmin.from("notification").insert({
-      type: "joined",
-      object_name: "editors",
-      object_id: id,
-      to: "5e7cc802-5cb5-4563-866a-1ca5366240d7", // Talled TM's id
-      created_by: id,
-      text: ` ${fullName} طلب الإنضمام إلى تليد`,
-      color: "orange",
+    await fetch(`/api/manage-editors/send-notification`, {
+      method: "POST",
+      body: JSON.stringify({ id, fullName }),
     });
   };
 
