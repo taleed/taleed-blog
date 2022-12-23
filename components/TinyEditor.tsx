@@ -7,6 +7,8 @@ interface TinyEditorProps {
   initialValue?: string;
 }
 
+const TINY_EDITOR_API_KEY = "dz941oazvl971gmulquka7xp4dvh4tk130bombn0q3156kus";
+
 const tinyToolbar =
   "undo redo | fontsize sizeselect | lineheight | bold italic backcolor forecolor | " +
   "alignleft aligncenter alignright alignjustify | " +
@@ -41,7 +43,7 @@ const tinyPlugins = [
 const TinyEditor: React.FC<TinyEditorProps> = ({ blogBody, initialValue = "<div></div>" }) => {
   return (
     <Editor
-      apiKey={process.env.TINY_EDITOR_API_KEY}
+      apiKey={TINY_EDITOR_API_KEY}
       onInit={(_, editor) => (blogBody.current = editor)}
       initialValue={initialValue}
       init={{
