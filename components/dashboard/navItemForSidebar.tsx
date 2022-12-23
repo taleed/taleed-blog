@@ -15,10 +15,17 @@ interface NavItemProps extends FlexProps {
   children: ReactNode;
 }
 const NavItem = ({ href, icon, name, objectName, children, ...rest }: NavItemProps) => {
-  const [seen, setSeen] = useState(true);
+  const [read, setRead] = useState(true);
+
+  const readNotifications = async () => {
+    if (!objectName || read) return;
+
+    await supabase.rpc("read_notification", { obj_name: objectName });
+    setRead(true);
+  };
 
   useEffect(() => {
-    const getUnseenNotifications = async () => {
+    const getUnreadNotifications = async () => {
       if (!objectName) return;
 
       const { data, error } = await supabase
@@ -28,17 +35,18 @@ const NavItem = ({ href, icon, name, objectName, children, ...rest }: NavItemPro
         .eq("object_name", objectName)
         .limit(2);
 
-      if (error) return setSeen(true);
+      if (error) return setRead(true);
 
-      setSeen(data.length === 0);
+      setRead(data.length === 0);
     };
 
-    getUnseenNotifications();
+    getUnreadNotifications();
   }, [objectName]);
 
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
       <Flex
+        onClick={readNotifications}
         align='center'
         justifyContent='space-between'
         p='4'
@@ -63,16 +71,8 @@ const NavItem = ({ href, icon, name, objectName, children, ...rest }: NavItemPro
           )}
           {children}
         </Flex>
-
-        {!seen && <div className='sidebar-unseen-notification' />}
-
-        {/* {notification && name == "الاشعارات" ? (
-          <Tag size='sm' colorScheme='red' borderRadius='full' mr={3}>
-            <TagLabel>{notification}</TagLabel>
-          </Tag>
-        ) : (
-          <></>
-        )} */}
+        {/* notification sign */}
+        {!read && <div className='sidebar-unseen-notification' />}
       </Flex>
     </Link>
   );
