@@ -157,7 +157,9 @@ const TopNavbar: FC<Props> = ({ items, subItems }) => {
                   {links?.slice(showLinksNumber).map((link) => (
                     <MenuItem
                       bg={colorMode === "dark" ? "brand.dark" : "white"}
-                      _hover={{ bg: colorMode === "dark" ? "blackAlpha.200" : "blackAlpha.200" }}
+                      _hover={{
+                        bg: colorMode === "dark" ? "blackAlpha.200" : "blackAlpha.200",
+                      }}
                       onClick={() => router.push(`/category/top/${link.slug}`)}
                       key={link.slug}>
                       {link.name}
