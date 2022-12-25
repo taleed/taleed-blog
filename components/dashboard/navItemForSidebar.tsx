@@ -20,7 +20,7 @@ const NavItem = ({ href, icon, name, objectName, children, ...rest }: NavItemPro
   const readNotifications = async () => {
     if (!objectName || read) return;
 
-    await supabase.rpc("read_notification", { obj_name: objectName });
+    // await supabase.rpc("read_notification", { obj_name: objectName });
     setRead(true);
   };
 

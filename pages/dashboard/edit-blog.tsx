@@ -75,19 +75,6 @@ const AddBlog = () => {
   }) => {
     if (user) {
       try {
-        console.log(
-          JSON.stringify({
-            title: title,
-            body: blogBody.current.getContent(),
-            excerpt: excerpt,
-            user_id: user.id,
-            frame: frame,
-            thumbnail: blogImg || "default.jpg",
-            category_id: category,
-            tags,
-          })
-        );
-
         let data = await fetch("/api/manage-blogs/modify?id=" + blogId, {
           method: "PATCH",
           body: JSON.stringify({
@@ -95,14 +82,12 @@ const AddBlog = () => {
             body: blogBody.current.getContent(),
             excerpt: excerpt,
             user_id: user.id,
-            frame: frame,
             thumbnail: blogImg || "default.jpg",
             category_id: category,
+            frame,
             tags,
           }),
         }).then((res) => res.json());
-
-        console.log("data", data);
 
         if (data.message === "تم تحديث المقال بنجاح") {
           toast({
@@ -124,11 +109,13 @@ const AddBlog = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const { tags, body, excerpt, thumbnail, category_id, title, id } = router.query;
+    const { sound_cloud_frame, tags, body, excerpt, thumbnail, category_id, title, id } =
+      router.query;
     setValue("blogImg", (thumbnail as string) ?? "");
     setValue("title", (title as string) ?? "");
     setValue("excerpt", (excerpt as string) ?? "");
     setValue("category", Number(category_id ?? 1));
+    setValue("frame", (sound_cloud_frame as string) ?? "");
     if (blogBody) blogBody.current = (body as string) ?? "";
     const formattedTags = typeof tags === "string" ? [tags] : tags;
     setTags(formattedTags ?? []);
