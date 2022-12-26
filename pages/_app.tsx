@@ -15,35 +15,37 @@ import theme from "theme";
 import LocationProvider from "@/components/LocationProvider";
 import Head from "next/head";
 import favicon from "public/favicon.ico";
+import bglogo from "public/bglogo.png";
 
 type NextPageWithLayout = NextPage & {
-  getLayout?: (page: ReactElement) => ReactNode;
+    getLayout?: (page: ReactElement) => ReactNode;
 };
 
 type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout;
+    Component: NextPageWithLayout;
 };
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const manager = createLocalStorageManager("talleed-theme-mode");
-  const getLayout = Component.getLayout ?? ((page) => page);
-  const [supabaseClient] = useState(() => createBrowserSupabaseClient());
-  return (
-    <SessionContextProvider
-      supabaseClient={supabaseClient}
-      initialSession={pageProps.initialSession}>
-      <ChakraProvider theme={theme} colorModeManager={manager}>
-        <Head>
-          <link rel='shortcut icon' href={favicon.src} />
-        </Head>
+    const manager = createLocalStorageManager("talleed-theme-mode");
+    const getLayout = Component.getLayout ?? ((page) => page);
+    const [supabaseClient] = useState(() => createBrowserSupabaseClient());
+    return (
+        <SessionContextProvider
+            supabaseClient={supabaseClient}
+            initialSession={pageProps.initialSession}>
+            <ChakraProvider theme={theme} colorModeManager={manager}>
+                <Head>
+                    <link rel='shortcut icon' href={favicon.src} />
+                    <meta property='og:image' content={bglogo.src} />
+                </Head>
 
-        <GoogleAnalytics trackPageViews={{ ignoreHashChange: true }} />
-        <NextNProgress />
-        <LocationProvider />
-        {getLayout(<Component {...pageProps} />)}
-      </ChakraProvider>
-    </SessionContextProvider>
-  );
+                <GoogleAnalytics trackPageViews={{ ignoreHashChange: true }} />
+                <NextNProgress />
+                <LocationProvider />
+                {getLayout(<Component {...pageProps} />)}
+            </ChakraProvider>
+        </SessionContextProvider>
+    );
 }
 
 export default MyApp;
