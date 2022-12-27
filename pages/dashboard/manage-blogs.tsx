@@ -88,6 +88,10 @@ const ManageBlogs = () => {
       <Heading>المقالات ({postsNumber})</Heading>
       <Stack mt={16} spacing={4} direction='row' width='50%'>
         <Input
+          onKeyDown={(e) => {
+            if (e.code !== "Enter") return;
+            handleSearch();
+          }}
           bg={inputBg}
           _focus={{ bg: focusBg }}
           placeholder='اكتب العنوان الذي تريد البحث عنه'
