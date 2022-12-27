@@ -25,7 +25,7 @@ const ManageBlogs = () => {
   const [loading, setLoading] = useState(false);
   const [postsNumber, setPostsNumber] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const [search, setSearch] = useState<string | undefined>(undefined);
+  const [search, setSearch] = useState<string>("");
 
   //   Colors
   const tableBg = useColorModeValue("white", "whiteAlpha.50");
@@ -63,17 +63,21 @@ const ManageBlogs = () => {
   };
 
   const handleSearch = async () => {
-    const { data: posts, count } = await supabase
+    let query = supabase
       .from("posts")
       .select(
         "id,user_id(id, username), title, likes, tags, body," +
           "category_id(id, name), status, excerpt, thumbnail",
         { count: "exact" }
       )
-      .textSearch("title", search ?? "", {
-        config: "english",
-      })
       .order("created_at", { ascending: false });
+
+    if (search.length)
+      query = query.textSearch("title", search ?? "", {
+        config: "english",
+      });
+
+    const { data: posts, count } = await query;
 
     setData(posts ?? undefined);
     setPostsNumber(count ?? 0);
