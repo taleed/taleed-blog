@@ -31,13 +31,7 @@ export interface ContactForm {
   message: string;
 }
 
-export default function Contact({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
+export default function Contact({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const {
     watch,
     register,
@@ -48,7 +42,7 @@ export default function Contact({
   } = useForm<ContactForm>({
     mode: "all",
     defaultValues: {
-      type: "bug",
+      type: "question",
     },
   });
 
@@ -99,28 +93,26 @@ export default function Contact({
   };
 
   return (
-    <Modal size="2xl" isCentered isOpen={isOpen} onClose={onClose}>
+    <Modal size='2xl' isCentered isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent bg={useColorModeValue("white", "brand.black")}>
         <ModalHeader>
           <Heading
             fontWeight={600}
-            fontSize="3xl"
+            fontSize='3xl'
             lineHeight={"55.2px"}
-            color={useColorModeValue("brand.primary", "brand.secondary")}
-          >
+            color={useColorModeValue("brand.primary", "brand.secondary")}>
             تواصل معنا
           </Heading>
           <Text
             fontWeight={500}
-            fontSize="sm"
+            fontSize='sm'
             lineHeight={"25.76px"}
             color={useColorModeValue("grey.700", "#F0F0F0")}
-            maxW="md"
-            mb={8}
-          >
-            لوريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو
-            أيوسمود تيمبور أنكايديد يونتيوت لابوري ات دولار ماجنا أليكيوا .
+            maxW='md'
+            mb={8}>
+            لوريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو أيوسمود تيمبور
+            أنكايديد يونتيوت لابوري ات دولار ماجنا أليكيوا .
           </Text>
         </ModalHeader>
         <ModalCloseButton />
@@ -130,7 +122,7 @@ export default function Contact({
               <FormControl isRequired isInvalid={errors.topic ? true : false}>
                 <FormLabel>الموضوع</FormLabel>
                 <Input
-                  autoComplete="off"
+                  autoComplete='off'
                   borderRadius={10}
                   bg={useColorModeValue("blackAlpha.50", "whiteAlpha.150")}
                   border={0}
@@ -139,10 +131,10 @@ export default function Contact({
                     outline: "none",
                     boxShadow: "none",
                   }}
-                  type="text"
-                  placeholder=""
-                  size="lg"
-                  id="topic"
+                  type='text'
+                  placeholder=''
+                  size='lg'
+                  id='topic'
                   {...register("topic", {
                     required: "هذا الحقل مطلوب",
                   })}
@@ -156,23 +148,20 @@ export default function Contact({
                   _focus={{ outline: "none", boxShadow: "none" }}
                   bg={useColorModeValue("blackAlpha.50", "whiteAlpha.150")}
                   onChange={handleSelectField}
-                  size="lg"
-                  value={watch("type")}
-                >
-                  <option value="bug">مشكل تقني</option>
-                  <option value="work">طلب عمل</option>
+                  size='lg'
+                  value={watch("type")}>
+                  <option value='question'>استفسار عام</option>
+                  <option value='bug'>مشكل تقني</option>
+                  <option value='work'>طلب عمل</option>
+                  <option value='publicity'>طلب إعلان</option>
                 </Select>
                 <FormErrorMessage>{errors.type?.message}</FormErrorMessage>
               </FormControl>
             </Stack>
-            <FormControl
-              mt={6}
-              isRequired
-              isInvalid={errors.email ? true : false}
-            >
+            <FormControl mt={6} isRequired isInvalid={errors.email ? true : false}>
               <FormLabel>البريد الإلكتروني</FormLabel>
               <Input
-                autoComplete="off"
+                autoComplete='off'
                 borderRadius={10}
                 bg={useColorModeValue("blackAlpha.50", "whiteAlpha.150")}
                 border={0}
@@ -181,25 +170,21 @@ export default function Contact({
                   outline: "none",
                   boxShadow: "none",
                 }}
-                type="email"
-                size="lg"
-                id="email"
+                type='email'
+                size='lg'
+                id='email'
                 {...register("email", {
                   required: "هذا الحقل مطلوب",
                 })}
               />
               <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
             </FormControl>
-            <FormControl
-              mt={6}
-              isRequired
-              isInvalid={errors.message ? true : false}
-            >
+            <FormControl mt={6} isRequired isInvalid={errors.message ? true : false}>
               <FormLabel>الرسالة</FormLabel>
               <Textarea
-              maxLength={2000}
+                maxLength={2000}
                 h={40}
-                resize="none"
+                resize='none'
                 p={4}
                 borderRadius={10}
                 bg={useColorModeValue("blackAlpha.50", "whiteAlpha.150")}
@@ -212,18 +197,18 @@ export default function Contact({
                 _disabled={{
                   bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
                 }}
-                size="lg"
-                id="about"
+                size='lg'
+                id='about'
                 {...register("message")}
               />
               <FormErrorMessage>{errors.message?.message}</FormErrorMessage>
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Flex w="full" justify="flex-start">
+            <Flex w='full' justify='flex-start'>
               <Button
-                w="fit-content"
-                size="lg"
+                w='fit-content'
+                size='lg'
                 p={6}
                 bg={"brand.secondary"}
                 color={"white"}
@@ -245,10 +230,9 @@ export default function Contact({
                   pointerEvents: "none",
                 }}
                 borderRadius={10}
-                variant="solid"
+                variant='solid'
                 isLoading={loading}
-                type="submit"
-              >
+                type='submit'>
                 ارسال
               </Button>
             </Flex>

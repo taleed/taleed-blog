@@ -79,7 +79,7 @@ const Footer = () => {
                   fontWeight='500'
                   color='white'
                   onClick={announce.onOpen}>
-                  <Text fontSize={"lg"}>اعلن معنا</Text>
+                  <Text fontSize={"lg"}>أعلن معنا</Text>
                 </Button>
                 <Button
                   as='a'
@@ -151,12 +151,12 @@ const Footer = () => {
                     borderColor='transparent'
                     _active={{ bgColor: "transparent", borderColor: "white" }}
                     _hover={{ bgColor: "transparent", borderColor: "white" }}
-                    aria-label={"فريق الادارة"}
+                    aria-label={"فريق الإدارة"}
                     px='0'
                     textAlign='center'
                     fontWeight='500'
                     color='white'>
-                    <Text fontSize={"lg"}>فريق الادارة</Text>
+                    <Text fontSize={"lg"}>فريق الإدارة</Text>
                   </Button>
                 </NextLink>
                 <NextLink href={"/partners"} passHref>

@@ -18,10 +18,9 @@ import {
   Text,
   Textarea,
   useColorModeValue,
-  useConst,
   useToast,
 } from "@chakra-ui/react";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 export interface AnnounceForm {
@@ -31,13 +30,7 @@ export interface AnnounceForm {
   message: string;
 }
 
-export default function Announce({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
+export default function Announce({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const {
     watch,
     register,
@@ -48,7 +41,7 @@ export default function Announce({
   } = useForm<AnnounceForm>({
     mode: "all",
     defaultValues: {
-      type: "bug",
+      type: "publicity",
     },
   });
 
@@ -58,7 +51,6 @@ export default function Announce({
 
   const handleSelectField = (e: ChangeEvent<HTMLSelectElement>) => {
     setValue("type", e.target.value);
-    console.log(watch("type"));
   };
 
   const onSubmit: SubmitHandler<AnnounceForm> = async (values) => {
@@ -99,26 +91,24 @@ export default function Announce({
   };
 
   return (
-    <Modal size="2xl" isCentered isOpen={isOpen} onClose={onClose}>
+    <Modal size='2xl' isCentered isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent bg={useColorModeValue("white", "brand.black")}>
         <ModalHeader>
           <Heading
             fontWeight={600}
-            fontSize="3xl"
+            fontSize='3xl'
             lineHeight={"55.2px"}
-            color={useColorModeValue("brand.primary", "brand.secondary")}
-          >
+            color={useColorModeValue("brand.primary", "brand.secondary")}>
             اعلن معنا
           </Heading>
           <Text
             fontWeight={500}
-            fontSize="sm"
+            fontSize='sm'
             lineHeight={"25.76px"}
             color={useColorModeValue("grey.700", "#F0F0F0")}
-            maxW="md"
-            mb={8}
-          >
+            maxW='md'
+            mb={8}>
             من هنا تبدأ رحلتك في عالم تليد ، نرافقك لتفيد وتستفيد لكي يعرف العالم أكثر .
           </Text>
         </ModalHeader>
@@ -129,7 +119,7 @@ export default function Announce({
               <FormControl isRequired isInvalid={errors.topic ? true : false}>
                 <FormLabel>الموضوع</FormLabel>
                 <Input
-                  autoComplete="off"
+                  autoComplete='off'
                   borderRadius={10}
                   bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
                   border={0}
@@ -138,10 +128,10 @@ export default function Announce({
                     outline: "none",
                     boxShadow: "none",
                   }}
-                  type="text"
-                  placeholder=""
-                  size="lg"
-                  id="topic"
+                  type='text'
+                  placeholder=''
+                  size='lg'
+                  id='topic'
                   {...register("topic", {
                     required: "هذا الحقل مطلوب",
                   })}
@@ -155,23 +145,20 @@ export default function Announce({
                   _focus={{ outline: "none", boxShadow: "none" }}
                   bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
                   onChange={handleSelectField}
-                  size="lg"
-                  value={watch("type")}
-                >
-                  <option value="bug">مشكل تقني</option>
-                  <option value="work">طلب عمل</option>
+                  size='lg'
+                  value={watch("type")}>
+                  <option value='publicity'>طلب إعلان</option>
+                  <option value='work'>طلب عمل</option>
+                  <option value='bug'>مشكل تقني</option>
+                  <option value='question'>استفسار عام</option>
                 </Select>
                 <FormErrorMessage>{errors.type?.message}</FormErrorMessage>
               </FormControl>
             </Stack>
-            <FormControl
-              mt={6}
-              isRequired
-              isInvalid={errors.email ? true : false}
-            >
+            <FormControl mt={6} isRequired isInvalid={errors.email ? true : false}>
               <FormLabel>البريد الإلكتروني</FormLabel>
               <Input
-                autoComplete="off"
+                autoComplete='off'
                 borderRadius={10}
                 bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
                 border={0}
@@ -180,24 +167,20 @@ export default function Announce({
                   outline: "none",
                   boxShadow: "none",
                 }}
-                type="email"
-                size="lg"
-                id="email"
+                type='email'
+                size='lg'
+                id='email'
                 {...register("email", {
                   required: "هذا الحقل مطلوب",
                 })}
               />
               <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
             </FormControl>
-            <FormControl
-              mt={6}
-              isRequired
-              isInvalid={errors.message ? true : false}
-            >
+            <FormControl mt={6} isRequired isInvalid={errors.message ? true : false}>
               <FormLabel>الرسالة</FormLabel>
               <Textarea
                 h={40}
-                resize="none"
+                resize='none'
                 p={4}
                 borderRadius={10}
                 bg={useColorModeValue("blackAlpha.50", "whiteAlpha.50")}
@@ -210,18 +193,18 @@ export default function Announce({
                 _disabled={{
                   bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
                 }}
-                size="lg"
-                id="about"
+                size='lg'
+                id='about'
                 {...register("message")}
               />
               <FormErrorMessage>{errors.message?.message}</FormErrorMessage>
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Flex w="full" justify="flex-start">
+            <Flex w='full' justify='flex-start'>
               <Button
-                w="fit-content"
-                size="lg"
+                w='fit-content'
+                size='lg'
                 p={6}
                 bg={"brand.secondary"}
                 color={"white"}
@@ -243,10 +226,9 @@ export default function Announce({
                   pointerEvents: "none",
                 }}
                 borderRadius={10}
-                variant="solid"
+                variant='solid'
                 isLoading={loading}
-                type="submit"
-              >
+                type='submit'>
                 ارسال
               </Button>
             </Flex>
