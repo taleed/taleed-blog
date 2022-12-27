@@ -160,13 +160,12 @@ const Home = ({ authors }: Props) => {
     fetch(`/api/views/index`, {
       method: "POST",
     });
-  }, [router.query.search, setSearch]);
+  }, [router.query, setSearch]);
 
   const findPosts = async (q: string) => {
     await fetch("/api/manage-blogs?search=" + q)
       .then((res) => res.json())
       .then((data: any) => {
-        console.log(data);
         setSearch(data.data);
       });
   };
@@ -183,7 +182,7 @@ const Home = ({ authors }: Props) => {
 
   return (
     <Box>
-      {!search?.length ? (
+      {!router.query.search?.length ? (
         <>
           <LatestBlogs newBlog={newBlog} latestBlogs={latestBlogs} />
           <FamousEditor authors={authors} />
@@ -319,16 +318,31 @@ const Home = ({ authors }: Props) => {
           gap={8}
           m='3em'
           templateRows='1fr auto'
-          templateColumns={{
-            base: "repeat(1, 1fr)",
-            sm: "repeat(1, 1fr)",
-            md: "repeat(6, 1fr)",
-          }}>
-          {search.map((blog: any) => (
-            <GridItem key={blog.id} colSpan={{ base: 1, sm: 1, md: 2 }} bg={bgColor} rounded='lg'>
-              <BlogCard type='latest' data={blog} />
-            </GridItem>
-          ))}
+          templateColumns={
+            search?.length
+              ? {
+                  base: "repeat(1, 1fr)",
+                  sm: "repeat(1, 1fr)",
+                  md: "repeat(6, 1fr)",
+                }
+              : "1fr"
+          }>
+          {search?.length ? (
+            search.map((blog: any) => (
+              <GridItem key={blog.id} colSpan={{ base: 1, sm: 1, md: 2 }} bg={bgColor} rounded='lg'>
+                <BlogCard type='latest' data={blog} />
+              </GridItem>
+            ))
+          ) : (
+            <Box
+              fontSize={26}
+              display='flex'
+              alignItems='center'
+              justifyContent='center'
+              minH='30vh'>
+              لم يتم العثور على نتائج
+            </Box>
+          )}
         </Grid>
       )}
     </Box>
