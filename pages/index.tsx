@@ -44,121 +44,118 @@ const Home = ({ authors }: Props) => {
   const [latestBlogs, setLatestBlogs] = useState<any>(undefined);
   const [mostViewedBlogs, setMostViewedBlogs] = useState<any>(undefined);
 
-  useEffect(() => {
-    const setupData = async () => {
-      setLoading(true);
-      // Get The Newest Blog
-      const { data: newBlogTopMenu } = await supabase
-        .from("posts")
-        .select(
-          "id,title,thumbnail,excerpt, created_at, top_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url), sound_cloud_frame"
-        )
-        .order("created_at", {
-          ascending: false,
-        })
-        .eq("status", "published")
-        .limit(1)
-        .single();
+  const setupData = async () => {
+    setLoading(true);
+    // Get The Newest Blog
+    const { data: newBlogTopMenu } = await supabase
+      .from("posts")
+      .select(
+        "id,title,thumbnail,excerpt, created_at, top_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url), sound_cloud_frame"
+      )
+      .order("created_at", {
+        ascending: false,
+      })
+      .eq("status", "published")
+      .limit(1)
+      .single();
 
-      const { data: newBlogSubMenu } = await supabase
-        .from("posts")
-        .select(
-          "id,title,thumbnail,excerpt, created_at, sub_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url), sound_cloud_frame"
-        )
-        .order("created_at", {
-          ascending: false,
-        })
-        .eq("status", "published")
-        .limit(1)
-        .single();
+    const { data: newBlogSubMenu } = await supabase
+      .from("posts")
+      .select(
+        "id,title,thumbnail,excerpt, created_at, sub_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url), sound_cloud_frame"
+      )
+      .order("created_at", {
+        ascending: false,
+      })
+      .eq("status", "published")
+      .limit(1)
+      .single();
 
-      // Get The Latest 3 Blogs
-      const { data: latestBlogsTopMenus } = await supabase
-        .from("posts")
-        .select(
-          "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url), sound_cloud_frame"
-        )
-        .eq("status", "published")
-        .order("created_at", {
-          ascending: false,
-        })
-        .range(1, 3);
+    // Get The Latest 3 Blogs
+    const { data: latestBlogsTopMenus } = await supabase
+      .from("posts")
+      .select(
+        "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url), sound_cloud_frame"
+      )
+      .eq("status", "published")
+      .order("created_at", {
+        ascending: false,
+      })
+      .range(1, 3);
 
-      const { data: latestBlogsSubMenus } = await supabase
-        .from("posts")
-        .select(
-          "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url), sound_cloud_frame"
-        )
-        .eq("status", "published")
-        .order("created_at", {
-          ascending: false,
-        })
-        .range(1, 3);
+    const { data: latestBlogsSubMenus } = await supabase
+      .from("posts")
+      .select(
+        "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url), sound_cloud_frame"
+      )
+      .eq("status", "published")
+      .order("created_at", {
+        ascending: false,
+      })
+      .range(1, 3);
 
-      // Most Viewed Blogs
-      let queryTopMenus = supabase
-        .from("posts")
-        .select(
-          "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url), sound_cloud_frame"
-        )
-        .eq("status", "published")
-        .order("created_at", {
-          ascending: true,
-        })
-        .range(0, 10);
+    // Most Viewed Blogs
+    let queryTopMenus = supabase
+      .from("posts")
+      .select(
+        "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url), sound_cloud_frame"
+      )
+      .eq("status", "published")
+      .order("created_at", {
+        ascending: true,
+      })
+      .range(0, 10);
 
-      let querySubMenus = supabase
-        .from("posts")
-        .select(
-          "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url, sound_cloud_frame"
-        )
-        .eq("status", "published")
-        .order("created_at", {
-          ascending: true,
-        })
-        .range(0, 10);
+    let querySubMenus = supabase
+      .from("posts")
+      .select(
+        "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url, sound_cloud_frame"
+      )
+      .eq("status", "published")
+      .order("created_at", {
+        ascending: true,
+      })
+      .range(0, 10);
 
+    if (newBlogTopMenu) {
+      queryTopMenus = queryTopMenus.not("id", "eq", newBlogTopMenu?.id);
+    }
+    if (newBlogSubMenu) {
+      querySubMenus = querySubMenus.not("id", "eq", newBlogSubMenu?.id);
+    }
+    if (latestBlogsTopMenus && latestBlogsTopMenus.length > 0) {
       if (newBlogTopMenu) {
-        queryTopMenus = queryTopMenus.not("id", "eq", newBlogTopMenu?.id);
+        queryTopMenus = queryTopMenus.not(
+          "id",
+          "in",
+          `(${latestBlogsTopMenus.map((blog) => blog.id)})`
+        );
       }
+    }
+    if (latestBlogsSubMenus && latestBlogsSubMenus?.length > 0) {
       if (newBlogSubMenu) {
-        querySubMenus = querySubMenus.not("id", "eq", newBlogSubMenu?.id);
+        querySubMenus = querySubMenus.not(
+          "id",
+          "in",
+          `(${latestBlogsSubMenus.map((blog) => blog.id)})`
+        );
       }
-      if (latestBlogsTopMenus && latestBlogsTopMenus.length > 0) {
-        if (newBlogTopMenu) {
-          queryTopMenus = queryTopMenus.not(
-            "id",
-            "in",
-            `(${latestBlogsTopMenus.map((blog) => blog.id)})`
-          );
-        }
-      }
-      if (latestBlogsSubMenus && latestBlogsSubMenus?.length > 0) {
-        if (newBlogSubMenu) {
-          querySubMenus = querySubMenus.not(
-            "id",
-            "in",
-            `(${latestBlogsSubMenus.map((blog) => blog.id)})`
-          );
-        }
-      }
-      const { data: mostViewedBlogs } = newBlogTopMenu ? await queryTopMenus : await querySubMenus;
+    }
+    const { data: mostViewedBlogs } = newBlogTopMenu ? await queryTopMenus : await querySubMenus;
 
-      setNewBlog(newBlogTopMenu);
-      setLatestBlogs(latestBlogsTopMenus ?? latestBlogsSubMenus);
-      setMostViewedBlogs(mostViewedBlogs);
+    setNewBlog(newBlogTopMenu);
+    setLatestBlogs(latestBlogsTopMenus ?? latestBlogsSubMenus);
+    setMostViewedBlogs(mostViewedBlogs);
 
-      setLoading(false);
-    };
-
-    setupData();
-  }, []);
+    setLoading(false);
+  };
 
   useEffect(() => {
     if (router.query.search) {
       findPosts(router.query.search as string);
     } else {
       setSearch([]);
+      setupData();
     }
     fetch(`/api/views/index`, {
       method: "POST",
@@ -173,6 +170,7 @@ const Home = ({ authors }: Props) => {
         setSearch(data.data);
       });
   };
+
   const seperator_color = useColorModeValue("1px solid #E7E8E8", "1px solid #7C62E5");
   const date_color = useColorModeValue("grey.500", "grey.300");
   const author_color = useColorModeValue("grey.500", "white");
