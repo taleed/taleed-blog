@@ -51,7 +51,9 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
       setUploading(true);
 
       const file = event.target.files[0];
-      const fileExt = file.name.split(".").pop();
+      const splittedFileName = file.name.split(".");
+      const fileExt = splittedFileName[splittedFileName.length - 1];
+
       const filePath = `${makeid(16)}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage.from("avatars").upload(filePath, file);
@@ -62,6 +64,8 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
       setValue!("avatar_url", filePath);
     } catch (error) {
       console.log(error);
+      setAvatarUrl(undefined);
+      setValue!("avatar_url", "");
       toast({
         title: "حدث خطأ!",
         status: "error",
@@ -91,7 +95,11 @@ const Step3 = ({ register, errors, watch, setValue }: BeAnEditorStepProps) => {
           borderRadius='lg'
           size='2xl'
           name={`${watch!("username")}`}
-          src={`https://ythbjwovxnnbckdxlbds.supabase.co/storage/v1/object/public/avatars/${avatarUrl}`}
+          src={
+            avatarUrl
+              ? `https://ythbjwovxnnbckdxlbds.supabase.co/storage/v1/object/public/avatars/${avatarUrl}`
+              : ""
+          }
         />
         <FormControl mt={2}>
           <FormLabel
