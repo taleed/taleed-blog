@@ -29,6 +29,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import FacebookCommment from "@/components/facebookComment";
+import { useUser } from "@supabase/auth-helpers-react";
 
 interface Props {
   post: any;
@@ -56,11 +57,10 @@ function Blog({ post, similar_posts }: Props) {
   const [showAnimation, setShowAnimation] = useState(false);
   const router = useRouter();
   const toast = useToast();
+  const user = useUser();
 
-  const isOwner = async () => {
-    const { data: user } = await supabase.auth.getUser();
-    setOwner(user.user?.id === post.profiles.id);
-  };
+  const isOwner = async () => setOwner(user?.id === post.profiles.id);
+
   const getLikes = async () => {
     setLikeLoad(true);
     await fetch("/api/likes?q=" + post.id)
@@ -160,7 +160,7 @@ function Blog({ post, similar_posts }: Props) {
       await addViewer();
       await getLikes();
     });
-  }, [owner]);
+  }, [user]);
 
   const ads_color = useColorModeValue("#F4F5F5", "#2F3133");
 
