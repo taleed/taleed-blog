@@ -15,7 +15,7 @@ import {
   IconButton,
   useToast,
 } from "@chakra-ui/react";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 
 import { GetStaticProps } from "next";
 import Head from "next/head";
@@ -58,6 +58,7 @@ function Blog({ post, similar_posts }: Props) {
   const router = useRouter();
   const toast = useToast();
   const user = useUser();
+  const mounted = useRef<any>(true);
 
   const isOwner = async () => setOwner(user?.id === post.profiles.id);
 
@@ -120,11 +121,10 @@ function Blog({ post, similar_posts }: Props) {
     setLocation(location);
 
     try {
-      let { data } = await supabase.auth.getUser();
       await supabase.rpc("add_post_viewer", {
         new_id: post.id,
         ip: location.ip,
-        email: data.user?.email ?? "Anonymous",
+        email: user?.email ?? "Anonymous",
       });
     } catch (e) {
       console.log(e);
@@ -157,10 +157,19 @@ function Blog({ post, similar_posts }: Props) {
   useEffect(() => {
     new Promise(async () => {
       await isOwner();
-      await addViewer();
       await getLikes();
     });
   }, [user]);
+
+  // execute only one time when the component mounts
+  useEffect(() => {
+    if (mounted.current) {
+      mounted.current = false;
+      new Promise(async () => {
+        await addViewer();
+      });
+    }
+  }, []);
 
   const ads_color = useColorModeValue("#F4F5F5", "#2F3133");
 
