@@ -97,7 +97,9 @@ const BlogRow: React.FC<BlogRowProsp> = ({ d, setData }) => {
   return (
     <Tr>
       <Td borderColor={useColorModeValue("gray.200", "whiteAlpha.100")}>{d.title}</Td>
-      <Td borderColor={useColorModeValue("gray.200", "whiteAlpha.100")}>{d.user_id.username}</Td>
+      <Td borderColor={useColorModeValue("gray.200", "whiteAlpha.100")}>
+        {d.user_id.first_name} {d.user_id.last_name}
+      </Td>
       <Td borderColor={useColorModeValue("gray.200", "whiteAlpha.100")}>{d.likes}</Td>
       <Td borderColor={useColorModeValue("gray.200", "whiteAlpha.100")}>{d.views}</Td>
       <Td borderColor={useColorModeValue("gray.200", "whiteAlpha.100")}>{d.category_id.name}</Td>

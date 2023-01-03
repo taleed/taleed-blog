@@ -54,7 +54,7 @@ const ManageBlogs = () => {
     return await supabase
       .from("posts")
       .select(
-        "id,user_id(id, username), title, likes, tags, body," +
+        "id,user_id(id, first_name, last_name), title, likes, tags, body," +
           "category_id(id, name), status, excerpt, thumbnail, views",
         { count: "exact" }
       )
@@ -66,7 +66,7 @@ const ManageBlogs = () => {
     let query = supabase
       .from("posts")
       .select(
-        "id,user_id(id, username), title, likes, tags, body," +
+        "id,user_id(id, first_name, last_name), title, likes, tags, body," +
           "category_id(id, name), status, excerpt, thumbnail",
         { count: "exact" }
       )
