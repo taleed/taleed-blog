@@ -37,7 +37,7 @@ const handler: NextApiHandler = async (req, res) => {
   if (q === "true") {
     result = await supabase
       .from("profiles")
-      .select("id, approved, type", { count: "exact" })
+      .select("id, approved, type, first_name, last_name", { count: "exact" })
       .eq("approved", true)
       .filter("id", "in", strUsersList)
       .order("created_at", { ascending: false })
@@ -45,7 +45,7 @@ const handler: NextApiHandler = async (req, res) => {
   } else if (q === "false") {
     result = await supabase
       .from("profiles")
-      .select("id, approved, type", { count: "exact" })
+      .select("id, approved, type, first_name, last_name", { count: "exact" })
       .eq("approved", false)
       .filter("id", "in", strUsersList)
       .order("created_at", { ascending: false })
@@ -53,7 +53,7 @@ const handler: NextApiHandler = async (req, res) => {
   } else {
     result = await supabase
       .from("profiles")
-      .select("id, approved, type", { count: "exact" })
+      .select("id, approved, type, first_name, last_name", { count: "exact" })
       .filter("id", "in", strUsersList)
       .order("created_at", { ascending: false })
       .range(Number(from as string), Number(to as string));
@@ -71,7 +71,10 @@ const handler: NextApiHandler = async (req, res) => {
     .map((user) => {
       let p = profiles.filter((p) => p.id === user.id)[0];
       if (p) {
-        return { ...user, ...{ approved: p.approved, type: p.type } };
+        return {
+          ...user,
+          ...{ approved: p.approved, type: p.type, full_name: `${p.first_name} ${p.last_name}` },
+        };
       }
       return;
     })

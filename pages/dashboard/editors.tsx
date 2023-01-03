@@ -182,6 +182,7 @@ const ManageEditors = () => {
     profileDetailsModal.onOpen();
     showProfileDetails(id);
   };
+  console.log(data);
 
   return (
     <Box px={8}>
@@ -219,7 +220,7 @@ const ManageEditors = () => {
               <Thead>
                 <Tr>
                   <Th borderColor={borderColor}>ID</Th>
-                  <Th borderColor={borderColor}>البريد الإلكتروني</Th>
+                  <Th borderColor={borderColor}>الإسم الكامل</Th>
                   <Th borderColor={borderColor}>النوع</Th>
                   <Th borderColor={borderColor}>تاريخ الإنضمام</Th>
                   <Th borderColor={borderColor}>عمليات (Actions)</Th>
@@ -229,7 +230,7 @@ const ManageEditors = () => {
                 {data?.map((d: any, i) => (
                   <Tr key={d.email}>
                     <Td borderColor={borderColor}>{i + 1}</Td>
-                    <Td borderColor={borderColor}>{d.email}</Td>
+                    <Td borderColor={borderColor}>{d.full_name}</Td>
                     <Td borderColor={borderColor}>
                       <Select
                         border={0}
