@@ -24,22 +24,21 @@ const handler: NextApiHandler = async (req, res) => {
   let profiles: any[] = [];
   let result: any = undefined;
   let count = 0;
+
   const {
     error: err_users,
     data: { users },
-  } = await supabaseAdmin.auth.admin.listUsers();
+  } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 99999 });
 
   if (err_users) {
     return res.status(500).json(error);
   }
-  const strUsersList = `(${users.map((e) => '"' + e.id + '"')})`;
 
   if (q === "true") {
     result = await supabase
       .from("profiles")
       .select("id, approved, type, first_name, last_name", { count: "exact" })
       .eq("approved", true)
-      .filter("id", "in", strUsersList)
       .order("created_at", { ascending: false })
       .range(Number(from as string), Number(to as string));
   } else if (q === "false") {
@@ -47,14 +46,12 @@ const handler: NextApiHandler = async (req, res) => {
       .from("profiles")
       .select("id, approved, type, first_name, last_name", { count: "exact" })
       .eq("approved", false)
-      .filter("id", "in", strUsersList)
       .order("created_at", { ascending: false })
       .range(Number(from as string), Number(to as string));
   } else {
     result = await supabase
       .from("profiles")
       .select("id, approved, type, first_name, last_name", { count: "exact" })
-      .filter("id", "in", strUsersList)
       .order("created_at", { ascending: false })
       .range(Number(from as string), Number(to as string));
   }
