@@ -4,7 +4,6 @@ import Footer from "@/components/footer";
 import Head from "next/head";
 import Navbar from "@/components/navbar";
 import { useEffect, useState } from "react";
-import path from "path";
 import { supabase } from "@/utils/supabaseClient";
 interface Params {
   params: {
@@ -13,17 +12,18 @@ interface Params {
 }
 
 export default function Layout({ children }: any) {
-  const [paths, setPaths] = useState<any>({})
+  const [paths, setPaths] = useState<any>({});
 
   const getStaticPaths = async () => {
-
     const { data: top_menus, error: top_menus_error } = await supabase
       .from(`top_menus`)
-      .select("slug,id,name");
+      .select("slug,id,name")
+      .eq("type", "top");
 
     const { data: sub_menus, error: sub_menus_error } = await supabase
-      .from(`sub_menus`)
-      .select("slug,id,name");
+      .from(`top_menus`)
+      .select("slug,id,name")
+      .eq("type", "sub");
 
     if (top_menus_error || sub_menus_error) {
       return {
@@ -33,27 +33,26 @@ export default function Layout({ children }: any) {
     }
 
     return {
-      paths: {top_menus, sub_menus},
+      paths: { top_menus, sub_menus },
       fallback: false,
     };
   };
 
-  useEffect( () => {
+  useEffect(() => {
     new Promise(async () => {
       if (!children.props.topMenus) {
-        const res = await getStaticPaths()
-        setPaths(res.paths)
+        const res = await getStaticPaths();
+        setPaths(res.paths);
       }
-    })
-  }, [children.props.topMenus])
-
+    });
+  }, [children.props.topMenus]);
 
   return (
     <>
       <Head>
         <title>تليد - الرئيسية</title>
       </Head>
-      <Box w="full" bg={useColorModeValue("white", "brand.black")}>
+      <Box w='full' bg={useColorModeValue("white", "brand.black")}>
         <Navbar
           topMenus={children.props.topMenus ?? paths.top_menus}
           subMenus={children.props.subMenus ?? paths.sub_menus}

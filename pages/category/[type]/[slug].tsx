@@ -44,7 +44,7 @@ const Category = ({ category }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const { type, slug } = router.query;
+  const { slug } = router.query;
 
   useEffect(() => {
     const setupData = async () => {
@@ -53,9 +53,9 @@ const Category = ({ category }: Props) => {
       const { data: newBlog } = await supabase
         .from("posts")
         .select(
-          `id,title,thumbnail,excerpt, created_at, ${type}_menus!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)`
+          `id,title,thumbnail,excerpt, created_at, top_menus!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)`
         )
-        .eq(`${type}_menus.slug`, slug)
+        .eq(`top_menus.slug`, slug)
         .eq("status", "published")
         .order("created_at", {
           ascending: false,
@@ -67,9 +67,9 @@ const Category = ({ category }: Props) => {
       const { data: latestBlogs } = await supabase
         .from("posts")
         .select(
-          `id,title,thumbnail,excerpt,created_at, ${type}_menus!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)`
+          `id,title,thumbnail,excerpt,created_at, top_menus!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)`
         )
-        .eq(`${type}_menus.slug`, slug)
+        .eq(`top_menus.slug`, slug)
         .eq("status", "published")
         .order("created_at", {
           ascending: false,
@@ -80,9 +80,9 @@ const Category = ({ category }: Props) => {
       let query = supabase
         .from("posts")
         .select(
-          `id,title,thumbnail,excerpt,created_at, ${type}_menus!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)`
+          `id,title,thumbnail,excerpt,created_at, top_menus!inner(name, slug), profiles!inner(first_name, last_name, avatar_url)`
         )
-        .eq(`${type}_menus.slug`, slug)
+        .eq(`top_menus.slug`, slug)
         .eq("status", "published")
         .order("created_at", {
           ascending: true,
@@ -104,7 +104,7 @@ const Category = ({ category }: Props) => {
     };
 
     setupData();
-  }, [slug, type]);
+  }, [slug]);
 
   if (loading) return <Loading />;
 
@@ -239,10 +239,10 @@ Category.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
 export default Category;
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const { slug, type } = params!;
+  const { slug } = params!;
 
   const { data: category } = await supabase
-    .from(`${type}_menus`)
+    .from(`top_menus`)
     .select("name")
     .eq("slug", slug)
     .single();
@@ -250,14 +250,16 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { data: topMenus } = await supabase
     .from("top_menus")
     .select("id, name, slug, order")
+    .eq("type", "top")
     .order("order", {
       ascending: true,
     });
 
   // Get Sub menu links
   const { data: subMenus } = await supabase
-    .from("sub_menus")
+    .from("top_menus")
     .select("id, name, slug, order")
+    .eq("type", "sub")
     .order("order", {
       ascending: true,
     });
@@ -289,17 +291,12 @@ export const getStaticPaths = async () => {
   }
 
   let top_menus_paths: Params[] = [];
-  let sub_menus_paths: Params[] = [];
 
   const { data: top_menus, error: top_menus_error } = await supabase
     .from(`top_menus`)
     .select("slug");
 
-  const { data: sub_menus, error: sub_menus_error } = await supabase
-    .from(`top_menus`)
-    .select("slug");
-
-  if (top_menus_error || sub_menus_error) {
+  if (top_menus_error) {
     return {
       paths: [],
       fallback: false,
@@ -310,12 +307,8 @@ export const getStaticPaths = async () => {
     params: { slug: menu.slug },
   }));
 
-  sub_menus_paths = sub_menus.map((menu: any) => ({
-    params: { slug: menu.slug },
-  }));
-
   return {
-    paths: [...top_menus_paths, ...sub_menus_paths],
+    paths: [...top_menus_paths],
     fallback: false,
   };
 };

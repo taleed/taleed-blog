@@ -194,14 +194,16 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { data: topMenus } = await supabase
     .from("top_menus")
     .select("id, name, slug, order")
+    .eq("type", "top")
     .order("order", {
       ascending: true,
     });
 
   // Get Sub menu links
   const { data: subMenus } = await supabase
-    .from("sub_menus")
+    .from("top_menus")
     .select("id, name, slug, order")
+    .eq("type", "sub")
     .order("order", {
       ascending: true,
     });
@@ -219,16 +221,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       .eq("status", "published")
       .eq("user_id", profile.id);
 
-    const { data: posts_sub_menus } = await supabase
-      .from("posts")
-      .select("id,title, excerpt, thumbnail, created_at, sub_menus!inner(name)")
-      .eq("status", "published")
-      .eq("user_id", profile.id);
-
     return {
       props: {
         profile,
-        posts: posts_top_menus ?? posts_sub_menus,
+        posts: posts_top_menus,
         topMenus,
         subMenus,
       },

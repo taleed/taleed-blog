@@ -59,34 +59,11 @@ const Home = ({ authors }: Props) => {
       .limit(1)
       .single();
 
-    const { data: newBlogSubMenu } = await supabase
-      .from("posts")
-      .select(
-        "id,title,thumbnail,excerpt, created_at, sub_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url), sound_cloud_frame"
-      )
-      .order("created_at", {
-        ascending: false,
-      })
-      .eq("status", "published")
-      .limit(1)
-      .single();
-
     // Get The Latest 3 Blogs
     const { data: latestBlogsTopMenus } = await supabase
       .from("posts")
       .select(
         "id,title,thumbnail,excerpt,created_at, top_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url), sound_cloud_frame"
-      )
-      .eq("status", "published")
-      .order("created_at", {
-        ascending: false,
-      })
-      .range(1, 3);
-
-    const { data: latestBlogsSubMenus } = await supabase
-      .from("posts")
-      .select(
-        "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url), sound_cloud_frame"
       )
       .eq("status", "published")
       .order("created_at", {
@@ -106,23 +83,10 @@ const Home = ({ authors }: Props) => {
       })
       .range(0, 10);
 
-    let querySubMenus = supabase
-      .from("posts")
-      .select(
-        "id,title,thumbnail,excerpt,created_at, sub_menus!inner(name), profiles!posts_user_id_fkey(first_name, last_name, avatar_url, sound_cloud_frame"
-      )
-      .eq("status", "published")
-      .order("created_at", {
-        ascending: true,
-      })
-      .range(0, 10);
-
     if (newBlogTopMenu) {
       queryTopMenus = queryTopMenus.not("id", "eq", newBlogTopMenu?.id);
     }
-    if (newBlogSubMenu) {
-      querySubMenus = querySubMenus.not("id", "eq", newBlogSubMenu?.id);
-    }
+
     if (latestBlogsTopMenus && latestBlogsTopMenus.length > 0) {
       if (newBlogTopMenu) {
         queryTopMenus = queryTopMenus.not(
@@ -132,19 +96,11 @@ const Home = ({ authors }: Props) => {
         );
       }
     }
-    if (latestBlogsSubMenus && latestBlogsSubMenus?.length > 0) {
-      if (newBlogSubMenu) {
-        querySubMenus = querySubMenus.not(
-          "id",
-          "in",
-          `(${latestBlogsSubMenus.map((blog) => blog.id)})`
-        );
-      }
-    }
-    const { data: mostViewedBlogs } = newBlogTopMenu ? await queryTopMenus : await querySubMenus;
+
+    const { data: mostViewedBlogs } = await queryTopMenus;
 
     setNewBlog(newBlogTopMenu);
-    setLatestBlogs(latestBlogsTopMenus ?? latestBlogsSubMenus);
+    setLatestBlogs(latestBlogsTopMenus);
     setMostViewedBlogs(mostViewedBlogs);
 
     setLoading(false);
@@ -358,14 +314,16 @@ export const getStaticProps = async () => {
   const { data: topMenus } = await supabase
     .from("top_menus")
     .select("id, name, slug, order")
+    .eq("type", "top")
     .order("order", {
       ascending: true,
     });
 
   // Get Sub menu links
   const { data: subMenus } = await supabase
-    .from("sub_menus")
+    .from("top_menus")
     .select("id, name, slug, order")
+    .eq("type", "sub")
     .order("order", {
       ascending: true,
     });

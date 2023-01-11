@@ -86,8 +86,7 @@ const BlogCardContent = ({ blog, type }: { blog: BlogWithCategoriesProfiles; typ
         lineHeight={type === "new" ? "37px" : "30px"}
         fontSize={type === "new" ? { base: "md", md: "xl" } : "md"}
         color={useColorModeValue("brand.secondary", "grey.300")}>
-        {blog.top_menus && blog.top_menus.name}
-        {blog.sub_menus && blog.sub_menus.name}
+        {(blog.top_menus as any) && blog.top_menus.name}
       </chakra.span>
       <Heading
         color={useColorModeValue("brand.black", "brand.secondary")}
