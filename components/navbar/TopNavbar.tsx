@@ -188,7 +188,7 @@ const TopNavbar: FC<Props> = ({ items, subItems }) => {
                   </Link>
                 ))}
                 {subLinks?.map((link, index: number) => (
-                  <Link passHref href={`/category/${link.slug}`} key={`MNR-${link.slug}`}>
+                  <Link passHref href={`/category/sub/${link.slug}`} key={`MNR-${link.slug}`}>
                     <Box w='full' rounded='lg' py={1} px={4}>
                       <Text fontWeight={600}>{link.name}</Text>
                     </Box>
