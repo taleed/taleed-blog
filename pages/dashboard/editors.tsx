@@ -28,6 +28,8 @@ import {
   useToast,
   Select,
   useColorModeValue,
+  Input,
+  Button,
 } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
 
@@ -51,6 +53,7 @@ const ManageEditors = () => {
   const [filter, setFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(0);
   const [count, setCount] = useState(0);
+  const [search, setSearch] = useState("");
 
   //   Colors
   const tableBg = useColorModeValue("white", "whiteAlpha.50");
@@ -64,11 +67,12 @@ const ManageEditors = () => {
     let url = "";
     const { from, to } = getPagination(currentPage, ITEMS_IN_PAGE);
 
-    if (filter) {
-      url = `/api/manage-editors?q=${filter}&from=${from}&to=${to}`;
-    } else {
-      url = `/api/manage-editors?from=${from}&to=${to}`;
-    }
+    let filterTemplate = "";
+
+    if (filter) filterTemplate = `&q=${filter}`;
+    if (search.length) filterTemplate = `${filterTemplate}&search=${search}`;
+
+    url = `/api/manage-editors?from=${from}&to=${to}${filterTemplate}`;
 
     const res = await fetch(url);
 
@@ -88,6 +92,16 @@ const ManageEditors = () => {
       await fetchProfiles(filter);
     });
   }, [filter, currentPage]);
+
+  useEffect(() => {
+    const timeout = setTimeout(async () => {
+      await fetchProfiles(filter);
+    }, 350);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [search]);
 
   const getProfileTypes = async () => {
     setLoading(true);
@@ -182,36 +196,48 @@ const ManageEditors = () => {
     profileDetailsModal.onOpen();
     showProfileDetails(id);
   };
-  console.log(data);
 
   return (
     <Box px={8}>
       <Heading>محررين ({count}) </Heading>
+      <Flex direction='row' alignItems='flex-end' gap={4}>
+        <Box mt={16} width={"30%"}>
+          <chakra.b>انتقي المحررين</chakra.b>
+          <Select
+            bg={inputBg}
+            border={0}
+            _focus={{ outline: "none", boxShadow: "none", bg: focusBg }}
+            onChange={async (event) => {
+              setCurrentPage(0);
+              setFilter(event.target.value);
+            }}
+            size='lg'
+            mt={4}
+            defaultValue={"all"}>
+            <option key={0} value='all'>
+              الكل
+            </option>
+            <option key={1} value='true'>
+              تم قبولهم
+            </option>
+            <option key={2} value='false'>
+              قيد الانتظار
+            </option>
+          </Select>
+        </Box>
+        <Box>
+          <chakra.b>إبحث عن المحررين</chakra.b>
 
-      <Box mt={16} width={"30%"}>
-        <chakra.b>انتقي المحررين</chakra.b>
-        <Select
-          bg={inputBg}
-          border={0}
-          _focus={{ outline: "none", boxShadow: "none", bg: focusBg }}
-          onChange={async (event) => {
-            setCurrentPage(0);
-            setFilter(event.target.value);
-          }}
-          size='lg'
-          mt={4}
-          defaultValue={"all"}>
-          <option key={0} value='all'>
-            الكل
-          </option>
-          <option key={1} value='true'>
-            تم قبولهم
-          </option>
-          <option key={2} value='false'>
-            قيد الانتظار
-          </option>
-        </Select>
-      </Box>
+          <Input
+            marginTop={3}
+            paddingBlock={6}
+            bg={inputBg}
+            _focus={{ bg: focusBg }}
+            placeholder='اكتب العنوان الذي تريد البحث عنه'
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </Box>
+      </Flex>
 
       {!loading ? (
         <>

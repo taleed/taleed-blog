@@ -18,7 +18,7 @@ const handler: NextApiHandler = async (req, res) => {
     });
   }
 
-  const { q, from, to } = req.query;
+  const { q, from, to, search } = req.query;
 
   let error = undefined;
   let profiles: any[] = [];
@@ -34,29 +34,29 @@ const handler: NextApiHandler = async (req, res) => {
     return res.status(500).json(error);
   }
 
-  if (q === "true") {
-    result = await supabase
+  if (q === "true" || q === "false") {
+    result = supabase
       .from("profiles")
       .select("id, approved, type, first_name, last_name", { count: "exact" })
-      .eq("approved", true)
-      .order("created_at", { ascending: false })
-      .range(Number(from as string), Number(to as string));
-  } else if (q === "false") {
-    result = await supabase
-      .from("profiles")
-      .select("id, approved, type, first_name, last_name", { count: "exact" })
-      .eq("approved", false)
+      .eq("approved", q === "true" ? true : false)
       .order("created_at", { ascending: false })
       .range(Number(from as string), Number(to as string));
   } else {
-    result = await supabase
+    result = supabase
       .from("profiles")
       .select("id, approved, type, first_name, last_name", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(Number(from as string), Number(to as string));
   }
 
-  profiles = result.data;
+  // apply search
+  if (search?.length) {
+    result.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%`);
+  }
+
+  const finalResult = await result;
+
+  profiles = finalResult.data;
   error = result.error;
   count = result.count;
 
