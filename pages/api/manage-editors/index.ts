@@ -22,8 +22,11 @@ const handler: NextApiHandler = async (req, res) => {
 
   let error = undefined;
   let profiles: any[] = [];
-  let result: any = undefined;
   let count = 0;
+
+  let result: any = supabase
+    .from("profiles")
+    .select("id, approved, type, first_name, last_name", { count: "exact" });
 
   const {
     error: err_users,
@@ -35,18 +38,7 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   if (q === "true" || q === "false") {
-    result = supabase
-      .from("profiles")
-      .select("id, approved, type, first_name, last_name", { count: "exact" })
-      .eq("approved", q === "true" ? true : false)
-      .order("created_at", { ascending: false })
-      .range(Number(from as string), Number(to as string));
-  } else {
-    result = supabase
-      .from("profiles")
-      .select("id, approved, type, first_name, last_name", { count: "exact" })
-      .order("created_at", { ascending: false })
-      .range(Number(from as string), Number(to as string));
+    result.eq("approved", q === "true" ? true : false);
   }
 
   // apply search
@@ -54,11 +46,16 @@ const handler: NextApiHandler = async (req, res) => {
     result.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%`);
   }
 
+  // paginate result
+  result
+    .order("created_at", { ascending: false })
+    .range(Number(from as string), Number(to as string));
+
   const finalResult = await result;
 
   profiles = finalResult.data;
-  error = result.error;
-  count = result.count;
+  error = finalResult.error;
+  count = finalResult.count;
 
   if (error) {
     return res.status(500).json(error);
