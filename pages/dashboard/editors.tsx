@@ -233,7 +233,7 @@ const ManageEditors = () => {
             paddingBlock={6}
             bg={inputBg}
             _focus={{ bg: focusBg }}
-            placeholder='اكتب العنوان الذي تريد البحث عنه'
+            placeholder='اكتب إسم المحرر الذي تريد البحث عنه'
             onChange={(e) => setSearch(e.target.value)}
           />
         </Box>
