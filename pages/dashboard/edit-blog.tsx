@@ -53,6 +53,7 @@ const AddBlog = () => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [tags, setTags] = useState<Array<string>>([]);
   const [blogId, setBlogId] = useState<number>(0);
+  const [categories, setCategories] = useState<any>([]);
 
   const {
     setValue,
@@ -144,6 +145,15 @@ const AddBlog = () => {
     setUploading(false);
   };
 
+  useEffect(() => {
+    const getCategories = async () => {
+      const { data } = await supabase.from("top_menus").select("*");
+      setCategories(data);
+    };
+
+    getCategories();
+  }, []);
+
   return (
     <>
       <Head>
@@ -152,29 +162,28 @@ const AddBlog = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxW='4xl' mx='auto'>
           {/* Categrory Field */}
-          <FormControl isRequired isInvalid={errors.category ? true : false}>
-            <FormLabel>فئة المقالة</FormLabel>
-            <Select
-              bg={inputBg}
-              border={0}
-              _focus={{ bg: focusBg }}
-              placeholder='اختر الفئة التي تنتمي إليها المقالة'
-              size='lg'
-              id='category'
-              {...register("category", {
-                required: "هذا الحقل اجباري",
-              })}>
-              <option value={1}>ثقافة</option>
-              <option value={2}>صحة</option>
-              <option value={3}>رياضة</option>
-              <option value={4}>علوم</option>
-              <option value={5}>تكنولوجيا</option>
-              <option value={6}>اقتصاد</option>
-              <option value={7}>فضاء</option>
-              <option value={8}>فن</option>
-            </Select>
-            <FormErrorMessage>{errors.category?.message}</FormErrorMessage>
-          </FormControl>
+          {categories.length && (
+            <FormControl isRequired isInvalid={errors.category ? true : false}>
+              <FormLabel>فئة المقالة</FormLabel>
+              <Select
+                bg={inputBg}
+                border={0}
+                _focus={{ bg: focusBg }}
+                placeholder='اختر الفئة التي تنتمي إليها المقالة'
+                size='lg'
+                id='category'
+                {...register("category", {
+                  required: "هذا الحقل اجباري",
+                })}>
+                {categories.map((category: any) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </Select>
+              <FormErrorMessage>{errors.category?.message}</FormErrorMessage>
+            </FormControl>
+          )}
           {/* Title Field */}
           <FormControl my={6} isRequired isInvalid={errors.title ? true : false}>
             <FormLabel htmlFor='title'>عنوان المقالة</FormLabel>
