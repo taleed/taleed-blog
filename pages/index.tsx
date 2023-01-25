@@ -108,7 +108,8 @@ const Home = ({ authors }: Props) => {
 
   useEffect(() => {
     if (router.query.search) {
-      findPosts(router.query.search as string);
+      setLoading(true);
+      findPosts(router.query.search as string).finally(() => setLoading(false));
     } else {
       setSearch([]);
       setupData();
