@@ -173,6 +173,8 @@ function Blog({ post, similar_posts }: Props) {
 
   const ads_color = useColorModeValue("#F4F5F5", "#2F3133");
 
+  console.log("thumbnail", post.thumbnail);
+
   return (
     <>
       <Head>
@@ -451,7 +453,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     .select(
       "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url), sound_cloud_frame"
     )
-    .eq("id", id)
+    .eq("id", id?.toString())
     .single();
 
   if (post_top_menu) {
