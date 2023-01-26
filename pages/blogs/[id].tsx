@@ -453,16 +453,17 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     .select(
       "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url), sound_cloud_frame"
     )
-    .eq("id", id?.toString())
+    .eq("id", id)
     .single();
 
   if (post_top_menu) {
+    const category: any = post_top_menu!.top_menus;
     const { data: similar_posts_top_menus } = await supabase
       .from("posts")
       .select(
         "id,title, created_at, thumbnail, top_menus!inner(name), profiles!inner(first_name, last_name), sound_cloud_frame"
       )
-      .filter("top_menus.name", "eq", post_top_menu!.top_menus!.name)
+      .filter("top_menus.name", "eq", category.name)
       .filter("id", "not.eq", post_top_menu.id)
       .eq("status", "published")
       .range(0, 5);
