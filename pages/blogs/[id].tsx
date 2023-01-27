@@ -173,8 +173,6 @@ function Blog({ post, similar_posts }: Props) {
 
   const ads_color = useColorModeValue("#F4F5F5", "#2F3133");
 
-  console.log("thumbnail", post.thumbnail);
-
   return (
     <>
       <Head>

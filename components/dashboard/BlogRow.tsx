@@ -2,7 +2,16 @@ import { useRouter } from "next/router";
 import { BsPauseCircle } from "react-icons/bs";
 import { FaEdit, FaShare, FaTrash } from "react-icons/fa";
 import { useState, Dispatch, SetStateAction } from "react";
-import { IconButton, Spinner, Stack, Td, Tr, useColorModeValue, useToast } from "@chakra-ui/react";
+import {
+  IconButton,
+  Spinner,
+  Stack,
+  Td,
+  Tooltip,
+  Tr,
+  useColorModeValue,
+  useToast,
+} from "@chakra-ui/react";
 
 interface BlogRowProsp {
   setData: Dispatch<SetStateAction<any[] | undefined>>;
@@ -106,39 +115,47 @@ const BlogRow: React.FC<BlogRowProsp> = ({ d, setData }) => {
       <Td borderColor={useColorModeValue("gray.200", "whiteAlpha.100")}>
         <Stack direction='row'>
           {d.status !== "published" ? (
-            <IconButton
-              onClick={async () => await handlePublish(d.id)}
-              aria-label='accept and share blog post'
-              icon={statusLoading ? <Spinner /> : <FaShare />}
-              disabled={statusLoading}
-            />
+            <Tooltip hasArrow label='نشر' fontSize='sm'>
+              <IconButton
+                onClick={async () => await handlePublish(d.id)}
+                aria-label='accept and share blog post'
+                icon={statusLoading ? <Spinner /> : <FaShare />}
+                disabled={statusLoading}
+              />
+            </Tooltip>
           ) : (
-            <IconButton
-              onClick={async () => await handleDraft(d.id)}
-              aria-label='draft blog post'
-              icon={statusLoading ? <Spinner /> : <BsPauseCircle />}
-              disabled={statusLoading}
-            />
+            <Tooltip hasArrow label='تعليق' fontSize='sm'>
+              <IconButton
+                onClick={async () => await handleDraft(d.id)}
+                aria-label='draft blog post'
+                icon={statusLoading ? <Spinner /> : <BsPauseCircle />}
+                disabled={statusLoading}
+              />
+            </Tooltip>
           )}
 
-          <IconButton
-            onClick={() =>
-              router.push(
-                {
-                  pathname: "/dashboard/edit-blog",
-                  query: { ...d, category_id: d.category_id.id, user_id: d.user_id.id },
-                },
-                "/dashboard/edit-blog"
-              )
-            }
-            aria-label='edit blog post'
-            icon={<FaEdit />}
-          />
-          <IconButton
-            onClick={async () => await handleDelete(d.id)}
-            aria-label='delete blog post'
-            icon={<FaTrash />}
-          />
+          <Tooltip hasArrow label='تعديل' fontSize='sm'>
+            <IconButton
+              onClick={() =>
+                router.push(
+                  {
+                    pathname: "/dashboard/edit-blog",
+                    query: { ...d, category_id: d.category_id.id, user_id: d.user_id.id },
+                  },
+                  "/dashboard/edit-blog"
+                )
+              }
+              aria-label='edit blog post'
+              icon={<FaEdit />}
+            />
+          </Tooltip>
+          <Tooltip hasArrow label='حذف' fontSize='sm'>
+            <IconButton
+              onClick={async () => await handleDelete(d.id)}
+              aria-label='delete blog post'
+              icon={<FaTrash />}
+            />
+          </Tooltip>
         </Stack>
       </Td>
     </Tr>
