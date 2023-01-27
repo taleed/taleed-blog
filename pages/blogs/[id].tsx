@@ -30,7 +30,7 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import FacebookCommment from "@/components/facebookComment";
 import { useUser } from "@supabase/auth-helpers-react";
-import Loading from "@/components/dashboard/Loading";
+import { server } from "config";
 
 interface Props {
   post: any;
@@ -41,7 +41,7 @@ interface Props {
 
 const FbComment = dynamic(() => Promise.resolve(FacebookCommment), { ssr: false });
 
-function Blog({}: Props) {
+function Blog({ post, similar_posts }: Props) {
   const similar_posts_date = useColorModeValue("grey.500", "grey.300");
   const similar_posts_author = useColorModeValue("grey.500", "white");
   const similar_posts_title = useColorModeValue("brand.black", "white");
@@ -56,8 +56,6 @@ function Blog({}: Props) {
   const [liked, setLiked] = useState(false);
   const [owner, setOwner] = useState(false);
   const [showAnimation, setShowAnimation] = useState(false);
-  const [post, setPost] = useState<any>();
-  const [similar_posts, setSimilarPosts] = useState<any>();
   const router = useRouter();
   const toast = useToast();
   const user = useUser();
@@ -147,36 +145,6 @@ function Blog({}: Props) {
   };
 
   useEffect(() => {
-    const setupBlogData = async () => {
-      const { data: post_top_menu } = await supabase
-        .from("posts")
-        .select(
-          "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url), sound_cloud_frame"
-        )
-        .eq("id", id)
-        .single();
-
-      if (post_top_menu) {
-        const category: any = post_top_menu!.top_menus;
-        const { data: similar_posts_top_menus } = await supabase
-          .from("posts")
-          .select(
-            "id,title, created_at, thumbnail, top_menus!inner(name), profiles!inner(first_name, last_name), sound_cloud_frame"
-          )
-          .filter("top_menus.name", "eq", category.name)
-          .filter("id", "not.eq", post_top_menu.id)
-          .eq("status", "published")
-          .range(0, 5);
-
-        setPost(post_top_menu);
-        setSimilarPosts(similar_posts_top_menus);
-      }
-    };
-
-    setupBlogData();
-  }, [id]);
-
-  useEffect(() => {
     const handleIsOwner = async () => setOwner(user?.id === post?.profiles.id);
 
     const getLikes = async () => {
@@ -206,8 +174,6 @@ function Blog({}: Props) {
   }, []);
 
   const ads_color = useColorModeValue("#F4F5F5", "#2F3133");
-
-  if (!post || !similar_posts) return <Loading />;
 
   return (
     <>
@@ -482,7 +448,26 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       ascending: true,
     });
 
-  return { props: { topMenus, subMenus } };
+  try {
+    const res = await fetch(`${server}/api/blogs?id=${id}`);
+    const data = await res.json();
+
+    return {
+      props: {
+        post: data.post_top_menu,
+        similar_posts: data.similar_posts_top_menus,
+        topMenus,
+        subMenus,
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        topMenus,
+        subMenus,
+      },
+    };
+  }
 };
 
 interface Params {
