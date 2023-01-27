@@ -425,7 +425,7 @@ Blog.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
 
 export default Blog;
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params,  }) => {
   const { id } = params!;
 
   // Get Top menu links
