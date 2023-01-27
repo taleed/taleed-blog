@@ -283,7 +283,7 @@ const ManageEditors = () => {
                           />
                         </Tooltip>
                         {!d.approved ? (
-                          <Tooltip hasArrow label='قبول الحساب' fontSize='sm'>
+                          <Tooltip hasArrow label='قبول' fontSize='sm'>
                             <IconButton
                               onClick={() => approveProfile(d.id)}
                               aria-label='Accept user'
@@ -291,7 +291,7 @@ const ManageEditors = () => {
                             />
                           </Tooltip>
                         ) : (
-                          <Tooltip hasArrow label='تعليق الحساب' fontSize='sm'>
+                          <Tooltip hasArrow label='تعليق' fontSize='sm'>
                             <IconButton
                               onClick={() => suspendProfile(d.id)}
                               aria-label='Suspend user'
@@ -299,7 +299,7 @@ const ManageEditors = () => {
                             />
                           </Tooltip>
                         )}
-                        <Tooltip hasArrow label='حذف الحساب' fontSize='sm'>
+                        <Tooltip hasArrow label='حذف' fontSize='sm'>
                           <IconButton
                             onClick={() => deleteProfile(d.id)}
                             aria-label='delete user'
