@@ -466,6 +466,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         topMenus,
         subMenus,
       },
+      revalidate: 1,
     };
   }
 };
@@ -508,6 +509,6 @@ export const getStaticPaths = async () => {
 
   return {
     paths: [...paths_top_menus],
-    fallback: "blocking",
+    fallback: false,
   };
 };
