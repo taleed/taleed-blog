@@ -30,6 +30,7 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import FacebookCommment from "@/components/facebookComment";
 import { useUser } from "@supabase/auth-helpers-react";
+import Loading from "@/components/dashboard/Loading";
 
 interface Props {
   post: any;
@@ -40,7 +41,7 @@ interface Props {
 
 const FbComment = dynamic(() => Promise.resolve(FacebookCommment), { ssr: false });
 
-function Blog({ post, similar_posts }: Props) {
+function Blog({}: Props) {
   const similar_posts_date = useColorModeValue("grey.500", "grey.300");
   const similar_posts_author = useColorModeValue("grey.500", "white");
   const similar_posts_title = useColorModeValue("brand.black", "white");
@@ -55,23 +56,14 @@ function Blog({ post, similar_posts }: Props) {
   const [liked, setLiked] = useState(false);
   const [owner, setOwner] = useState(false);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [post, setPost] = useState<any>();
+  const [similar_posts, setSimilarPosts] = useState<any>();
   const router = useRouter();
   const toast = useToast();
   const user = useUser();
   const mounted = useRef<any>(true);
 
-  const isOwner = async () => setOwner(user?.id === post.profiles.id);
-
-  const getLikes = async () => {
-    setLikeLoad(true);
-    await fetch("/api/likes?q=" + post.id)
-      .then((res) => res.json())
-      .then((data) => {
-        setLikes(data.count);
-        setLiked(data.liked);
-        setLikeLoad(false);
-      });
-  };
+  const { id } = router.query;
 
   const fireAnimation = () => {
     setShowAnimation(true);
@@ -82,7 +74,7 @@ function Blog({ post, similar_posts }: Props) {
     setLikeLoad(true);
     await fetch("/api/likes", {
       method: "POST",
-      body: JSON.stringify({ post: post.id, ip: location.ip }),
+      body: JSON.stringify({ post: post?.id, ip: location.ip }),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -122,7 +114,7 @@ function Blog({ post, similar_posts }: Props) {
 
     try {
       await supabase.rpc("add_post_viewer", {
-        new_id: post.id,
+        new_id: post?.id,
         ip: location.ip,
         email: user?.email ?? "Anonymous",
       });
@@ -145,7 +137,7 @@ function Blog({ post, similar_posts }: Props) {
           isClosable: true,
           position: "top-right",
           onCloseComplete: () => {
-            router.push(`/authors/${post.profiles.username}`);
+            router.push(`/authors/${post?.profiles.username}`);
           },
         });
       })
@@ -155,11 +147,53 @@ function Blog({ post, similar_posts }: Props) {
   };
 
   useEffect(() => {
+    const setupBlogData = async () => {
+      const { data: post_top_menu } = await supabase
+        .from("posts")
+        .select(
+          "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url), sound_cloud_frame"
+        )
+        .eq("id", id)
+        .single();
+
+      if (post_top_menu) {
+        const category: any = post_top_menu!.top_menus;
+        const { data: similar_posts_top_menus } = await supabase
+          .from("posts")
+          .select(
+            "id,title, created_at, thumbnail, top_menus!inner(name), profiles!inner(first_name, last_name), sound_cloud_frame"
+          )
+          .filter("top_menus.name", "eq", category.name)
+          .filter("id", "not.eq", post_top_menu.id)
+          .eq("status", "published")
+          .range(0, 5);
+
+        setPost(post_top_menu);
+        setSimilarPosts(similar_posts_top_menus);
+      }
+    };
+
+    setupBlogData();
+  }, [id]);
+
+  useEffect(() => {
+    const handleIsOwner = async () => setOwner(user?.id === post?.profiles.id);
+
+    const getLikes = async () => {
+      setLikeLoad(true);
+      await fetch("/api/likes?q=" + post?.id)
+        .then((res) => res.json())
+        .then((data) => {
+          setLikes(data.count);
+          setLiked(data.liked);
+          setLikeLoad(false);
+        });
+    };
     new Promise(async () => {
-      await isOwner();
+      await handleIsOwner();
       await getLikes();
     });
-  }, [user]);
+  }, [user, id, post]);
 
   // execute only one time when the component mounts
   useEffect(() => {
@@ -172,6 +206,8 @@ function Blog({ post, similar_posts }: Props) {
   }, []);
 
   const ads_color = useColorModeValue("#F4F5F5", "#2F3133");
+
+  if (!post || !similar_posts) return <Loading />;
 
   return (
     <>
@@ -217,7 +253,7 @@ function Blog({ post, similar_posts }: Props) {
             </Stack>
             <Heading
               as='h1'
-              color={useColorModeValue("brand.black", "white")}
+              color={useColorModeValue!("brand.black", "white")}
               fontSize={{ base: "2xl", md: "5xl" }}
               fontWeight='700'
               lineHeight={{ base: "47.84px", md: "92px" }}>
@@ -238,13 +274,13 @@ function Blog({ post, similar_posts }: Props) {
                       fontSize={{ base: "md", md: "xl" }}
                       cursor='pointer'
                       _hover={{ textDecor: "underline" }}
-                      color={useColorModeValue("brand.black", "white")}>
+                      color={useColorModeValue!("brand.black", "white")}>
                       {`${post.profiles.first_name} ${post.profiles.last_name}`}
                     </Text>
                   </Link>
                   <Flex>
                     <chakra.span
-                      color={useColorModeValue("grey.500", "#9DA2A4")}
+                      color={useColorModeValue!("grey.500", "#9DA2A4")}
                       fontSize={{ base: "sm", md: "lg" }}
                       fontWeight='400'>
                       {post.created_at.slice(0, 10)}
@@ -285,26 +321,26 @@ function Blog({ post, similar_posts }: Props) {
                 rounded='full'
                 border='1px solid'
                 _hover={{
-                  bg: useColorModeValue(
+                  bg: useColorModeValue!(
                     liked ? "purple.500" : "",
                     liked ? "brand.secondary" : "grey"
                   ),
                 }}
-                bg={useColorModeValue(
+                bg={useColorModeValue!(
                   liked ? "brand.primary" : "",
                   liked ? "brand.secondary" : "grey"
                 )}
-                borderColor={useColorModeValue("grey.200", liked ? "brand.secondary" : "grey.200")}
+                borderColor={useColorModeValue!("grey.200", liked ? "brand.secondary" : "grey.200")}
                 variant={liked ? "solid" : "outline"}
                 leftIcon={
                   <Logo
-                    fill={useColorModeValue(
+                    fill={useColorModeValue!(
                       liked ? "white" : "#A5A6A6",
                       liked ? "white" : "grey.200"
                     )}
                   />
                 }
-                color={useColorModeValue(
+                color={useColorModeValue!(
                   liked ? "white" : "grey.900",
                   liked ? "white" : "grey.200"
                 )}>
@@ -425,7 +461,7 @@ Blog.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
 
 export default Blog;
 
-export const getStaticProps: GetStaticProps = async ({ params,  }) => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { id } = params!;
 
   // Get Top menu links
@@ -446,42 +482,7 @@ export const getStaticProps: GetStaticProps = async ({ params,  }) => {
       ascending: true,
     });
 
-  const { data: post_top_menu } = await supabase
-    .from("posts")
-    .select(
-      "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url), sound_cloud_frame"
-    )
-    .eq("id", id)
-    .single();
-
-  if (post_top_menu) {
-    const category: any = post_top_menu!.top_menus;
-    const { data: similar_posts_top_menus } = await supabase
-      .from("posts")
-      .select(
-        "id,title, created_at, thumbnail, top_menus!inner(name), profiles!inner(first_name, last_name), sound_cloud_frame"
-      )
-      .filter("top_menus.name", "eq", category.name)
-      .filter("id", "not.eq", post_top_menu.id)
-      .eq("status", "published")
-      .range(0, 5);
-
-    return {
-      props: {
-        post: post_top_menu,
-        similar_posts: similar_posts_top_menus,
-        topMenus,
-        subMenus,
-      },
-    };
-  }
-
-  return {
-    props: {
-      topMenus,
-      subMenus,
-    },
-  };
+  return { props: { topMenus, subMenus } };
 };
 
 interface Params {
