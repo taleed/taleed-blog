@@ -30,10 +30,11 @@ import {
   useColorModeValue,
   Input,
   Button,
+  Tooltip,
 } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
 
-import { BsCheck } from "react-icons/bs";
+import { BsCheck, BsPauseCircle } from "react-icons/bs";
 import { IoIosArrowBack } from "react-icons/io";
 import Layout from "@/layouts/Dashboard";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
@@ -61,6 +62,25 @@ const ManageEditors = () => {
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
   const inputBg = useColorModeValue("blackAlpha.50", "whiteAlpha.50");
   const focusBg = useColorModeValue("blackAlpha.100", "whiteAlpha.100");
+
+  const successNotif = (msg?: string) => {
+    toast({
+      title: "عملية ناجحة",
+      description: msg ?? "",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+  const errorNotif = (msg?: string) => {
+    toast({
+      title: "حدث خطأ",
+      description: msg ?? "",
+      status: "error",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
 
   const fetchProfiles = async (filter?: string) => {
     setLoading(true);
@@ -122,24 +142,12 @@ const ManageEditors = () => {
         .eq("id", id)
         .single();
       if (error) {
-        toast({
-          title: "حدث خطأ",
-          description: error.message,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
+        errorNotif(error.message);
         return;
       }
       setProfileDetails(data);
     } catch (error: any) {
-      toast({
-        title: "حدث خطأ",
-        description: error.message,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
+      errorNotif(error.message);
     }
   };
 
@@ -148,22 +156,23 @@ const ManageEditors = () => {
     await r
       .json()
       .then((d) => {
-        toast({
-          title: "عملية ناجحة",
-          description: d.message,
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
+        successNotif(d.message);
       })
       .catch((e) => {
-        toast({
-          title: "حدث خطأ",
-          description: e.message,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
+        errorNotif(e.message);
+      });
+    await fetchProfiles();
+  };
+
+  const suspendProfile = async (id: string) => {
+    const r = await fetch(`/api/manage-editors/suspend-editors?id=${id}`);
+    await r
+      .json()
+      .then((d) => {
+        successNotif(d.message);
+      })
+      .catch((e) => {
+        errorNotif(e.message);
       });
     await fetchProfiles();
   };
@@ -173,21 +182,10 @@ const ManageEditors = () => {
     await r
       .json()
       .then((d) => {
-        toast({
-          title: "عملية ناجحة",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
+        successNotif();
       })
       .catch((e) => {
-        toast({
-          title: "حدث خطأ",
-          description: e.message,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
+        errorNotif(e.message);
       });
     await fetchProfiles();
   };
@@ -277,23 +275,37 @@ const ManageEditors = () => {
                     <Td borderColor={borderColor}>{new Date(d.created_at).toLocaleDateString()}</Td>
                     <Td borderColor={borderColor}>
                       <Stack direction='row'>
-                        <IconButton
-                          onClick={() => openModalAndFetchProfileDetails(d.id)}
-                          aria-label='profile details'
-                          icon={<AiOutlineEye />}
-                        />
-                        {!d.approved && (
+                        <Tooltip hasArrow label='معلومات الحساب' fontSize='sm'>
                           <IconButton
-                            onClick={() => approveProfile(d.id)}
-                            aria-label='Accept user'
-                            icon={<BsCheck />}
+                            onClick={() => openModalAndFetchProfileDetails(d.id)}
+                            aria-label='profile details'
+                            icon={<AiOutlineEye />}
                           />
+                        </Tooltip>
+                        {!d.approved ? (
+                          <Tooltip hasArrow label='قبول الحساب' fontSize='sm'>
+                            <IconButton
+                              onClick={() => approveProfile(d.id)}
+                              aria-label='Accept user'
+                              icon={<BsCheck />}
+                            />
+                          </Tooltip>
+                        ) : (
+                          <Tooltip hasArrow label='تعليق الحساب' fontSize='sm'>
+                            <IconButton
+                              onClick={() => suspendProfile(d.id)}
+                              aria-label='Suspend user'
+                              icon={<BsPauseCircle />}
+                            />
+                          </Tooltip>
                         )}
-                        <IconButton
-                          onClick={() => deleteProfile(d.id)}
-                          aria-label='delete user'
-                          icon={<AiOutlineDelete />}
-                        />
+                        <Tooltip hasArrow label='حذف الحساب' fontSize='sm'>
+                          <IconButton
+                            onClick={() => deleteProfile(d.id)}
+                            aria-label='delete user'
+                            icon={<AiOutlineDelete />}
+                          />
+                        </Tooltip>
                       </Stack>
                     </Td>
                   </Tr>
