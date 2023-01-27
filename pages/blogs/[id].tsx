@@ -199,7 +199,7 @@ function Blog({ post, similar_posts }: Props) {
                       router.push(
                         {
                           pathname: "/dashboard/edit-blog",
-                          query: { ...post },
+                          query: { ...post, category_id: post?.top_menus.id },
                         },
                         "/dashboard/edit-blog"
                       )

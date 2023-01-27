@@ -9,7 +9,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { data: post_top_menu } = await supabase
     .from("posts")
     .select(
-      "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url), sound_cloud_frame"
+      "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(id, name), profiles!inner(id, first_name, last_name,username, avatar_url), sound_cloud_frame"
     )
     .eq("id", id)
     .single();
