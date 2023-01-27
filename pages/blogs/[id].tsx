@@ -30,6 +30,7 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import FacebookCommment from "@/components/facebookComment";
 import { useUser } from "@supabase/auth-helpers-react";
+import { server } from "config";
 
 interface Props {
   post: any;
@@ -425,7 +426,7 @@ Blog.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
 
 export default Blog;
 
-export const getStaticProps: GetStaticProps = async ({ params,  }) => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { id } = params!;
 
   // Get Top menu links
@@ -446,42 +447,26 @@ export const getStaticProps: GetStaticProps = async ({ params,  }) => {
       ascending: true,
     });
 
-  const { data: post_top_menu } = await supabase
-    .from("posts")
-    .select(
-      "id,title,thumbnail,excerpt, created_at, body, tags, top_menus!inner(name), profiles!inner(id, first_name, last_name,username, avatar_url), sound_cloud_frame"
-    )
-    .eq("id", id)
-    .single();
-
-  if (post_top_menu) {
-    const category: any = post_top_menu!.top_menus;
-    const { data: similar_posts_top_menus } = await supabase
-      .from("posts")
-      .select(
-        "id,title, created_at, thumbnail, top_menus!inner(name), profiles!inner(first_name, last_name), sound_cloud_frame"
-      )
-      .filter("top_menus.name", "eq", category.name)
-      .filter("id", "not.eq", post_top_menu.id)
-      .eq("status", "published")
-      .range(0, 5);
+  try {
+    const res = await fetch(`${server}/api/blogs?id=${id}`);
+    const data = await res.json();
 
     return {
       props: {
-        post: post_top_menu,
-        similar_posts: similar_posts_top_menus,
+        post: data.post_top_menu,
+        similar_posts: data.similar_posts_top_menus,
+        topMenus,
+        subMenus,
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
         topMenus,
         subMenus,
       },
     };
   }
-
-  return {
-    props: {
-      topMenus,
-      subMenus,
-    },
-  };
 };
 
 interface Params {
