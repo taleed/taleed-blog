@@ -76,7 +76,7 @@ const AddBlog = () => {
   }) => {
     if (user) {
       try {
-        let data = await fetch("/api/manage-blogs/modify?id=" + blogId, {
+        let res = await fetch("/api/manage-blogs/modify?id=" + blogId, {
           method: "PATCH",
           body: JSON.stringify({
             title: title,
@@ -88,9 +88,18 @@ const AddBlog = () => {
             frame,
             tags,
           }),
-        }).then((res) => res.json());
+        });
+
+        const data = await res.json();
 
         if (data.message === "تم تحديث المقال بنجاح") {
+          const REVALIDATE_SECRET = process.env.NEXT_PUBLIC_REVALIDATE_SECRET;
+          const REVALIDATE_PATH = `/blogs/${blogId}`;
+          const revalidation_res = await fetch(
+            `/api/revalidate?secret=${REVALIDATE_SECRET}&path=${REVALIDATE_PATH}`
+          );
+          const data = await revalidation_res.json();
+
           toast({
             title: "تم تحديث المقالة",
             description: "تم تحديث المقالة بنجاح.",
@@ -99,7 +108,12 @@ const AddBlog = () => {
             isClosable: true,
             position: "top-right",
           });
-          router.push(`/blogs/${data.id}`);
+
+          if (data.revalidated) {
+            setTimeout(() => {
+              window.location.pathname = REVALIDATE_PATH;
+            }, 1200);
+          }
         }
       } catch (error) {
         console.log(error);

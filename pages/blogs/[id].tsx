@@ -453,6 +453,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const data = await res.json();
 
     return {
+      revalidate: 4,
       props: {
         post: data.post_top_menu,
         similar_posts: data.similar_posts_top_menus,
@@ -462,11 +463,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     };
   } catch (error) {
     return {
+      revalidate: 4,
       props: {
         topMenus,
         subMenus,
       },
-      revalidate: 1,
     };
   }
 };

@@ -14,8 +14,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     .eq("id", id)
     .single();
 
-  res.revalidate("/blogs/" + id);
-
   if (post_top_menu) {
     const category: any = post_top_menu!.top_menus;
     const { data: similar_posts_top_menus } = await supabase
