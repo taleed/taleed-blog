@@ -508,6 +508,6 @@ export const getStaticPaths = async () => {
 
   return {
     paths: [...paths_top_menus],
-    fallback: false,
+    fallback: "blocking",
   };
 };
