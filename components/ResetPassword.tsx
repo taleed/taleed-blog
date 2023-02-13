@@ -53,7 +53,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ modal }) => {
       title: "تم إعادة تعيين كلمة السر بنجاح",
       status: "success",
       duration: 3000,
-      position: "top-right",
+      position: "top",
     });
   };
 

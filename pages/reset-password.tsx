@@ -1,4 +1,5 @@
 import SocialMediaLinks from "@/components/footer/SocialMediaLinks";
+import { supabase } from "@/utils/supabaseClient";
 import {
   Box,
   Button,
@@ -11,9 +12,11 @@ import {
   chakra,
   Image,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function ResetPassword() {
@@ -27,6 +30,10 @@ export default function ResetPassword() {
 
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const toast = useToast();
+  const router = useRouter();
 
   const backButtonStyle = {
     w: "fit-content",
@@ -64,16 +71,51 @@ export default function ResetPassword() {
   };
 
   const email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  const REDIRECT_TO = "https://talleed.com/";
 
-  function handleSubmit() {
-    if (!email.length) return;
+  const errorNotif = () =>
+    toast({
+      title: "حدث خطأ !",
+      status: "error",
+      duration: 3000,
+      position: "top-right",
+    });
+
+  async function handleSubmit() {
+    try {
+      if (!email.length) return;
+
+      setLoading(true);
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: REDIRECT_TO,
+      });
+
+      if (error) {
+        return errorNotif();
+      }
+
+      toast({
+        title: "لقد تم إرسال رسالة تعيين كلمة السر الى عنوان بريدك الإلكتروني",
+        status: "success",
+        duration: 3000,
+        position: "top-right",
+      });
+
+      router.push("/");
+    } catch (error) {
+      console.error(error);
+      errorNotif();
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { value } = e.target;
     setEmail(value);
 
-    if (!value.length) setError("الرجاء ادخال البريد إلكتروني");
+    if (!value.length) return setError("الرجاء ادخال البريد إلكتروني");
     else setError("");
 
     if (!value.match(email_regex)) setError("العنوان الذي أدخلته ليس صالح");
@@ -141,7 +183,11 @@ export default function ResetPassword() {
               />
               <FormErrorMessage>{error}</FormErrorMessage>
             </FormControl>
-            <Button disabled={!!error.length} onClick={handleSubmit} {...submitButtonStyle}>
+            <Button
+              isLoading={loading}
+              disabled={!!error.length || loading}
+              onClick={handleSubmit}
+              {...submitButtonStyle}>
               إرسال
             </Button>
           </Box>
