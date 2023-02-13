@@ -12,7 +12,9 @@ import {
   Image,
   useColorModeValue,
 } from "@chakra-ui/react";
+import Head from "next/head";
 import NextLink from "next/link";
+import { useState } from "react";
 
 export default function ResetPassword() {
   //   Colors
@@ -22,6 +24,9 @@ export default function ResetPassword() {
   const title = useColorModeValue("brand.primary", "white");
   const btnLabel = useColorModeValue("white", "#2B2B2B");
   const containerBG = useColorModeValue("white", "blackAlpha.50");
+
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
 
   const backButtonStyle = {
     w: "fit-content",
@@ -51,15 +56,35 @@ export default function ResetPassword() {
     _hover: { opacity: 0.8 },
     _focus: { opacity: 0.9, color: "white", outline: "none" },
     _focusWithin: { opacity: 0.9, bg: "brand.primary" },
-    _disabled: { bg: "#81EAFB6B", pointerEvents: "none" },
+    _disabled: { bg: border, pointerEvents: "none", borderColor: border },
     borderRadius: 10,
     variant: "solid",
     w: "100%",
     my: 8,
   };
 
+  const email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+  function handleSubmit() {
+    if (!email.length) return;
+  }
+
+  function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { value } = e.target;
+    setEmail(value);
+
+    if (!value.length) setError("الرجاء ادخال البريد إلكتروني");
+    else setError("");
+
+    if (!value.match(email_regex)) setError("العنوان الذي أدخلته ليس صالح");
+    else setError("");
+  }
+
   return (
     <Box textAlign='center' bg={inputBg} minH='100vh'>
+      <Head>
+        <title>استرجاع كلمة المرور</title>
+      </Head>
       <NextLink href='/'>
         <Button {...backButtonStyle}>رجوع للصفحة الرئيسية</Button>
       </NextLink>
@@ -101,9 +126,11 @@ export default function ResetPassword() {
             </Heading>
           </Flex>
           <Box w='100%' p={6} mt={6}>
-            <FormControl my={6} isRequired isInvalid={false}>
+            <FormControl my={6} isRequired isInvalid={!!error.length}>
               <FormLabel htmlFor='title'>عنوان البريد الإلكتروني</FormLabel>
               <Input
+                value={email}
+                onChange={handleEmailChange}
                 type='email'
                 borderRadius={10}
                 bg={inputBg}
@@ -112,9 +139,11 @@ export default function ResetPassword() {
                 placeholder='البريد الإلكتروني'
                 size='lg'
               />
-              <FormErrorMessage>hello</FormErrorMessage>
+              <FormErrorMessage>{error}</FormErrorMessage>
             </FormControl>
-            <Button {...submitButtonStyle}>إرسال</Button>
+            <Button disabled={!!error.length} onClick={handleSubmit} {...submitButtonStyle}>
+              إرسال
+            </Button>
           </Box>
         </Box>
       </Flex>
