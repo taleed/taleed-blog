@@ -38,7 +38,7 @@ export default function ResetPassword() {
     _disabled: { bg: "#81EAFB6B", pointerEvents: "none" },
     borderRadius: 50,
     variant: "solid",
-    my: 16,
+    my: { base: 4, md: 16 },
   };
 
   const submitButtonStyle = {
@@ -59,12 +59,20 @@ export default function ResetPassword() {
   };
 
   return (
-    <Box textAlign='center' bg={inputBg} h='100vh'>
+    <Box textAlign='center' bg={inputBg} minH='100vh'>
       <NextLink href='/'>
         <Button {...backButtonStyle}>رجوع للصفحة الرئيسية</Button>
       </NextLink>
-      <Flex bg={inputBg} shadow='xl' maxW='4xl' mx='auto' h='65%'>
-        <Flex alignItems='center' flexBasis='35%' bg='brand.primary' p={6}>
+      <Flex
+        bg={inputBg}
+        flexDirection={{ base: "column-reverse", md: "row" }}
+        shadow='xl'
+        maxW='4xl'
+        mx='auto'
+        borderRadius={10}
+        p={{ base: "1rem", md: "0" }}
+        h={{ base: "100%", md: "65%" }}>
+        <Flex alignItems='center' justifyContent='center' flexBasis='35%' bg='brand.primary' p={6}>
           <Box>
             <Box
               display='flex'
