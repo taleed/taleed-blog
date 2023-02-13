@@ -9,18 +9,24 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 
-const SocialMediaLinks = (props: ButtonGroupProps) => {
+const SocialMediaLinks = (props: ButtonGroupProps & { type: "bg" | "no-bg" }) => {
+  const bgColor = useColorModeValue("brand.primary", "grey.900");
   return (
-    <Box display='flex' flexWrap='wrap' justifyContent='center' alignItems='center' gap={8}>
+    <Box
+      display='flex'
+      flexWrap='wrap'
+      justifyContent='center'
+      alignItems='center'
+      gap={props.type === "bg" ? 8 : 4}>
       <Button
         variant='unstyled'
         as='a'
         href='https://www.linkedin.com/company/taleed-foundation/'
         target='_blank'
         aria-label='Linkedin'
-        bgColor='white'
+        bgColor={props.type === "bg" ? "white" : "transparent"}
         rounded='full'
-        color={useColorModeValue("brand.primary", "grey.900")}
+        color={props.type === "bg" ? bgColor : "white"}
         w={10}
         h={10}
         display='flex'
@@ -35,9 +41,9 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
         href='https://twitter.com/Taleed01?t=4vsHk2jCyx4DRhVMyJSi4A&s=07'
         target='_blank'
         aria-label='Twitter'
-        bgColor='white'
+        bgColor={props.type === "bg" ? "white" : "transparent"}
         rounded='full'
-        color={useColorModeValue("brand.primary", "grey.900")}
+        color={props.type === "bg" ? bgColor : "white"}
         w={10}
         h={10}
         display='flex'
@@ -51,9 +57,9 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
         href='https://youtube.com/channel/UCAfKWA8D1tlUVBPUmPIrSFQ'
         target='_blank'
         aria-label='YouTube'
-        bgColor='white'
+        bgColor={props.type === "bg" ? "white" : "transparent"}
         rounded='full'
-        color={useColorModeValue("brand.primary", "grey.900")}
+        color={props.type === "bg" ? bgColor : "white"}
         w={10}
         h={10}
         display='flex'
@@ -67,9 +73,9 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
         href='https://instagram.com/taleed01?igshid=YmMyMTA2M2Y='
         target='_blank'
         aria-label='Instagram'
-        bgColor='white'
+        bgColor={props.type === "bg" ? "white" : "transparent"}
         rounded='full'
-        color={useColorModeValue("brand.primary", "grey.900")}
+        color={props.type === "bg" ? bgColor : "white"}
         w={10}
         h={10}
         display='flex'
@@ -83,9 +89,9 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
         href='https://www.facebook.com/taleed01'
         target='_blank'
         aria-label='Facebook'
-        bgColor='white'
+        bgColor={props.type === "bg" ? "white" : "transparent"}
         rounded='full'
-        color={useColorModeValue("brand.primary", "grey.900")}
+        color={props.type === "bg" ? bgColor : "white"}
         w={10}
         h={10}
         display='flex'
@@ -99,9 +105,9 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
         href='https://t.me/taleed01'
         target='_blank'
         aria-label='Telegram'
-        bgColor='white'
+        bgColor={props.type === "bg" ? "white" : "transparent"}
         rounded='full'
-        color={useColorModeValue("brand.primary", "grey.900")}
+        color={props.type === "bg" ? bgColor : "white"}
         w={10}
         h={10}
         display='flex'
@@ -115,9 +121,9 @@ const SocialMediaLinks = (props: ButtonGroupProps) => {
         href='https://www.tiktok.com/@taleedplus'
         target='_blank'
         aria-label='TikTok'
-        bgColor='white'
+        bgColor={props.type === "bg" ? "white" : "transparent"}
         rounded='full'
-        color={useColorModeValue("brand.primary", "grey.900")}
+        color={props.type === "bg" ? bgColor : "white"}
         w={10}
         h={10}
         display='flex'

@@ -189,7 +189,7 @@ const Footer = () => {
           justifyContent='center'
           gap={12}
           mb={{ base: "60px", lg: 0 }}>
-          <SocialMediaLinks />
+          <SocialMediaLinks type='bg' />
           <Image
             src='/logo.svg'
             alt='talleed_logo'
