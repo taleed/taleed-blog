@@ -18,49 +18,51 @@ import favicon from "public/favicon.ico";
 import bglogo from "public/bglogo.png";
 import { supabase } from "@/utils/supabaseClient";
 import ResetPassword from "@/components/ResetPassword";
+import { Analytics } from "@vercel/analytics/react";
 
 type NextPageWithLayout = NextPage & {
-  getLayout?: (page: ReactElement) => ReactNode;
+    getLayout?: (page: ReactElement) => ReactNode;
 };
 
 type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout;
+    Component: NextPageWithLayout;
 };
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const manager = createLocalStorageManager("talleed-theme-mode");
-  const getLayout = Component.getLayout ?? ((page) => page);
-  const [supabaseClient] = useState(() => createBrowserSupabaseClient());
+    const manager = createLocalStorageManager("talleed-theme-mode");
+    const getLayout = Component.getLayout ?? ((page) => page);
+    const [supabaseClient] = useState(() => createBrowserSupabaseClient());
 
-  const resetPasswordModal = useDisclosure();
+    const resetPasswordModal = useDisclosure();
 
-  useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event == "PASSWORD_RECOVERY") {
-        console.log("event=PASSWORD_RECOVERY");
-        resetPasswordModal.onOpen();
-      }
-    });
-  }, [resetPasswordModal]);
+    useEffect(() => {
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            if (event == "PASSWORD_RECOVERY") {
+                console.log("event=PASSWORD_RECOVERY");
+                resetPasswordModal.onOpen();
+            }
+        });
+    }, [resetPasswordModal]);
 
-  return (
-    <SessionContextProvider
-      supabaseClient={supabaseClient}
-      initialSession={pageProps.initialSession}>
-      <ChakraProvider theme={theme} colorModeManager={manager}>
-        <Head>
-          <link rel='shortcut icon' href={favicon.src} />
-          <meta property='og:image' content={bglogo.src} />
-        </Head>
+    return (
+        <SessionContextProvider
+            supabaseClient={supabaseClient}
+            initialSession={pageProps.initialSession}>
+            <ChakraProvider theme={theme} colorModeManager={manager}>
+                <Head>
+                    <link rel='shortcut icon' href={favicon.src} />
+                    <meta property='og:image' content={bglogo.src} />
+                </Head>
 
-        <GoogleAnalytics trackPageViews={{ ignoreHashChange: true }} />
-        <NextNProgress />
-        <LocationProvider />
-        {getLayout(<Component {...pageProps} />)}
-        <ResetPassword modal={resetPasswordModal} />
-      </ChakraProvider>
-    </SessionContextProvider>
-  );
+                <GoogleAnalytics trackPageViews={{ ignoreHashChange: true }} />
+                <NextNProgress />
+                <LocationProvider />
+                {getLayout(<Component {...pageProps} />)}
+                <ResetPassword modal={resetPasswordModal} />
+                <Analytics />
+            </ChakraProvider>
+        </SessionContextProvider>
+    );
 }
 
 export default MyApp;
